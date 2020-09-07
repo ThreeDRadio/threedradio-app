@@ -1,4 +1,8 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:player/audio/audio_start_params.dart';
+import 'package:player/audio/background_task.dart';
+import 'package:player/environment/environment.dart';
 import 'package:player/screens/live_broadcast_tab.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/widgets/show_detail_header.dart';
@@ -27,6 +31,20 @@ class _HomeScreenState extends State<HomeScreen>
     super.didChangeDependencies();
   }
 
+  startLiveStream() async {
+    print('starting service');
+    await AudioService.start(
+      backgroundTaskEntrypoint: backgroundTaskEntrypoint,
+      params: AudioStartParams(
+        mode: PlaybackMode.live,
+        title: 'Live To Air',
+        url: THREE_D_RADIO_STREAM,
+      ).toJson(),
+    );
+    print('starting playback');
+    await AudioService.play();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen>
       ),
       body: PageView(
         children: [
-          LiveBroadcastTab(),
+          LiveBroadcastTab(onPlay: startLiveStream),
         ],
       ),
     );

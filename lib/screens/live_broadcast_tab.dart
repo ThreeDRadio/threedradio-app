@@ -4,19 +4,28 @@ import 'package:player/widgets/show_detail_header.dart';
 import 'package:provider/provider.dart';
 
 class LiveBroadcastTab extends StatelessWidget {
+  const LiveBroadcastTab({this.onPlay});
+
+  final VoidCallback onPlay;
   @override
   Widget build(BuildContext context) {
     final show = Provider.of<Show>(context);
     return ListView(
       children: [
-        ShowDetailHeader(
-          title: show.title.rendered,
-          subtitle: show.meta.subtitle2.first,
-          imageUrl: show.thumbnail,
-        ),
+        if (show != null)
+          ShowDetailHeader(
+            title: show.title.rendered,
+            subtitle: show.meta?.subtitle2?.first ?? '',
+            imageUrl: show.thumbnail,
+          ),
+        if (show == null)
+          ShowDetailHeader(
+            title: 'Three D Blend',
+            subtitle: 'All the hits',
+          ),
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text(show.meta.show_incipit.first),
+          child: Text(show?.meta?.show_incipit?.first ?? ''),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 48.0),
@@ -24,7 +33,7 @@ class LiveBroadcastTab extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               RaisedButton(
-                onPressed: () {},
+                onPressed: onPlay,
                 child: Row(
                   children: [
                     Icon(Icons.play_arrow),
