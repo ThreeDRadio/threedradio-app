@@ -43,8 +43,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
     await AudioService.updateMediaItem(
       MediaItem(
-        title: currentShow.title.text,
-        artUri: currentShow.thumbnail,
+        title: currentShow?.title?.text ?? 'Three D Radio',
+        artUri: currentShow?.thumbnail,
         album: 'Three D Radio - Live',
         id: 'LIVE',
       ),
