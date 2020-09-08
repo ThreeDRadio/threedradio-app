@@ -6,7 +6,6 @@ import 'package:player/environment/environment.dart';
 import 'package:player/screens/live_broadcast_tab.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/widgets/now_playing_bar.dart';
-import 'package:player/widgets/show_detail_header.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final currentShow = Provider.of<Show>(context, listen: false);
     await AudioService.start(
       backgroundTaskEntrypoint: backgroundTaskEntrypoint,
+      androidNotificationIcon: 'drawable/ic_threedradio',
       params: AudioStartParams(
         mode: PlaybackMode.live,
         url: THREE_D_RADIO_STREAM,
