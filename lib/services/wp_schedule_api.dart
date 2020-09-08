@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 
@@ -22,6 +23,8 @@ class WpMeta {
 class WpText {
   const WpText(this.rendered);
   final String rendered;
+
+  String get text => HtmlUnescape().convert(rendered);
 
   factory WpText.fromJson(Map<String, dynamic> json) => _$WpTextFromJson(json);
   Map<String, dynamic> toJson() => _$WpTextToJson(this);
