@@ -67,6 +67,8 @@ class MyApp extends StatelessWidget {
           textTheme: TextTheme(
             bodyText2: GoogleFonts.openSans(fontSize: 16),
             button: GoogleFonts.arvo(fontWeight: FontWeight.bold),
+            headline2: GoogleFonts.arvo(),
+            headline3: GoogleFonts.arvo(color: Colors.white, fontSize: 36),
             headline4: GoogleFonts.arvo(
               fontWeight: FontWeight.bold,
               fontSize: 32,

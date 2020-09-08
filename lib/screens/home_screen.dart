@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:player/audio/audio_start_params.dart';
 import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
+import 'package:player/screens/all_in_one_tab.dart';
 import 'package:player/screens/live_broadcast_tab.dart';
 import 'package:player/screens/show_list_tab.dart';
 import 'package:player/services/wp_schedule_api.dart';
@@ -44,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     await AudioService.updateMediaItem(
       MediaItem(
         title: currentShow?.title?.text ?? 'Three D Radio',
-        artUri: currentShow?.thumbnail,
+        artUri:
+            currentShow?.thumbnail is String ? currentShow?.thumbnail : null,
         album: 'Three D Radio - Live',
         id: 'LIVE',
       ),
@@ -70,69 +72,52 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       appBar: AppBar(
         title: Text('Three D Radio'),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView(
-              controller: pageController,
-              onPageChanged: (value) {
-                setState(() {
-                  currentIndex = value;
-                });
-              },
-              children: [
-                LiveBroadcastTab(onPlay: startLiveStream),
-                ShowListTab(),
-              ],
-            ),
-          ),
-          Flexible(
-            flex: 0,
-            child: AnimatedSize(
-              duration: const Duration(milliseconds: 200),
-              vsync: this,
-              curve: Curves.easeInOut,
-              child: StreamBuilder<MediaItem>(
-                stream: AudioService.currentMediaItemStream,
-                builder: (context, mediaItemSnapshot) =>
-                    StreamBuilder<PlaybackState>(
-                  stream: AudioService.playbackStateStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData &&
-                        snapshot.data.processingState !=
-                            AudioProcessingState.stopped &&
-                        snapshot.data.processingState !=
-                            AudioProcessingState.none) {
-                      return NowPlayingBar(
-                        item: mediaItemSnapshot.data,
-                        state: snapshot.data,
-                        onPause: pause,
-                        onPlay: resume,
-                        onStop: stop,
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: AllInOneTab(
+                  playLive: startLiveStream,
                 ),
               ),
             ),
-          )
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: changePage,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.radio),
-            title: Text('Live'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.offline_bolt),
-            title: Text('On Demand'),
-          ),
-        ],
+            Flexible(
+              flex: 0,
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 200),
+                vsync: this,
+                curve: Curves.easeInOut,
+                child: StreamBuilder<MediaItem>(
+                  stream: AudioService.currentMediaItemStream,
+                  builder: (context, mediaItemSnapshot) =>
+                      StreamBuilder<PlaybackState>(
+                    stream: AudioService.playbackStateStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData &&
+                          snapshot.data.processingState !=
+                              AudioProcessingState.stopped &&
+                          snapshot.data.processingState !=
+                              AudioProcessingState.none) {
+                        return NowPlayingBar(
+                          item: mediaItemSnapshot.data,
+                          state: snapshot.data,
+                          onPause: pause,
+                          onPlay: resume,
+                          onStop: stop,
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
