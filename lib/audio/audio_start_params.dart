@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'audio_start_params.g.dart';
@@ -12,12 +13,12 @@ class AudioStartParams {
   AudioStartParams({
     this.mode,
     this.url,
-    this.title,
+    this.item,
   });
 
   final PlaybackMode mode;
   final String url;
-  final String title;
+  final MediaItem item;
 
   factory AudioStartParams.fromJson(Map<String, dynamic> json) =>
       _$AudioStartParamsFromJson(json);

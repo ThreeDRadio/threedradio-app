@@ -2,9 +2,12 @@ import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:player/audio/audio_start_params.dart';
 
-final liveMediaControls = [
-  MediaControl.play,
+final liveMediaControlsPlaying = [
   MediaControl.pause,
+  MediaControl.stop,
+];
+final liveMediaControlsPaused = [
+  MediaControl.play,
   MediaControl.stop,
 ];
 
@@ -29,19 +32,45 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
     this.params = AudioStartParams.fromJson(params);
   }
 
-  onPlay() async {
+  Future<void> onPlay() async {
     _player.setUrl(params.url);
     _player.play();
     // Show the media notification, and let all clients no what
     // playback state and media item to display.
     await AudioServiceBackground.setState(
-        playing: true,
+      playing: true,
+      controls: params.mode == PlaybackMode.live
+          ? liveMediaControlsPlaying
+          : onDemandMediaControls,
+      processingState: AudioProcessingState.ready,
+    );
+  }
+
+  @override
+  Future<void> onUpdateMediaItem(MediaItem mediaItem) {
+    AudioServiceBackground.setMediaItem(mediaItem);
+    return super.onUpdateMediaItem(mediaItem);
+  }
+
+  @override
+  Future<void> onStop() {
+    AudioServiceBackground.setState(
+      controls: [],
+      processingState: AudioProcessingState.stopped,
+      playing: false,
+    );
+    return super.onStop();
+  }
+
+  @override
+  Future<void> onPause() async {
+    _player.pause();
+    await AudioServiceBackground.setState(
         controls: params.mode == PlaybackMode.live
-            ? liveMediaControls
+            ? liveMediaControlsPaused
             : onDemandMediaControls,
+        playing: false,
         processingState: AudioProcessingState.ready);
-    await AudioServiceBackground.setMediaItem(MediaItem(
-      title: "Hey Jude",
-    ));
+    return super.onPause();
   }
 }

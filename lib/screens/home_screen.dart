@@ -5,6 +5,7 @@ import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/screens/live_broadcast_tab.dart';
 import 'package:player/services/wp_schedule_api.dart';
+import 'package:player/widgets/now_playing_bar.dart';
 import 'package:player/widgets/show_detail_header.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +14,9 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   TabController tabController;
-  Future<Show> currentShow;
   initState() {
     tabController = TabController(
       length: 2,
@@ -26,23 +25,36 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
   startLiveStream() async {
-    print('starting service');
+    final currentShow = Provider.of<Show>(context, listen: false);
     await AudioService.start(
       backgroundTaskEntrypoint: backgroundTaskEntrypoint,
       params: AudioStartParams(
         mode: PlaybackMode.live,
-        title: 'Live To Air',
         url: THREE_D_RADIO_STREAM,
       ).toJson(),
     );
-    print('starting playback');
+    await AudioService.updateMediaItem(
+      MediaItem(
+        title: currentShow.title.text,
+        artUri: currentShow.thumbnail,
+        album: 'Three D Radio - Live',
+        id: 'LIVE',
+      ),
+    );
     await AudioService.play();
+  }
+
+  pause() async {
+    return AudioService.pause();
+  }
+
+  resume() async {
+    return AudioService.play();
+  }
+
+  stop() async {
+    return AudioService.stop();
   }
 
   @override
@@ -63,9 +75,47 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ],
       ),
-      body: PageView(
+      body: Column(
         children: [
-          LiveBroadcastTab(onPlay: startLiveStream),
+          Expanded(
+            child: PageView(
+              children: [
+                LiveBroadcastTab(onPlay: startLiveStream),
+              ],
+            ),
+          ),
+          Flexible(
+            flex: 0,
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 200),
+              vsync: this,
+              curve: Curves.easeInOut,
+              child: StreamBuilder<MediaItem>(
+                stream: AudioService.currentMediaItemStream,
+                builder: (context, mediaItemSnapshot) =>
+                    StreamBuilder<PlaybackState>(
+                  stream: AudioService.playbackStateStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData &&
+                        snapshot.data.processingState !=
+                            AudioProcessingState.stopped &&
+                        snapshot.data.processingState !=
+                            AudioProcessingState.none) {
+                      return NowPlayingBar(
+                        item: mediaItemSnapshot.data,
+                        state: snapshot.data,
+                        onPause: pause,
+                        onPlay: resume,
+                        onStop: stop,
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
