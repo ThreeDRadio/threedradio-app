@@ -17,7 +17,7 @@ class LiveBroadcastTab extends StatelessWidget {
           ShowDetailHeader(
             title: show.title.text,
             subtitle: show.meta?.subtitle2?.first ?? '',
-            imageUrl: show.thumbnail,
+            imageUrl: show.thumbnail is String ? show.thumbnail : null,
           ),
         if (show == null)
           ShowDetailHeader(
