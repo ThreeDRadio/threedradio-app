@@ -8,17 +8,25 @@ class ShowsProvider {
   final WpScheduleApiService api;
 
   DateTime lastFetch;
-  List<Show> shows;
+  List<Show> _shows;
 
   Future<Show> getShow(int id) async {
     if (needsRefresh) {
       await refreshShows();
     }
-    return shows.firstWhere((element) => element.id == id, orElse: () => null);
+    return _shows.firstWhere((element) => element.id == id, orElse: () => null);
+  }
+
+  Future<List<Show>> getShows() async {
+    if (needsRefresh) {
+      await refreshShows();
+    }
+
+    return _shows;
   }
 
   Future<void> refreshShows() async {
-    shows = await api.getShows();
+    _shows = await api.getShows();
     this.lastFetch = DateTime.now();
   }
 

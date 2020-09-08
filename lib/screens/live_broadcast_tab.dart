@@ -27,7 +27,7 @@ class LiveBroadcastTab extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-              HtmlUnescape().convert(show?.meta?.show_incipit?.first) ?? ''),
+              HtmlUnescape().convert(show?.meta?.show_incipit?.first ?? '')),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 48.0),

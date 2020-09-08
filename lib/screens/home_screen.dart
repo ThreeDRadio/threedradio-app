@@ -4,6 +4,7 @@ import 'package:player/audio/audio_start_params.dart';
 import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/screens/live_broadcast_tab.dart';
+import 'package:player/screens/show_list_tab.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/widgets/now_playing_bar.dart';
 import 'package:provider/provider.dart';
@@ -15,13 +16,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
-  TabController tabController;
   initState() {
-    tabController = TabController(
-      length: 2,
-      vsync: this,
-    );
     super.initState();
+  }
+
+  int currentIndex = 0;
+  PageController pageController = PageController(initialPage: 0);
+
+  changePage(int index) {
+    pageController.animateToPage(index,
+        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    setState(() {
+      currentIndex = index;
+    });
   }
 
   startLiveStream() async {
@@ -31,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       androidNotificationIcon: 'drawable/ic_threedradio',
       params: AudioStartParams(
         mode: PlaybackMode.live,
-        url: THREE_D_RADIO_STREAM,
+        url: Environment.liveStreamUrl,
       ).toJson(),
     );
     await AudioService.updateMediaItem(
@@ -63,24 +70,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       appBar: AppBar(
         title: Text('Three D Radio'),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.radio),
-            title: Text('Live'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.offline_bolt),
-            title: Text('On Demand'),
-          ),
-        ],
-      ),
       body: Column(
         children: [
           Expanded(
             child: PageView(
+              controller: pageController,
               children: [
                 LiveBroadcastTab(onPlay: startLiveStream),
+                ShowListTab(),
               ],
             ),
           ),
@@ -116,6 +113,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
           )
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: changePage,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.radio),
+            title: Text('Live'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.offline_bolt),
+            title: Text('On Demand'),
+          ),
         ],
       ),
     );

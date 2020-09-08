@@ -1,1 +1,4 @@
-const THREE_D_RADIO_STREAM = 'https://sounds.threedradio.com/stream';
+class Environment {
+  static const liveStreamUrl = 'https://sounds.threedradio.com/stream';
+  static const onDemandApiKey = 'WwHwHjlqVKaW2DG8Zo7KVfbaDnHU3lo3kEMRJUM8';
+}

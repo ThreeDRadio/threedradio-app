@@ -11,14 +11,14 @@ class OnDemandProgram {
     this.createdAt,
     this.name,
     this.updatedAt,
-    this.showSlug,
   });
 
   final String createdAt;
   final String id;
   final String name;
   final String updatedAt;
-  final String showSlug;
+
+  String get slug => id.replaceAll('+', '-').toLowerCase();
 
   factory OnDemandProgram.fromJson(Map<String, dynamic> json) =>
       _$OnDemandProgramFromJson(json);
@@ -50,20 +50,20 @@ class OnDemandEpisode {
 class OnDemandApiService {
   OnDemandApiService({
     @required this.http,
-    this.apiKey,
+    @required this.apiKey,
   });
   final Dio http;
   final String apiKey;
 
   Future<List<OnDemandProgram>> getOnDemandPrograms() async {
-    final response = await http.get<List<Map<String, dynamic>>>(
+    final response = await http.get<List<dynamic>>(
       'https://e5yf0dn2f7.execute-api.ap-southeast-2.amazonaws.com/production/shows',
       options: Options(
         headers: {'x-api-key': apiKey},
       ),
     );
 
-    return response.data.map((e) => OnDemandProgram.fromJson(e));
+    return response.data.map((e) => OnDemandProgram.fromJson(e)).toList();
   }
 
   Future<List<OnDemandEpisode>> getEpisodes(String showId) async {

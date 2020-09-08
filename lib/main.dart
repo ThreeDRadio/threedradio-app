@@ -2,6 +2,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:player/environment/environment.dart';
 import 'package:player/providers/current_show_stream.dart';
 import 'package:player/providers/schedule_provider.dart';
 import 'package:player/providers/shows_provider.dart';
@@ -27,7 +28,10 @@ class MyApp extends StatelessWidget {
           update: (_, dio, __) => WpScheduleApiService(http: dio),
         ),
         ProxyProvider<Dio, OnDemandApiService>(
-          update: (_, dio, __) => OnDemandApiService(http: dio),
+          update: (_, dio, __) => OnDemandApiService(
+            http: dio,
+            apiKey: Environment.onDemandApiKey,
+          ),
         ),
         ProxyProvider<WpScheduleApiService, ScheduleProvider>(
           update: (_, api, __) => ScheduleProvider(api: api),
