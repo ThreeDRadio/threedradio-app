@@ -5,12 +5,14 @@ import 'package:player/services/wp_schedule_api.dart';
 class ShowListing extends StatelessWidget {
   const ShowListing({
     @required this.data,
+    @required this.heroTag,
     this.onTap,
     Key key,
   }) : super(key: key);
 
   final Show data;
   final VoidCallback onTap;
+  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -21,53 +23,56 @@ class ShowListing extends StatelessWidget {
         onTap: onTap,
         child: AspectRatio(
           aspectRatio: 3,
-          child: Stack(
-            children: [
-              if (data?.thumbnail is String)
-                AspectRatio(
-                  aspectRatio: 3,
-                  child: CachedNetworkImage(
-                    imageUrl: data?.thumbnail,
-                    fit: BoxFit.cover,
+          child: Hero(
+            tag: heroTag,
+            child: Stack(
+              children: [
+                if (data?.thumbnail is String)
+                  AspectRatio(
+                    aspectRatio: 3,
+                    child: CachedNetworkImage(
+                      imageUrl: data?.thumbnail,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [
+                      Colors.black.withAlpha(140),
+                      Colors.black.withAlpha(0)
+                    ], stops: [
+                      0,
+                      0.8
+                    ]),
                   ),
                 ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    Colors.black.withAlpha(160),
-                    Colors.black.withAlpha(0)
-                  ], stops: [
-                    0,
-                    0.8
-                  ]),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.title.text ?? '',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                        shadows: [
-                          Shadow(offset: Offset(0, 2)),
-                        ],
-                      ),
-                    ),
-                    if (data.meta.subtitle2 != null)
+                Container(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        data.meta.subtitle2[0],
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        data.title.text ?? '',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
                           shadows: [
                             Shadow(offset: Offset(0, 2)),
                           ],
                         ),
                       ),
-                  ],
+                      if (data.meta.subtitle2 != null)
+                        Text(
+                          data.meta.subtitle2[0],
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            shadows: [
+                              Shadow(offset: Offset(0, 2)),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

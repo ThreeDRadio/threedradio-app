@@ -5,6 +5,7 @@ import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/screens/all_in_one_tab.dart';
 import 'package:player/screens/live_broadcast_tab.dart';
+import 'package:player/screens/show_detail_screen.dart';
 import 'package:player/screens/show_list_tab.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/widgets/now_playing_bar.dart';
@@ -21,15 +22,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
   }
 
-  int currentIndex = 0;
-  PageController pageController = PageController(initialPage: 0);
-
-  changePage(int index) {
-    pageController.animateToPage(index,
-        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
-    setState(() {
-      currentIndex = index;
-    });
+  openShowDetail(Show show) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ShowDetailsScreen(show: show),
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   startLiveStream() async {
@@ -81,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: AllInOneTab(
                   playLive: startLiveStream,
+                  openShow: openShowDetail,
                 ),
               ),
             ),

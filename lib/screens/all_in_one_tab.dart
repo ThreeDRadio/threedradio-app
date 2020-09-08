@@ -7,8 +7,12 @@ import 'package:player/widgets/show_listing.dart';
 import 'package:provider/provider.dart';
 
 class AllInOneTab extends StatefulWidget {
-  AllInOneTab({this.playLive});
+  AllInOneTab({
+    this.playLive,
+    this.openShow,
+  });
   final VoidCallback playLive;
+  final ValueChanged<Show> openShow;
 
   @override
   _AllInOneTabState createState() => _AllInOneTabState();
@@ -56,6 +60,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
           child: ShowListing(
             data: Provider.of<Show>(context),
             onTap: widget.playLive,
+            heroTag: 'live',
           ),
         ),
         SliverPadding(padding: EdgeInsets.only(top: 32)),
@@ -65,12 +70,19 @@ class _AllInOneTabState extends State<AllInOneTab> {
             style: Theme.of(context).textTheme.headline3,
           ),
         ),
-        FutureBuilder(
+        FutureBuilder<List<OnDemandShow>>(
           future: shows,
           builder: (context, snapshot) => snapshot.hasData
               ? SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) =>
-                      ShowListing(data: snapshot.data[index].show)))
+                  delegate: SliverChildBuilderDelegate(
+                  (context, index) => ShowListing(
+                    data: snapshot.data[index].show,
+                    heroTag: snapshot.data[index].show.slug,
+                    onTap: () => widget.openShow(
+                      snapshot.data[index].show,
+                    ),
+                  ),
+                ))
               : SliverToBoxAdapter(
                   child: CupertinoActivityIndicator(),
                 ),
