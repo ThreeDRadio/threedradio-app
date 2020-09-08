@@ -20,7 +20,7 @@ class NowPlayingBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
+      height: 70,
       color: Colors.black,
       child: Row(
         children: [

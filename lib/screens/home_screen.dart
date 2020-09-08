@@ -75,6 +75,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           Expanded(
             child: PageView(
               controller: pageController,
+              onPageChanged: (value) {
+                setState(() {
+                  currentIndex = value;
+                });
+              },
               children: [
                 LiveBroadcastTab(onPlay: startLiveStream),
                 ShowListTab(),

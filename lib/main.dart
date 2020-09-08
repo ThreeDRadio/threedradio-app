@@ -74,6 +74,9 @@ class MyApp extends StatelessWidget {
                 Shadow(offset: Offset(0, 4)),
               ],
             ),
+            headline5: GoogleFonts.arvo(
+              color: Colors.white,
+            ),
             headline6: GoogleFonts.arvo(
               fontSize: 18,
               color: Colors.white,
