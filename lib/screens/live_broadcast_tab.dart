@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/widgets/show_detail_header.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,8 @@ class LiveBroadcastTab extends StatelessWidget {
           ),
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text(show?.meta?.show_incipit?.first ?? ''),
+          child: Text(
+              HtmlUnescape().convert(show?.meta?.show_incipit?.first) ?? ''),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 48.0),
