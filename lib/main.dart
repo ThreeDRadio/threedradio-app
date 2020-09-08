@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +13,17 @@ import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:sentry/sentry.dart';
 
-void main() {
+void main() async {
   tz.initializeTimeZones();
-  runApp(MyApp());
+  final sentry = SentryClient(dsn: "bd6bdccfd169415fa82fca062ad02b25");
+  runZonedGuarded(() => runApp(MyApp()), (error, stackTrace) async {
+    await sentry.captureException(
+      exception: error,
+      stackTrace: stackTrace,
+    );
+  });
 }
 
 class MyApp extends StatelessWidget {
