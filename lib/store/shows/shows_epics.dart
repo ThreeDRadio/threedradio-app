@@ -18,7 +18,7 @@ class ShowsEpics extends EpicClass<AppState> {
           final shows = await api.getShows();
           yield SuccessRetrieveAll<Show>(shows);
         } else {
-          yield SuccessRetrieveAllFromCache(
+          yield SuccessRetrieveAllFromCache<Show>(
               store.state.shows.entities.values.toList());
         }
       }

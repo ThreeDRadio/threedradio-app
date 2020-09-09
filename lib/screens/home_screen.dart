@@ -6,6 +6,7 @@ import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/screens/all_in_one_tab.dart';
 import 'package:player/screens/show_detail_screen.dart';
+import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/schedules/schedules_selectors.dart';
@@ -29,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(RequestRetrieveAll<Schedule>());
     store.dispatch(RequestRetrieveAll<Show>());
+    store.dispatch(RequestRetrieveAll<OnDemandProgram>());
     super.didChangeDependencies();
   }
 

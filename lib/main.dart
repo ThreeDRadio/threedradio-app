@@ -1,19 +1,13 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:player/environment/environment.dart';
-import 'package:player/providers/shows_provider.dart';
 import 'package:player/screens/home_screen.dart';
-import 'package:player/services/on_demand_api.dart';
-import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_epics.dart';
 import 'package:player/store/app_reducer.dart';
 import 'package:player/store/app_state.dart';
-import 'package:provider/provider.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_epics/redux_epics.dart';
 import 'package:redux_persist/redux_persist.dart';
@@ -23,22 +17,25 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:sentry/sentry.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
 
   final persistor = Persistor<AppState>(
     storage: FlutterStorage(
       location: FlutterSaveLocation.documentFile,
     ), // Or use other engines
-    serializer: JsonSerializer<AppState>(
-      (json) => AppState.fromJson(json),
-    ), // Or use other serializers
+    serializer: JsonSerializer<AppState>((json) {
+      return AppState.fromJson(json);
+    }), // Or use other serializers
   );
 
   // Load initial state
   AppState initialState;
   try {
     initialState = await persistor.load();
-  } catch (err) {}
+  } catch (err) {
+    print(err);
+  }
 
   final remoteDev = RemoteDevToolsMiddleware('192.168.1.207:8000');
 
@@ -47,7 +44,7 @@ void main() async {
     initialState: initialState ?? AppState(),
     middleware: [
       EpicMiddleware(appEpics),
-      //persistor.createMiddleware(),
+      persistor.createMiddleware(),
       remoteDev
     ],
   );
@@ -79,64 +76,47 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<Dio>.value(value: Dio()),
-        ProxyProvider<Dio, WpScheduleApiService>(
-          update: (_, dio, __) => WpScheduleApiService(http: dio),
-        ),
-        ProxyProvider<Dio, OnDemandApiService>(
-          update: (_, dio, __) => OnDemandApiService(
-            http: dio,
-            apiKey: Environment.onDemandApiKey,
-          ),
-        ),
-        ProxyProvider<WpScheduleApiService, ShowsProvider>(
-          update: (_, api, __) => ShowsProvider(api: api),
-        ),
-      ],
-      child: StoreProvider<AppState>(
-        store: store,
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            brightness: Brightness.dark,
-            accentColor: Color(0xff2F9B17),
-            buttonColor: Color(0xff2F9B17),
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            textTheme: TextTheme(
-              bodyText2: GoogleFonts.openSans(fontSize: 16),
-              button: GoogleFonts.arvo(fontWeight: FontWeight.bold),
-              headline2: GoogleFonts.arvo(),
-              headline3: GoogleFonts.arvo(color: Colors.white, fontSize: 36),
-              headline4: GoogleFonts.arvo(
-                fontWeight: FontWeight.bold,
-                fontSize: 32,
-                shadows: [
-                  Shadow(offset: Offset(0, 4)),
-                ],
-              ),
-              headline5: GoogleFonts.arvo(
-                color: Colors.white,
-              ),
-              headline6: GoogleFonts.arvo(
-                fontSize: 18,
-                color: Colors.white,
-              ),
+    return StoreProvider<AppState>(
+      store: store,
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          accentColor: Color(0xff2F9B17),
+          buttonColor: Color(0xff2F9B17),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: TextTheme(
+            bodyText2: GoogleFonts.openSans(fontSize: 16),
+            button: GoogleFonts.arvo(fontWeight: FontWeight.bold),
+            headline2: GoogleFonts.arvo(),
+            headline3: GoogleFonts.arvo(color: Colors.white, fontSize: 36),
+            headline4: GoogleFonts.arvo(
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
+              shadows: [
+                Shadow(offset: Offset(0, 4)),
+              ],
             ),
-            primaryTextTheme: GoogleFonts.arvoTextTheme(
-              TextTheme(
-                headline6: TextStyle(color: Colors.white),
-              ),
+            headline5: GoogleFonts.arvo(
+              color: Colors.white,
+            ),
+            headline6: GoogleFonts.arvo(
+              fontSize: 18,
+              color: Colors.white,
             ),
           ),
-          routes: {
-            '/': (context) => AudioServiceWidget(
-                  child: HomeScreen(),
-                ),
-          },
-          initialRoute: '/',
+          primaryTextTheme: GoogleFonts.arvoTextTheme(
+            TextTheme(
+              headline6: TextStyle(color: Colors.white),
+            ),
+          ),
         ),
+        routes: {
+          '/': (context) => AudioServiceWidget(
+                child: HomeScreen(),
+              ),
+        },
+        initialRoute: '/',
       ),
     );
   }
