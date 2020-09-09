@@ -52,14 +52,14 @@ class ShowListing extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data.title.text ?? '',
+                        data?.title?.text ?? '',
                         style: Theme.of(context).textTheme.headline5.copyWith(
                           shadows: [
                             Shadow(offset: Offset(0, 2)),
                           ],
                         ),
                       ),
-                      if (data.meta.subtitle2 != null)
+                      if (data?.meta?.subtitle2 != null)
                         Text(
                           data.meta.subtitle2[0],
                           style: Theme.of(context).textTheme.bodyText2.copyWith(

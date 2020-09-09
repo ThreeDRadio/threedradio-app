@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:player/screens/show_list_tab.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
+import 'package:player/store/app_state.dart';
+import 'package:player/store/schedules/schedules_selectors.dart';
 import 'package:player/widgets/show_listing.dart';
 import 'package:provider/provider.dart';
 
@@ -57,10 +60,19 @@ class _AllInOneTabState extends State<AllInOneTab> {
           ),
         ),
         SliverToBoxAdapter(
-          child: ShowListing(
-            data: Provider.of<Show>(context),
-            onTap: widget.playLive,
-            heroTag: 'live',
+          child: StoreConnector<AppState, Show>(
+            converter: (store) {
+              final currentShowId = getCurrentShowId(store.state);
+              if (currentShowId != null) {
+                return store.state.shows.entities[currentShowId];
+              }
+              return null;
+            },
+            builder: (context, show) => ShowListing(
+              data: show,
+              onTap: widget.playLive,
+              heroTag: 'live',
+            ),
           ),
         ),
         SliverPadding(padding: EdgeInsets.only(top: 32)),

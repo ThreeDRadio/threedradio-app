@@ -1,15 +1,17 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:player/audio/audio_start_params.dart';
 import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/screens/all_in_one_tab.dart';
-import 'package:player/screens/live_broadcast_tab.dart';
 import 'package:player/screens/show_detail_screen.dart';
-import 'package:player/screens/show_list_tab.dart';
 import 'package:player/services/wp_schedule_api.dart';
+import 'package:player/store/app_state.dart';
+import 'package:player/store/schedules/schedules_selectors.dart';
 import 'package:player/widgets/now_playing_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:redux_entity/redux_entity.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -22,6 +24,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
   }
 
+  @override
+  didChangeDependencies() {
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(RequestRetrieveAll<Schedule>());
+    store.dispatch(RequestRetrieveAll<Show>());
+    super.didChangeDependencies();
+  }
+
   openShowDetail(Show show) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -32,7 +42,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   startLiveStream() async {
-    final currentShow = Provider.of<Show>(context, listen: false);
+    final store = StoreProvider.of<AppState>(context);
+    final currentShowId = getCurrentShowId(store.state);
+    Show currentShow;
+    if (currentShowId != null) {
+      currentShow = store.state.shows.entities[currentShowId];
+    }
     await AudioService.start(
       backgroundTaskEntrypoint: backgroundTaskEntrypoint,
       androidNotificationIcon: 'drawable/ic_threedradio',
