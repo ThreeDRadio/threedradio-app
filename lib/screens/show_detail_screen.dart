@@ -9,15 +9,32 @@ import 'package:player/store/app_state.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 class ShowDetailsScreen extends StatefulWidget {
-  ShowDetailsScreen({this.show});
+  ShowDetailsScreen(
+      {this.show,
+      this.fadeInDelay = const Duration(milliseconds: 300),
+      this.fadeInDuration = const Duration(milliseconds: 300)});
 
   final Show show;
+  final Duration fadeInDelay;
+  final Duration fadeInDuration;
 
   @override
   _ShowDetailsScreenState createState() => _ShowDetailsScreenState();
 }
 
 class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
+  bool transitionComplete = false;
+  void initState() {
+    Future.delayed(widget.fadeInDelay, () {
+      if (mounted) {
+        setState(() {
+          transitionComplete = true;
+        });
+      }
+    });
+    super.initState();
+  }
+
   @override
   void didChangeDependencies() {
     StoreProvider.of<AppState>(context).dispatch(
@@ -34,11 +51,18 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
             expandedHeight: 220,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                widget.show.title.text,
-                style: TextStyle(shadows: [
-                  Shadow(color: Colors.black, offset: Offset(0, 2))
-                ]),
+              title: AnimatedOpacity(
+                duration: widget.fadeInDuration,
+                opacity: transitionComplete ? 1 : 0,
+                child: Text(
+                  widget.show.title.text,
+                  style: TextStyle(shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      offset: Offset(0, 2),
+                    )
+                  ]),
+                ),
               ),
               background: Hero(
                 tag: widget.show.slug,
