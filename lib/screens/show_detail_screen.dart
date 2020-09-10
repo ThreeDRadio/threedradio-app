@@ -81,7 +81,10 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
               ),
               child: widget.show.content.text.isNotEmpty
                   ? Html(data: widget.show.content.rendered)
-                  : Text('All The Hits'),
+                  : Html(
+                      data: widget.show.meta.show_incipit?.isNotEmpty == true
+                          ? widget.show.meta.show_incipit[0]
+                          : 'All The Hits'),
             ),
           ),
           SliverPadding(
