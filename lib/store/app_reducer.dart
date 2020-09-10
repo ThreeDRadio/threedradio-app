@@ -4,8 +4,14 @@ import 'package:player/store/app_state.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 AppState appReducer(AppState state, dynamic action) => AppState(
+      onDemandEpisodes: RemoteEntityReducer<
+          RemoteEntityState<List<OnDemandEpisode>>,
+          List<OnDemandEpisode>>(selectId: (value) => value.first.showId)(
+        state.onDemandEpisodes,
+        action,
+      ),
       onDemandPrograms: RemoteEntityReducer<RemoteEntityState<OnDemandProgram>,
-          OnDemandProgram>(selectId: (item) => item.slug)(
+          OnDemandProgram>()(
         state.onDemandPrograms,
         action,
       ),

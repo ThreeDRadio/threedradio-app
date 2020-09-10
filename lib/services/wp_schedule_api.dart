@@ -82,6 +82,8 @@ class Show {
     this.meta,
   });
 
+  String get onDemandShowId => slug.replaceAll('-', '+');
+
   final int id;
   final String status;
   final String slug;

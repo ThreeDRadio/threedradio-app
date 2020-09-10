@@ -66,10 +66,12 @@ class _AllInOneTabState extends State<AllInOneTab> {
                         snapshot[index],
                       ),
                     ),
+                    childCount: snapshot.length,
                   ),
                 )
               : SliverToBoxAdapter(child: CupertinoActivityIndicator()),
-        )
+        ),
+        SliverPadding(padding: EdgeInsets.all(48))
       ],
     );
   }

@@ -36,7 +36,7 @@ class OnDemandEpisode {
     this.showSlug,
   });
   final String id;
-  final int showId;
+  final String showId;
   final String date;
   final int size;
   final String url;
@@ -67,12 +67,14 @@ class OnDemandApiService {
   }
 
   Future<List<OnDemandEpisode>> getEpisodes(String showId) async {
-    final response = await http.get<List<Map<String, dynamic>>>(
+    final response = await http.get<List<dynamic>>(
       'https://e5yf0dn2f7.execute-api.ap-southeast-2.amazonaws.com/production/shows/$showId/episodes',
       options: Options(
         headers: {'x-api-key': apiKey},
       ),
     );
-    return response.data.map((e) => OnDemandEpisode.fromJson(e));
+    return response.data
+        .map((e) => OnDemandEpisode.fromJson({...e, 'showId': showId}))
+        .toList();
   }
 }

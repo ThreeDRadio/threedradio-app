@@ -8,17 +8,23 @@ part 'app_state.g.dart';
 @JsonSerializable(createFactory: false)
 class AppState {
   const AppState({
+    this.onDemandEpisodes = const RemoteEntityState<List<OnDemandEpisode>>(),
     this.onDemandPrograms = const RemoteEntityState<OnDemandProgram>(),
     this.schedules = const RemoteEntityState<Schedule>(),
     this.shows = const RemoteEntityState<Show>(),
   });
 
+  final RemoteEntityState<List<OnDemandEpisode>> onDemandEpisodes;
   final RemoteEntityState<OnDemandProgram> onDemandPrograms;
   final RemoteEntityState<Schedule> schedules;
   final RemoteEntityState<Show> shows;
 
   factory AppState.fromJson(Map<String, dynamic> json) {
     return AppState(
+      onDemandEpisodes: RemoteEntityState<List<OnDemandEpisode>>.fromJson(
+        json['onDemandEpisodes'],
+        (json) => json.map((item) => OnDemandProgram.fromJson(json)).toList(),
+      ),
       onDemandPrograms: RemoteEntityState<OnDemandProgram>.fromJson(
         json['onDemandPrograms'],
         (json) => OnDemandProgram.fromJson(json),

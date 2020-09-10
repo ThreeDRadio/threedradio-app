@@ -1,11 +1,30 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
+import 'package:player/store/app_state.dart';
+import 'package:redux_entity/redux_entity.dart';
 
-class ShowDetailsScreen extends StatelessWidget {
+class ShowDetailsScreen extends StatefulWidget {
   ShowDetailsScreen({this.show});
 
   final Show show;
+
+  @override
+  _ShowDetailsScreenState createState() => _ShowDetailsScreenState();
+}
+
+class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
+  @override
+  void didChangeDependencies() {
+    StoreProvider.of<AppState>(context).dispatch(
+        RequestRetrieveOne<List<OnDemandEpisode>>(widget.show.onDemandShowId));
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,28 +35,32 @@ class ShowDetailsScreen extends StatelessWidget {
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                show.title.text,
+                widget.show.title.text,
                 style: TextStyle(shadows: [
                   Shadow(color: Colors.black, offset: Offset(0, 2))
                 ]),
               ),
               background: Hero(
-                tag: show.slug,
+                tag: widget.show.slug,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
                     CachedNetworkImage(
-                      imageUrl: show.thumbnail,
+                      imageUrl: widget.show.thumbnail,
                       fit: BoxFit.cover,
                     ),
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                             colors: [
+                              Colors.black.withAlpha(140),
+                              Colors.black.withAlpha(0),
                               Colors.black.withAlpha(0),
                               Colors.black.withAlpha(140),
                             ],
                             stops: [
+                              0,
+                              0.4,
                               0.6,
                               1.0
                             ],
@@ -50,6 +73,99 @@ class ShowDetailsScreen extends StatelessWidget {
               ),
             ),
           ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 32,
+              ),
+              child: widget.show.content.text.isNotEmpty
+                  ? Html(data: widget.show.content.rendered)
+                  : Text('All The Hits'),
+            ),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.only(left: 8, bottom: 8),
+            sliver: SliverToBoxAdapter(
+                child: Text(
+              'On Demand Episodes',
+              style: Theme.of(context).textTheme.headline5,
+            )),
+          ),
+          StoreConnector<AppState, List<OnDemandEpisode>>(
+              converter: (store) =>
+                  store.state.onDemandEpisodes
+                      .entities[widget.show.onDemandShowId]?.reversed
+                      ?.toList() ??
+                  <OnDemandEpisode>[],
+              builder: (context, episodes) {
+                if (episodes.isEmpty) {
+                  return SliverToBoxAdapter(
+                      child: CupertinoActivityIndicator());
+                }
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Card(
+                        child: InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(Icons.play_arrow),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('${episodes[index].date}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6),
+                                      Text(
+                                          (episodes[index].size / 1024 / 2014)
+                                                  .round()
+                                                  .toString() +
+                                              'mb',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption)
+                                    ],
+                                  ),
+                                ),
+                                if (DateTime.now()
+                                        .difference(DateTime.parse(
+                                            episodes[index].date))
+                                        .inDays >
+                                    21)
+                                  Chip(
+                                    label: Text((28 -
+                                                DateTime.now()
+                                                    .difference(DateTime.parse(
+                                                        episodes[index].date))
+                                                    .inDays)
+                                            .toString() +
+                                        ' Days Left'),
+                                    labelStyle: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                    backgroundColor: Colors.amberAccent,
+                                    visualDensity: VisualDensity.compact,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    childCount: episodes.length,
+                  ),
+                );
+              })
         ],
       ),
     );
