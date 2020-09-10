@@ -12,6 +12,7 @@ import 'package:rxdart/rxdart.dart';
 class AudioEpics extends EpicClass<AppState> {
   AudioEpics() {
     _epic = combineEpics([
+      _audioStateChanges,
       _playEpisode,
       _playLiveStream,
       _pause,
@@ -103,5 +104,10 @@ class AudioEpics extends EpicClass<AppState> {
       await AudioService.play();
       return SuccessPlayLive();
     });
+  }
+
+  Stream _audioStateChanges(Stream actions, EpicStore<AppState> store) {
+    return AudioService.playbackStateStream
+        .map((event) => AudioStateChange(state: event));
   }
 }
