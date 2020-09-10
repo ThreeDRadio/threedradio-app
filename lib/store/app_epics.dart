@@ -3,6 +3,7 @@ import 'package:player/environment/environment.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
+import 'package:player/store/audio/audio_epics.dart';
 import 'package:player/store/on_demand_episodes/on_demand_episodes_epics.dart';
 import 'package:player/store/on_demand_programs/on_demand_epics.dart';
 import 'package:player/store/schedules/schedules_epics.dart';
@@ -15,6 +16,7 @@ final onDemandApi =
 final wpApi = WpScheduleApiService(http: dio);
 
 final appEpics = combineEpics<AppState>([
+  AudioEpics(),
   OnDemandEpisodesEpics(api: onDemandApi),
   OnDemandEpics(api: onDemandApi),
   SchedulesEpics(api: wpApi),

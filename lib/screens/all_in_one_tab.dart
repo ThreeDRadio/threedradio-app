@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -20,6 +22,23 @@ class AllInOneTab extends StatefulWidget {
 }
 
 class _AllInOneTabState extends State<AllInOneTab> {
+  Timer refresher;
+
+  @override
+  void initState() {
+    refresher = Timer.periodic(const Duration(minutes: 1), (timer) {
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    refresher.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(

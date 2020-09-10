@@ -9,9 +9,8 @@ import 'package:player/screens/show_detail_screen.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
-import 'package:player/store/schedules/schedules_selectors.dart';
+import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/widgets/now_playing_bar.dart';
-import 'package:provider/provider.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -44,42 +43,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   startLiveStream() async {
-    final store = StoreProvider.of<AppState>(context);
-    final currentShowId = getCurrentShowId(store.state);
-    Show currentShow;
-    if (currentShowId != null) {
-      currentShow = store.state.shows.entities[currentShowId];
-    }
-    await AudioService.start(
-      backgroundTaskEntrypoint: backgroundTaskEntrypoint,
-      androidNotificationIcon: 'drawable/ic_threedradio',
-      params: AudioStartParams(
-        mode: PlaybackMode.live,
-        url: Environment.liveStreamUrl,
-      ).toJson(),
-    );
-    await AudioService.updateMediaItem(
-      MediaItem(
-        title: currentShow?.title?.text ?? 'Three D Radio',
-        artUri:
-            currentShow?.thumbnail is String ? currentShow?.thumbnail : null,
-        album: 'Three D Radio - Live',
-        id: 'LIVE',
-      ),
-    );
-    await AudioService.play();
+    StoreProvider.of<AppState>(context).dispatch(RequestPlayLive());
   }
 
   pause() async {
-    return AudioService.pause();
+    StoreProvider.of<AppState>(context).dispatch(RequestPause());
   }
 
   resume() async {
-    return AudioService.play();
+    StoreProvider.of<AppState>(context).dispatch(RequestResume());
   }
 
   stop() async {
-    return AudioService.stop();
+    StoreProvider.of<AppState>(context).dispatch(RequestStop());
   }
 
   @override

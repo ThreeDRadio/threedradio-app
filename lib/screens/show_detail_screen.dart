@@ -6,6 +6,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
+import 'package:player/store/audio/audio_actions.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 class ShowDetailsScreen extends StatefulWidget {
@@ -40,6 +41,11 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
     StoreProvider.of<AppState>(context).dispatch(
         RequestRetrieveOne<List<OnDemandEpisode>>(widget.show.onDemandShowId));
     super.didChangeDependencies();
+  }
+
+  playEpisode(OnDemandEpisode e) {
+    StoreProvider.of<AppState>(context)
+        .dispatch(RequestPlayEpisode(episode: e));
   }
 
   @override
@@ -136,6 +142,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Card(
                         child: InkWell(
+                          onTap: () => playEpisode(episodes[index]),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(

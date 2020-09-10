@@ -32,7 +32,7 @@ void main() async {
   // Load initial state
   AppState initialState;
   try {
-    //initialState = await persistor.load();
+    initialState = await persistor.load();
   } catch (err) {
     print(err);
   }
