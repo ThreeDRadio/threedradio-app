@@ -51,156 +51,161 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 220,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              title: AnimatedOpacity(
-                duration: widget.fadeInDuration,
-                opacity: transitionComplete ? 1 : 0,
-                child: Text(
-                  widget.show.title.text,
-                  style: TextStyle(shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      offset: Offset(0, 2),
-                    )
-                  ]),
+      body: SafeArea(
+        top: false,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 220,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: AnimatedOpacity(
+                  duration: widget.fadeInDuration,
+                  opacity: transitionComplete ? 1 : 0,
+                  child: Text(
+                    widget.show.title.text,
+                    style: TextStyle(shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        offset: Offset(0, 2),
+                      )
+                    ]),
+                  ),
                 ),
-              ),
-              background: Hero(
-                tag: widget.show.slug,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: widget.show.thumbnail,
-                      fit: BoxFit.cover,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                              Colors.black.withAlpha(140),
-                              Colors.black.withAlpha(0),
-                              Colors.black.withAlpha(0),
-                              Colors.black.withAlpha(140),
-                            ],
-                            stops: [
-                              0,
-                              0.4,
-                              0.6,
-                              1.0
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter),
+                background: Hero(
+                  tag: widget.show.slug,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: widget.show.thumbnail,
+                        fit: BoxFit.cover,
                       ),
-                    ),
-                  ],
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                                Colors.black.withAlpha(140),
+                                Colors.black.withAlpha(0),
+                                Colors.black.withAlpha(0),
+                                Colors.black.withAlpha(140),
+                              ],
+                              stops: [
+                                0,
+                                0.4,
+                                0.6,
+                                1.0
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 32,
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 32,
+                ),
+                child: widget.show.content.text.isNotEmpty
+                    ? Html(data: widget.show.content.rendered)
+                    : Html(
+                        data: widget.show.meta.show_incipit?.isNotEmpty == true
+                            ? widget.show.meta.show_incipit[0]
+                            : 'All The Hits'),
               ),
-              child: widget.show.content.text.isNotEmpty
-                  ? Html(data: widget.show.content.rendered)
-                  : Html(
-                      data: widget.show.meta.show_incipit?.isNotEmpty == true
-                          ? widget.show.meta.show_incipit[0]
-                          : 'All The Hits'),
             ),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.only(left: 8, bottom: 8),
-            sliver: SliverToBoxAdapter(
-                child: Text(
-              'On Demand Episodes',
-              style: Theme.of(context).textTheme.headline5,
-            )),
-          ),
-          StoreConnector<AppState, List<OnDemandEpisode>>(
-              converter: (store) =>
-                  store.state.onDemandEpisodes
-                      .entities[widget.show.onDemandShowId]?.reversed
-                      ?.toList() ??
-                  <OnDemandEpisode>[],
-              builder: (context, episodes) {
-                if (episodes.isEmpty) {
-                  return SliverToBoxAdapter(
-                      child: CupertinoActivityIndicator());
-                }
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Card(
-                        child: InkWell(
-                          onTap: () => playEpisode(episodes[index]),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Icon(Icons.play_arrow),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('${episodes[index].date}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6),
-                                      Text(
-                                          (episodes[index].size / 1024 / 2014)
-                                                  .round()
-                                                  .toString() +
-                                              'mb',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption)
-                                    ],
+            SliverPadding(
+              padding: EdgeInsets.only(left: 8, bottom: 8),
+              sliver: SliverToBoxAdapter(
+                  child: Text(
+                'On Demand Episodes',
+                style: Theme.of(context).textTheme.headline5,
+              )),
+            ),
+            StoreConnector<AppState, List<OnDemandEpisode>>(
+                converter: (store) =>
+                    store.state.onDemandEpisodes
+                        .entities[widget.show.onDemandShowId]?.reversed
+                        ?.toList() ??
+                    <OnDemandEpisode>[],
+                builder: (context, episodes) {
+                  if (episodes.isEmpty) {
+                    return SliverToBoxAdapter(
+                        child: CupertinoActivityIndicator());
+                  }
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Card(
+                          child: InkWell(
+                            onTap: () => playEpisode(episodes[index]),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Icon(Icons.play_arrow),
                                   ),
-                                ),
-                                if (DateTime.now()
-                                        .difference(DateTime.parse(
-                                            episodes[index].date))
-                                        .inDays >
-                                    21)
-                                  Chip(
-                                    label: Text((28 -
-                                                DateTime.now()
-                                                    .difference(DateTime.parse(
-                                                        episodes[index].date))
-                                                    .inDays)
-                                            .toString() +
-                                        ' Days Left'),
-                                    labelStyle: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black),
-                                    backgroundColor: Colors.amberAccent,
-                                    visualDensity: VisualDensity.compact,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('${episodes[index].date}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6),
+                                        Text(
+                                            (episodes[index].size / 1024 / 2014)
+                                                    .round()
+                                                    .toString() +
+                                                'mb',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .caption)
+                                      ],
+                                    ),
                                   ),
-                              ],
+                                  if (DateTime.now()
+                                          .difference(DateTime.parse(
+                                              episodes[index].date))
+                                          .inDays >
+                                      21)
+                                    Chip(
+                                      label: Text((28 -
+                                                  DateTime.now()
+                                                      .difference(
+                                                          DateTime.parse(
+                                                              episodes[index]
+                                                                  .date))
+                                                      .inDays)
+                                              .toString() +
+                                          ' Days Left'),
+                                      labelStyle: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black),
+                                      backgroundColor: Colors.amberAccent,
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
+                      childCount: episodes.length,
                     ),
-                    childCount: episodes.length,
-                  ),
-                );
-              })
-        ],
+                  );
+                })
+          ],
+        ),
       ),
     );
   }
