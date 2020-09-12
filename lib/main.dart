@@ -8,6 +8,7 @@ import 'package:player/screens/home_screen.dart';
 import 'package:player/store/app_epics.dart';
 import 'package:player/store/app_reducer.dart';
 import 'package:player/store/app_state.dart';
+import 'package:player/store/audio/app_actions.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_epics/redux_epics.dart';
 import 'package:redux_persist/redux_persist.dart';
@@ -32,7 +33,7 @@ void main() async {
   // Load initial state
   AppState initialState;
   try {
-    initialState = await persistor.load();
+//    initialState = await persistor.load();
   } catch (err) {
     print(err);
   }
@@ -52,21 +53,15 @@ void main() async {
   remoteDev.store = store;
   await remoteDev.connect();
 
+  store.dispatch(AppStartAction());
+
   final sentry = SentryClient(
     dsn:
         "https://bd6bdccfd169415fa82fca062ad02b25@o120815.ingest.sentry.io/5421277",
   );
-  runZonedGuarded(
-      () => runApp(
-            MyApp(
-              store: store,
-            ),
-          ), (error, stackTrace) async {
-    await sentry.captureException(
-      exception: error,
-      stackTrace: stackTrace,
-    );
-  });
+  runApp(MyApp(
+    store: store,
+  ));
 }
 
 class MyApp extends StatelessWidget {

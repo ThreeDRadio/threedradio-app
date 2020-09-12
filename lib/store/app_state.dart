@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
+import 'package:player/store/audio/audio_state.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 part 'app_state.g.dart';
@@ -8,12 +9,14 @@ part 'app_state.g.dart';
 @JsonSerializable(createFactory: false)
 class AppState {
   const AppState({
+    this.audio = const AudioState(),
     this.onDemandEpisodes = const RemoteEntityState<List<OnDemandEpisode>>(),
     this.onDemandPrograms = const RemoteEntityState<OnDemandProgram>(),
     this.schedules = const RemoteEntityState<Schedule>(),
     this.shows = const RemoteEntityState<Show>(),
   });
 
+  final AudioState audio;
   final RemoteEntityState<List<OnDemandEpisode>> onDemandEpisodes;
   final RemoteEntityState<OnDemandProgram> onDemandPrograms;
   final RemoteEntityState<Schedule> schedules;

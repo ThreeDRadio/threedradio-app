@@ -35,3 +35,11 @@ class AudioStateChange {
         'playing': state.playing,
       };
 }
+
+class MediaItemChange {
+  MediaItemChange({this.item});
+  final MediaItem item;
+  Map<String, dynamic> toJson() => {
+        'item': item.toJson(),
+      };
+}

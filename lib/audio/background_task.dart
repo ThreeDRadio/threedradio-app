@@ -26,14 +26,33 @@ backgroundTaskEntrypoint() {
 class ThreeDBackgroundTask extends BackgroundAudioTask {
   AudioPlayer _player = AudioPlayer();
 
+  ThreeDBackgroundTask() {
+    _player.durationStream.listen((duration) {
+      AudioServiceBackground.setMediaItem(
+          AudioServiceBackground.mediaItem.copyWith(duration: duration));
+    });
+
+    _player.positionStream.listen((event) {
+      AudioServiceBackground.setState(
+        controls: params?.mode == PlaybackMode.live
+            ? liveMediaControlsPlaying
+            : onDemandMediaControls,
+        processingState: AudioProcessingState.ready,
+        playing: _player.playing,
+        position: event,
+      );
+    });
+  }
+
   AudioStartParams params;
+  MediaItem currentItem;
 
   Future<void> onStart(Map<String, dynamic> params) async {
     this.params = AudioStartParams.fromJson(params);
   }
 
   Future<void> onPlay() async {
-    _player.setUrl(params.url);
+    await _player.setUrl(params.url);
     _player.play();
     // Show the media notification, and let all clients no what
     // playback state and media item to display.
@@ -50,6 +69,14 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
   Future<void> onUpdateMediaItem(MediaItem mediaItem) {
     AudioServiceBackground.setMediaItem(mediaItem);
     return super.onUpdateMediaItem(mediaItem);
+  }
+
+  @override
+  Future<void> onSeekTo(Duration position) {
+    if (_player.playing && params.mode == PlaybackMode.onDemand) {
+      _player.seek(position);
+    }
+    return super.onSeekTo(position);
   }
 
   @override

@@ -4,6 +4,7 @@ import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
+import 'package:player/store/audio/app_actions.dart';
 import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/store/schedules/schedules_selectors.dart';
 import 'package:redux_epics/redux_epics.dart';
@@ -13,6 +14,7 @@ class AudioEpics extends EpicClass<AppState> {
   AudioEpics() {
     _epic = combineEpics([
       _audioStateChanges,
+      _mediaItemChange,
       _playEpisode,
       _playLiveStream,
       _pause,
@@ -60,8 +62,8 @@ class AudioEpics extends EpicClass<AppState> {
         backgroundTaskEntrypoint: backgroundTaskEntrypoint,
         androidNotificationIcon: 'drawable/ic_threedradio',
         params: AudioStartParams(
-          mode: PlaybackMode.live,
-          url: Environment.liveStreamUrl,
+          mode: PlaybackMode.onDemand,
+          url: action.episode.url,
         ).toJson(),
       );
       await AudioService.updateMediaItem(
@@ -107,7 +109,14 @@ class AudioEpics extends EpicClass<AppState> {
   }
 
   Stream _audioStateChanges(Stream actions, EpicStore<AppState> store) {
-    return AudioService.playbackStateStream
-        .map((event) => AudioStateChange(state: event));
+    return actions.whereType<AppStartAction>().switchMap((_) => AudioService
+        .playbackStateStream
+        .map((event) => AudioStateChange(state: event)));
+  }
+
+  Stream _mediaItemChange(Stream actions, EpicStore<AppState> store) {
+    return actions.whereType<AppStartAction>().switchMap((_) => AudioService
+        .currentMediaItemStream
+        .map((event) => MediaItemChange(item: event)));
   }
 }
