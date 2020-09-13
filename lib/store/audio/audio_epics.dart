@@ -117,6 +117,7 @@ class AudioEpics extends EpicClass<AppState> {
   Stream _mediaItemChange(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<AppStartAction>().switchMap((_) => AudioService
         .currentMediaItemStream
-        .map((event) => MediaItemChange(item: event)));
+        .map((event) => MediaItemChange(item: event))
+        .debounceTime(const Duration(seconds: 1)));
   }
 }

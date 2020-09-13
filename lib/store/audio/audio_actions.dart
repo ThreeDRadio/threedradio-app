@@ -30,9 +30,8 @@ class AudioStateChange {
   PlaybackState state;
 
   Map<String, dynamic> toJson() => {
-        'currentPosition': state.currentPosition.toString(),
-        'processingState': state.processingState.toString(),
-        'playing': state.playing,
+        'currentPosition': state?.currentPosition?.toString(),
+        'processingState': state?.processingState?.toString(),
       };
 }
 

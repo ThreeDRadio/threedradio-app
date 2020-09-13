@@ -1,9 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:player/audio/audio_start_params.dart';
-import 'package:player/audio/background_task.dart';
-import 'package:player/environment/environment.dart';
 import 'package:player/screens/all_in_one_tab.dart';
 import 'package:player/screens/show_detail_screen.dart';
 import 'package:player/services/on_demand_api.dart';
@@ -12,6 +9,16 @@ import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/widgets/now_playing_bar.dart';
 import 'package:redux_entity/redux_entity.dart';
+
+class _NowPlayingBarData {
+  _NowPlayingBarData({
+    this.item,
+    this.state,
+  });
+
+  final MediaItem item;
+  final PlaybackState state;
+}
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -83,29 +90,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 duration: const Duration(milliseconds: 200),
                 vsync: this,
                 curve: Curves.easeInOut,
-                child: StreamBuilder<MediaItem>(
-                  stream: AudioService.currentMediaItemStream,
-                  builder: (context, mediaItemSnapshot) =>
-                      StreamBuilder<PlaybackState>(
-                    stream: AudioService.playbackStateStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData &&
-                          snapshot.data.processingState !=
-                              AudioProcessingState.stopped &&
-                          snapshot.data.processingState !=
-                              AudioProcessingState.none) {
-                        return NowPlayingBar(
-                          item: mediaItemSnapshot.data,
-                          state: snapshot.data,
-                          onPause: pause,
-                          onPlay: resume,
-                          onStop: stop,
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
+                child: StoreConnector<AppState, _NowPlayingBarData>(
+                  converter: (store) => _NowPlayingBarData(
+                    item: store.state.audio.currentItem,
+                    state: store.state.audio.state,
                   ),
+                  builder: (context, snapshot) {
+                    if (snapshot?.state?.playing ?? false) {
+                      return NowPlayingBar(
+                        item: snapshot.item,
+                        state: snapshot.state,
+                        onPause: pause,
+                        onPlay: resume,
+                        onStop: stop,
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
                 ),
               ),
             )

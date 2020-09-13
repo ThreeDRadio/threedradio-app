@@ -80,13 +80,14 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
   }
 
   @override
-  Future<void> onStop() {
-    AudioServiceBackground.setState(
+  Future<void> onStop() async {
+    await _player.stop();
+    await AudioServiceBackground.setState(
       controls: [],
       processingState: AudioProcessingState.stopped,
       playing: false,
     );
-    return super.onStop();
+    await super.onStop();
   }
 
   @override
