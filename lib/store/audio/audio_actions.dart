@@ -30,8 +30,10 @@ class AudioStateChange {
   PlaybackState state;
 
   Map<String, dynamic> toJson() => {
+        'object': state == null ? 'null' : 'exists',
         'currentPosition': state?.currentPosition?.toString(),
         'processingState': state?.processingState?.toString(),
+        'playing': state?.playing,
       };
 }
 

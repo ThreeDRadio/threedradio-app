@@ -58,23 +58,26 @@ class AudioEpics extends EpicClass<AppState> {
           store.state.onDemandPrograms.entities[action.episode.showId];
       final show = store.state.shows.entities.values.firstWhere(
           (element) => element.onDemandShowId == action.episode.showId);
-      await AudioService.start(
-        backgroundTaskEntrypoint: backgroundTaskEntrypoint,
-        androidNotificationIcon: 'drawable/ic_threedradio',
-        params: AudioStartParams(
-          mode: PlaybackMode.onDemand,
-          url: action.episode.url,
-        ).toJson(),
-      );
-      await AudioService.updateMediaItem(
+
+      if (!AudioService.running) {
+        await AudioService.start(
+          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
+          androidNotificationIcon: 'drawable/ic_threedradio',
+          params: AudioStartParams(
+            mode: PlaybackMode.onDemand,
+            url: action.episode.url,
+          ).toJson(),
+        );
+      }
+      await AudioService.playMediaItem(
         MediaItem(
           title: show?.title?.text ?? 'Three D Radio',
           artUri: show?.thumbnail is String ? show?.thumbnail : null,
           album: action.episode.date,
-          id: action.episode.id,
+          extras: {'episode': action.episode.id},
+          id: action.episode.url,
         ),
       );
-      await AudioService.play();
       return SuccessPlayEpisode();
     });
   }
@@ -86,24 +89,24 @@ class AudioEpics extends EpicClass<AppState> {
       if (currentShowId != null) {
         currentShow = store.state.shows.entities[currentShowId];
       }
-      await AudioService.start(
-        backgroundTaskEntrypoint: backgroundTaskEntrypoint,
-        androidNotificationIcon: 'drawable/ic_threedradio',
-        params: AudioStartParams(
-          mode: PlaybackMode.live,
-          url: Environment.liveStreamUrl,
-        ).toJson(),
-      );
-      await AudioService.updateMediaItem(
+      if (!AudioService.running) {
+        await AudioService.start(
+          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
+          androidNotificationIcon: 'drawable/ic_threedradio',
+        );
+      }
+      await AudioService.playMediaItem(
         MediaItem(
           title: currentShow?.title?.text ?? 'Three D Radio',
           artUri:
               currentShow?.thumbnail is String ? currentShow?.thumbnail : null,
           album: 'Three D Radio - Live',
-          id: 'LIVE',
+          extras: {
+            'showId': currentShow?.id,
+          },
+          id: Environment.liveStreamUrl,
         ),
       );
-      await AudioService.play();
       return SuccessPlayLive();
     });
   }
@@ -111,13 +114,15 @@ class AudioEpics extends EpicClass<AppState> {
   Stream _audioStateChanges(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<AppStartAction>().switchMap((_) => AudioService
         .playbackStateStream
+        .where((event) => event != null)
+        .throttleTime(const Duration(milliseconds: 100), trailing: true)
         .map((event) => AudioStateChange(state: event)));
   }
 
   Stream _mediaItemChange(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<AppStartAction>().switchMap((_) => AudioService
         .currentMediaItemStream
-        .map((event) => MediaItemChange(item: event))
-        .debounceTime(const Duration(seconds: 1)));
+        .map((event) => MediaItemChange(item: event)));
+    // .debounceTime(const Duration(seconds: 1)));
   }
 }

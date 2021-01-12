@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:player/audio/audio_start_params.dart';
+import 'package:player/environment/environment.dart';
 
 final liveMediaControlsPlaying = [
   MediaControl.pause,
@@ -25,16 +26,17 @@ backgroundTaskEntrypoint() {
 
 class ThreeDBackgroundTask extends BackgroundAudioTask {
   AudioPlayer _player = AudioPlayer();
+  PlaybackMode mode;
 
   ThreeDBackgroundTask() {
     _player.durationStream.listen((duration) {
       AudioServiceBackground.setMediaItem(
-          AudioServiceBackground.mediaItem.copyWith(duration: duration));
+          AudioServiceBackground.mediaItem?.copyWith(duration: duration));
     });
 
     _player.positionStream.listen((event) {
       AudioServiceBackground.setState(
-        controls: params?.mode == PlaybackMode.live
+        controls: mode == PlaybackMode.live
             ? liveMediaControlsPlaying
             : onDemandMediaControls,
         processingState: AudioProcessingState.ready,
@@ -44,25 +46,36 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
     });
   }
 
-  AudioStartParams params;
   MediaItem currentItem;
 
-  Future<void> onStart(Map<String, dynamic> params) async {
-    this.params = AudioStartParams.fromJson(params);
-  }
+  Future<void> onPlay() async {}
 
-  Future<void> onPlay() async {
-    await _player.setUrl(params.url);
+  Future<void> onPlayMediaItem(MediaItem mediaItem) async {
+    mode = mediaItem.id == Environment.liveStreamUrl
+        ? PlaybackMode.live
+        : PlaybackMode.onDemand;
+
+    await AudioServiceBackground.setState(
+      playing: false,
+      controls: mode == PlaybackMode.live
+          ? liveMediaControlsPlaying
+          : onDemandMediaControls,
+      processingState: AudioProcessingState.buffering,
+    );
+    await _player.setUrl(mediaItem.id);
     _player.play();
     // Show the media notification, and let all clients no what
     // playback state and media item to display.
     await AudioServiceBackground.setState(
       playing: true,
-      controls: params.mode == PlaybackMode.live
+      controls: mode == PlaybackMode.live
           ? liveMediaControlsPlaying
           : onDemandMediaControls,
       processingState: AudioProcessingState.ready,
     );
+
+    AudioServiceBackground.setMediaItem(mediaItem);
+    super.onPlayMediaItem(mediaItem);
   }
 
   @override
@@ -73,7 +86,7 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
 
   @override
   Future<void> onSeekTo(Duration position) {
-    if (_player.playing && params.mode == PlaybackMode.onDemand) {
+    if (_player.playing && mode == PlaybackMode.onDemand) {
       _player.seek(position);
     }
     return super.onSeekTo(position);
@@ -82,6 +95,7 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
   @override
   Future<void> onStop() async {
     await _player.stop();
+    await _player.dispose();
     await AudioServiceBackground.setState(
       controls: [],
       processingState: AudioProcessingState.stopped,
@@ -94,7 +108,7 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
   Future<void> onPause() async {
     _player.pause();
     await AudioServiceBackground.setState(
-        controls: params.mode == PlaybackMode.live
+        controls: mode == PlaybackMode.live
             ? liveMediaControlsPaused
             : onDemandMediaControls,
         playing: false,

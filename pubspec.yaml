@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  audio_service: ^0.14.1
+  audio_service: ^0.16.1
   cached_network_image: ^2.3.1
   dio: ^3.0.10
   flutter_html: ^1.0.0

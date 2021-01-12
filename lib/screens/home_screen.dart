@@ -1,7 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:player/screens/all_in_one_tab.dart';
+import 'package:player/screens/now_playing_screen.dart';
 import 'package:player/screens/show_detail_screen.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
@@ -96,13 +98,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     state: store.state.audio.state,
                   ),
                   builder: (context, snapshot) {
-                    if (snapshot?.state?.playing ?? false) {
-                      return NowPlayingBar(
-                        item: snapshot.item,
-                        state: snapshot.state,
-                        onPause: pause,
-                        onPlay: resume,
-                        onStop: stop,
+                    final state = snapshot?.state?.processingState ??
+                        AudioProcessingState.none;
+                    if (state != AudioProcessingState.stopped &&
+                        state != AudioProcessingState.none) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => NowPlayingScreen(),
+                              fullscreenDialog: true,
+                            ),
+                          );
+                        },
+                        child: NowPlayingBar(
+                          item: snapshot.item,
+                          state: snapshot.state,
+                          onPause: pause,
+                          onPlay: resume,
+                          onStop: stop,
+                        ),
                       );
                     } else {
                       return Container();
