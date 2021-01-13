@@ -16,6 +16,12 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:sentry/sentry.dart';
 
 void main() async {
+  bool debug = false;
+  assert(() {
+    debug = true;
+    return true;
+  }());
+
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
 
@@ -44,12 +50,14 @@ void main() async {
     middleware: [
       EpicMiddleware(appEpics),
       persistor.createMiddleware(),
-      remoteDev
+      if (debug) remoteDev
     ],
   );
 
-  remoteDev.store = store;
-  await remoteDev.connect();
+  if (debug) {
+    remoteDev.store = store;
+    await remoteDev.connect();
+  }
 
   store.dispatch(AppStartAction());
 
