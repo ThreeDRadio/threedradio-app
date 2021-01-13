@@ -12,8 +12,13 @@ final liveMediaControlsPaused = [
   MediaControl.stop,
 ];
 
-final onDemandMediaControls = [
+final onDemandMediaControlsPaused = [
   MediaControl.play,
+  MediaControl.stop,
+  MediaControl.fastForward,
+  MediaControl.rewind,
+];
+final onDemandMediaControlsPlaying = [
   MediaControl.pause,
   MediaControl.stop,
   MediaControl.fastForward,
@@ -28,6 +33,22 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
   AudioPlayer _player = AudioPlayer();
   PlaybackMode mode;
 
+  List<MediaControl> get currentMediaControls {
+    if (mode == PlaybackMode.live) {
+      if (_player.playing) {
+        return liveMediaControlsPlaying;
+      } else {
+        return liveMediaControlsPaused;
+      }
+    } else {
+      if (_player.playing) {
+        return onDemandMediaControlsPlaying;
+      } else {
+        return onDemandMediaControlsPaused;
+      }
+    }
+  }
+
   ThreeDBackgroundTask() {
     _player.durationStream.listen((duration) {
       print('got a duration');
@@ -39,9 +60,7 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
 
     _player.positionStream.listen((event) {
       AudioServiceBackground.setState(
-        controls: mode == PlaybackMode.live
-            ? liveMediaControlsPlaying
-            : onDemandMediaControls,
+        controls: currentMediaControls,
         processingState: AudioProcessingState.ready,
         playing: _player.playing,
         position: event,
@@ -60,9 +79,7 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
     print('setting state to buffering');
     await AudioServiceBackground.setState(
       playing: false,
-      controls: mode == PlaybackMode.live
-          ? liveMediaControlsPlaying
-          : onDemandMediaControls,
+      controls: currentMediaControls,
       processingState: AudioProcessingState.buffering,
     );
     // Show the media notification, and let all clients no what
@@ -73,9 +90,7 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
     print('setting state to playing');
     await AudioServiceBackground.setState(
       playing: true,
-      controls: mode == PlaybackMode.live
-          ? liveMediaControlsPlaying
-          : onDemandMediaControls,
+      controls: currentMediaControls,
       processingState: AudioProcessingState.ready,
     );
 
@@ -111,13 +126,20 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
 
   @override
   Future<void> onPause() async {
-    _player.pause();
+    await _player.pause();
     await AudioServiceBackground.setState(
-        controls: mode == PlaybackMode.live
-            ? liveMediaControlsPaused
-            : onDemandMediaControls,
+        controls: currentMediaControls,
         playing: false,
         processingState: AudioProcessingState.ready);
     return super.onPause();
+  }
+
+  Future<void> onPlay() async {
+    await _player.play();
+    await AudioServiceBackground.setState(
+        controls: currentMediaControls,
+        playing: true,
+        processingState: AudioProcessingState.ready);
+    super.onPlay();
   }
 }

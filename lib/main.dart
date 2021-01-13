@@ -77,6 +77,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           accentColor: Color(0xff2F9B17),
           buttonColor: Color(0xff2F9B17),
+          indicatorColor: Color(0xff2F9B17),
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: TextTheme(
             bodyText2: GoogleFonts.openSans(fontSize: 16),
@@ -102,6 +103,12 @@ class MyApp extends StatelessWidget {
             TextTheme(
               headline6: TextStyle(color: Colors.white),
             ),
+          ),
+          sliderTheme: SliderThemeData(
+            activeTrackColor: Color(0xff2f9b17),
+            thumbColor: Color(0xff2f9b17),
+            inactiveTrackColor: Color(0xff2f9b17).withAlpha(100),
+            overlayColor: Color(0xff2f9b17).withAlpha(40),
           ),
         ),
         routes: {

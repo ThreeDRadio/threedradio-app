@@ -57,6 +57,19 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     });
   }
 
+  pause() async {
+    StoreProvider.of<AppState>(context).dispatch(RequestPause());
+  }
+
+  resume() async {
+    StoreProvider.of<AppState>(context).dispatch(RequestResume());
+  }
+
+  stop() async {
+    StoreProvider.of<AppState>(context).dispatch(RequestStop());
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
@@ -128,29 +141,89 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    Row(children: [Text('Buttons')]),
-                    Slider(
-                      min: 0,
-                      max: snapshot.item.duration.inSeconds.toDouble(),
-                      value: seekInProgress
-                          ? seekingPosition
-                          : snapshot.state.currentPosition.inSeconds.toDouble(),
-                      onChangeStart: onSeekStart,
-                      onChangeEnd: (value) {
-                        setState(() {
-                          seekInProgress = false;
-                          snapshot
-                              .seekToPosition(Duration(seconds: value.round()));
-                        });
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          seekingPosition = value;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 48.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (snapshot.state.actions
+                              .contains(MediaAction.rewind))
+                            IconButton(
+                              icon: Icon(Icons.replay_30),
+                              onPressed: snapshot.state.currentPosition >
+                                      const Duration(seconds: 30)
+                                  ? () => snapshot.seekToPosition(
+                                      snapshot.state.currentPosition -
+                                          const Duration(seconds: 30))
+                                  : null,
+                              iconSize: 48,
+                            ),
+                          if (snapshot.state.actions
+                              .contains(MediaAction.fastForward))
+                            IconButton(
+                              icon: Icon(Icons.forward_30),
+                              onPressed: snapshot.item.duration -
+                                          snapshot.state.currentPosition >
+                                      const Duration(seconds: 30)
+                                  ? () => snapshot.seekToPosition(
+                                      snapshot.state.currentPosition +
+                                          const Duration(seconds: 30))
+                                  : null,
+                              iconSize: 48,
+                            ),
+                          if (snapshot.state.actions
+                              .contains(MediaAction.pause))
+                            IconButton(
+                              icon: Icon(Icons.pause),
+                              onPressed: pause,
+                              iconSize: 48,
+                            ),
+                          if (snapshot.state.actions.contains(MediaAction.play))
+                            IconButton(
+                              icon: Icon(Icons.play_arrow),
+                              onPressed: resume,
+                              iconSize: 48,
+                            ),
+                          if (snapshot.state.actions.contains(MediaAction.stop))
+                            IconButton(
+                              icon: Icon(Icons.stop),
+                              onPressed: stop,
+                              iconSize: 48,
+                            ),
+                        ],
+                      ),
                     ),
-                    Text(
-                        '${snapshot.state.currentPosition} / ${snapshot.item.duration}')
+                    if ((snapshot.item?.duration ?? Duration.zero) >
+                        Duration.zero)
+                      Slider(
+                        min: 0,
+                        max: snapshot.item.duration.inSeconds.toDouble(),
+                        value: seekInProgress
+                            ? seekingPosition
+                            : snapshot.state.currentPosition.inSeconds
+                                .toDouble(),
+                        onChangeStart: onSeekStart,
+                        onChangeEnd: (value) {
+                          setState(() {
+                            seekInProgress = false;
+                            snapshot.seekToPosition(
+                                Duration(seconds: value.round()));
+                          });
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            seekingPosition = value;
+                          });
+                        },
+                      ),
+                    if ((snapshot.item?.duration ?? Duration.zero) >
+                        Duration.zero)
+                      if (seekInProgress)
+                        Text(
+                            '${Duration(seconds: seekingPosition.round())} / ${snapshot.item.duration}')
+                      else
+                        Text(
+                            '${snapshot.state.currentPosition} / ${snapshot.item.duration}')
                   ],
                 ),
               ),

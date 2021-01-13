@@ -37,7 +37,7 @@ class AudioEpics extends EpicClass<AppState> {
   }
 
   Stream _resume(Stream actions, EpicStore<AppState> store) {
-    return actions.whereType<RequestPause>().asyncMap((event) async {
+    return actions.whereType<RequestResume>().asyncMap((event) async {
       await AudioService.play();
       return SuccessResume();
     });

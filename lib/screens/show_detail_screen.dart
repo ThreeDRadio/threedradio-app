@@ -77,10 +77,11 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      CachedNetworkImage(
-                        imageUrl: widget.show.thumbnail,
-                        fit: BoxFit.cover,
-                      ),
+                      if (widget?.show?.thumbnail != null)
+                        CachedNetworkImage(
+                          imageUrl: widget.show.thumbnail,
+                          fit: BoxFit.cover,
+                        ),
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
