@@ -85,7 +85,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         item: store.state.audio.currentItem,
         state: store.state.audio.state,
         show: store.state.shows.entities[
-            store.state.audio.currentItem.extras['showId'].toString()],
+            store.state.audio.currentItem?.extras['showId']?.toString()],
         seekToPosition: (Duration position) {
           store.dispatch(RequestSeek(position));
         },
