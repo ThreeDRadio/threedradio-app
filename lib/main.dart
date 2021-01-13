@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -61,13 +63,43 @@ void main() async {
 
   store.dispatch(AppStartAction());
 
-  final sentry = SentryClient(
-    dsn:
-        "https://bd6bdccfd169415fa82fca062ad02b25@o120815.ingest.sentry.io/5421277",
+  SentryClient sentry;
+
+  if (!debug) {
+    sentry = SentryClient(
+      dsn:
+          "https://bd6bdccfd169415fa82fca062ad02b25@o120815.ingest.sentry.io/5421277",
+    );
+  }
+  if (sentry != null) {
+    FlutterError.onError = (details, {bool forceReport = false}) {
+      try {
+        sentry.captureException(
+          exception: details.exception,
+          stackTrace: details.stack,
+        );
+      } catch (e) {
+        print('Sending report to sentry.io failed: $e');
+      } finally {
+        // Also use Flutter's pretty error logging to the device's console.
+        FlutterError.dumpErrorToConsole(details, forceReport: forceReport);
+      }
+    };
+  }
+  runZonedGuarded(
+    () => runApp(MyApp(
+      store: store,
+    )),
+    (error, stackTrace) async {
+      if (sentry != null) {
+        await sentry.captureException(
+          exception: error,
+          stackTrace: stackTrace,
+        );
+      }
+      print(error);
+    },
   );
-  runApp(MyApp(
-    store: store,
-  ));
 }
 
 class MyApp extends StatelessWidget {
