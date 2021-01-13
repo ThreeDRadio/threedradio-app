@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:player/screens/now_playing_screen.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
@@ -46,6 +47,13 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
   playEpisode(OnDemandEpisode e) {
     StoreProvider.of<AppState>(context)
         .dispatch(RequestPlayEpisode(episode: e));
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => NowPlayingScreen(),
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   @override
