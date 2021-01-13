@@ -165,6 +165,12 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                           const Duration(seconds: 30))
                                   : null,
                               iconSize: 48,
+                            )
+                          else
+                            IconButton(
+                              icon: Icon(Icons.replay_30),
+                              onPressed: null,
+                              iconSize: 48,
                             ),
                           if (snapshot.state.actions
                               .contains(MediaAction.fastForward))
@@ -178,6 +184,12 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                           snapshot.state.currentPosition +
                                               const Duration(seconds: 30))
                                       : null,
+                              iconSize: 48,
+                            )
+                          else
+                            IconButton(
+                              icon: Icon(Icons.forward_30),
+                              onPressed: null,
                               iconSize: 48,
                             ),
                           if (snapshot.state.actions
@@ -193,10 +205,25 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               onPressed: resume,
                               iconSize: 48,
                             ),
+                          if (!snapshot.state.actions
+                                  .contains(MediaAction.play) &&
+                              !snapshot.state.actions
+                                  .contains(MediaAction.pause))
+                            IconButton(
+                              icon: Icon(Icons.play_arrow),
+                              iconSize: 48,
+                              onPressed: null,
+                            ),
                           if (snapshot.state.actions.contains(MediaAction.stop))
                             IconButton(
                               icon: Icon(Icons.stop),
                               onPressed: stop,
+                              iconSize: 48,
+                            )
+                          else
+                            IconButton(
+                              icon: Icon(Icons.stop),
+                              onPressed: null,
                               iconSize: 48,
                             ),
                         ],
