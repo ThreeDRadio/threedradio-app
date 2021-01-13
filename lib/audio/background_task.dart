@@ -51,7 +51,6 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
 
   ThreeDBackgroundTask() {
     _player.durationStream.listen((duration) {
-      print('got a duration');
       if (AudioServiceBackground.mediaItem != null) {
         AudioServiceBackground.setMediaItem(
             AudioServiceBackground.mediaItem?.copyWith(duration: duration));
@@ -73,10 +72,8 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
         ? PlaybackMode.live
         : PlaybackMode.onDemand;
 
-    print('setting media item');
     await AudioServiceBackground.setMediaItem(mediaItem);
 
-    print('setting state to buffering');
     await AudioServiceBackground.setState(
       playing: false,
       controls: currentMediaControls,
@@ -84,17 +81,14 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
     );
     // Show the media notification, and let all clients no what
     // playback state and media item to display.
-    print('playing');
     await _player.setUrl(mediaItem.id);
     _player.play();
-    print('setting state to playing');
     await AudioServiceBackground.setState(
       playing: true,
       controls: currentMediaControls,
       processingState: AudioProcessingState.ready,
     );
 
-    print('calling super.onPlayMediaItem');
     super.onPlayMediaItem(mediaItem);
   }
 
