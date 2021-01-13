@@ -3,10 +3,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
+
+extension FormatDuration on Duration {
+  String format() {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(inSeconds.remainder(60));
+    return "${twoDigits(inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  }
+}
 
 class _ViewModel {
   const _ViewModel({
@@ -162,13 +170,14 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               .contains(MediaAction.fastForward))
                             IconButton(
                               icon: Icon(Icons.forward_30),
-                              onPressed: snapshot.item.duration -
-                                          snapshot.state.currentPosition >
-                                      const Duration(seconds: 30)
-                                  ? () => snapshot.seekToPosition(
-                                      snapshot.state.currentPosition +
-                                          const Duration(seconds: 30))
-                                  : null,
+                              onPressed:
+                                  (snapshot?.item?.duration ?? Duration.zero) -
+                                              snapshot.state.currentPosition >
+                                          const Duration(seconds: 30)
+                                      ? () => snapshot.seekToPosition(
+                                          snapshot.state.currentPosition +
+                                              const Duration(seconds: 30))
+                                      : null,
                               iconSize: 48,
                             ),
                           if (snapshot.state.actions
@@ -220,10 +229,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         Duration.zero)
                       if (seekInProgress)
                         Text(
-                            '${Duration(seconds: seekingPosition.round())} / ${snapshot.item.duration}')
+                            '${Duration(seconds: seekingPosition.round()).format()} / ${snapshot.item.duration.format()}')
                       else
                         Text(
-                            '${snapshot.state.currentPosition} / ${snapshot.item.duration}')
+                            '${snapshot.state.currentPosition.format()} / ${snapshot.item.duration.format()}')
                   ],
                 ),
               ),
