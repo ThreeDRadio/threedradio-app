@@ -1,5 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NowPlayingBar extends StatelessWidget {
@@ -53,14 +54,24 @@ class NowPlayingBar extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (state.actions.contains(MediaAction.pause))
-                    IconButton(icon: Icon(Icons.pause), onPressed: onPause),
-                  if (state.actions.contains(MediaAction.play))
-                    IconButton(icon: Icon(Icons.play_arrow), onPressed: onPlay),
-                  if (state.actions.contains(MediaAction.stop))
-                    IconButton(icon: Icon(Icons.stop), onPressed: onStop)
-                ],
+                children: state.processingState ==
+                        AudioProcessingState.buffering
+                    ? [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: CupertinoActivityIndicator(),
+                        )
+                      ]
+                    : [
+                        if (state.actions.contains(MediaAction.pause))
+                          IconButton(
+                              icon: Icon(Icons.pause), onPressed: onPause),
+                        if (state.actions.contains(MediaAction.play))
+                          IconButton(
+                              icon: Icon(Icons.play_arrow), onPressed: onPlay),
+                        if (state.actions.contains(MediaAction.stop))
+                          IconButton(icon: Icon(Icons.stop), onPressed: onStop)
+                      ],
               )
             ],
           ),

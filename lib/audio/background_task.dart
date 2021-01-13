@@ -30,8 +30,11 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
 
   ThreeDBackgroundTask() {
     _player.durationStream.listen((duration) {
-      AudioServiceBackground.setMediaItem(
-          AudioServiceBackground.mediaItem?.copyWith(duration: duration));
+      print('got a duration');
+      if (AudioServiceBackground.mediaItem != null) {
+        AudioServiceBackground.setMediaItem(
+            AudioServiceBackground.mediaItem?.copyWith(duration: duration));
+      }
     });
 
     _player.positionStream.listen((event) {
@@ -46,15 +49,15 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
     });
   }
 
-  MediaItem currentItem;
-
-  Future<void> onPlay() async {}
-
   Future<void> onPlayMediaItem(MediaItem mediaItem) async {
     mode = mediaItem.id == Environment.liveStreamUrl
         ? PlaybackMode.live
         : PlaybackMode.onDemand;
 
+    print('setting media item');
+    await AudioServiceBackground.setMediaItem(mediaItem);
+
+    print('setting state to buffering');
     await AudioServiceBackground.setState(
       playing: false,
       controls: mode == PlaybackMode.live
@@ -62,10 +65,12 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
           : onDemandMediaControls,
       processingState: AudioProcessingState.buffering,
     );
-    await _player.setUrl(mediaItem.id);
-    _player.play();
     // Show the media notification, and let all clients no what
     // playback state and media item to display.
+    print('playing');
+    await _player.setUrl(mediaItem.id);
+    _player.play();
+    print('setting state to playing');
     await AudioServiceBackground.setState(
       playing: true,
       controls: mode == PlaybackMode.live
@@ -74,7 +79,7 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
       processingState: AudioProcessingState.ready,
     );
 
-    AudioServiceBackground.setMediaItem(mediaItem);
+    print('calling super.onPlayMediaItem');
     super.onPlayMediaItem(mediaItem);
   }
 

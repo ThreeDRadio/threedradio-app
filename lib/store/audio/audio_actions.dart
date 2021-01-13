@@ -18,6 +18,16 @@ class RequestStop {}
 
 class SuccessStop {}
 
+class RequestSeek {
+  const RequestSeek(this.position);
+  final Duration position;
+  Map<String, dynamic> toJson() => {
+        'position': position.toString(),
+      };
+}
+
+class SuccessSeek {}
+
 class RequestPlayEpisode {
   const RequestPlayEpisode({this.episode});
   final OnDemandEpisode episode;

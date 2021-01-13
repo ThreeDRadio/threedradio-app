@@ -19,6 +19,7 @@ class AudioEpics extends EpicClass<AppState> {
       _playLiveStream,
       _pause,
       _resume,
+      _seekToPosition,
       _stop,
     ]);
   }
@@ -124,5 +125,12 @@ class AudioEpics extends EpicClass<AppState> {
         .currentMediaItemStream
         .map((event) => MediaItemChange(item: event)));
     // .debounceTime(const Duration(seconds: 1)));
+  }
+
+  Stream _seekToPosition(Stream actions, EpicStore<AppState> store) {
+    return actions.whereType<RequestSeek>().asyncMap((action) async {
+      await AudioService.seekTo(action.position);
+      return SuccessSeek();
+    });
   }
 }
