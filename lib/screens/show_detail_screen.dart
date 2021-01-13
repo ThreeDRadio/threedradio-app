@@ -85,7 +85,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      if (widget?.show?.thumbnail != null)
+                      if (widget.show.thumbnail is String)
                         CachedNetworkImage(
                           imageUrl: widget.show.thumbnail,
                           fit: BoxFit.cover,
