@@ -24,11 +24,6 @@ jobs:
           file: coverage/lcov.info
       - store_test_results:
           path: ./reports
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./lib/store/*/*.g.dart
-            - ./lib/store/*.g.dart
 
   build-android:
     docker:
@@ -42,6 +37,7 @@ jobs:
       - attach_workspace:
           at: .
       - run: flutter pub get
+      - run: flutter packages pub run build_runner build
       - run: echo $ANDROID_KEYSTORE_B64 | base64 --decode > threedradio-upload.keystore
       - run: flutter build appbundle --release --build-number $(expr 1000 + << pipeline.number >> )
       - store_artifacts:
