@@ -42,6 +42,10 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^1.0.0
   json_serializable: ^3.4.1
+  junitreport: 
+    git:
+      url: https://github.com/careapp-inc/dart-junitreport.git
+      ref: relax-xm
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
