@@ -42,3 +42,5 @@ app.*.map.json
 
 
 *.g.dart
+*.un~
+
