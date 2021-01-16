@@ -35,3 +35,9 @@ This app is built with [Flutter](https://flutter.dev). Here are some technology 
 1. Create your Pull Request
 
 We use the same analysis options as Flutter.
+
+## Deployment
+
+The app is automatically deployed to Play Store Internal testing and TestFlight Internal Testing with every merge to `master`. For more information have a look in the CircleCI config file.
+
+Promotion to production is done manually through the Play/AppStoreConnect console.
