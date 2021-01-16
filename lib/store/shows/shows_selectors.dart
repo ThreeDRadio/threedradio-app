@@ -6,6 +6,9 @@ RemoteEntityState<Show> getShowState(AppState s) => s.shows;
 
 Map<String, Show> getShowEntities(AppState s) => getShowState(s).entities;
 
+/// Returns a map of shows where key = show.slug.
+/// Useful for converting from integer show ids used by wordpress
+/// to the slug used by the on-demand system.
 Map<String, Show> getShowEntitiesBySlug(AppState s) {
   return getShowEntities(s).map((key, value) => MapEntry(value.slug, value));
 }
