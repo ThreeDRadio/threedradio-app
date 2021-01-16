@@ -104,7 +104,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                     duration: widget.fadeInDuration,
                     opacity: transitionComplete ? 1 : 0,
                     child: Text(
-                      snapshot.item.title,
+                      snapshot.item?.title ?? '',
                       style: TextStyle(shadows: [
                         Shadow(
                           color: Colors.black,
@@ -114,7 +114,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                     ),
                   ),
                   background: Hero(
-                    tag: snapshot.item.id ?? "on demand",
+                    tag: snapshot.item?.id ?? "on demand",
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
