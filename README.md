@@ -1,6 +1,6 @@
 # Three D Radio Player
 
-[![ThreeDRadio](https://circleci.com/gh/ThreeDRadio/threedradio-app.svg?style=shield)](https://app.circleci.com/pipelines/github/ThreeDRadio/threedradio-app)
+[![ThreeDRadio](https://circleci.com/gh/ThreeDRadio/threedradio-app.svg?style=shield)](https://app.circleci.com/pipelines/github/ThreeDRadio/threedradio-app) [![codecov](https://codecov.io/gh/ThreeDRadio/threedradio-app/branch/master/graph/badge.svg?token=M5LKTZZOOP)](https://codecov.io/gh/ThreeDRadio/threedradio-app)
 
 This is [Three D Radio's](https://www.threedradio.com) app for live and on demand streaming.
 
