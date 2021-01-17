@@ -26,7 +26,10 @@ class AppState {
     return AppState(
       onDemandEpisodes: RemoteEntityState<List<OnDemandEpisode>>.fromJson(
         json['onDemandEpisodes'],
-        (json) => json.map((item) => OnDemandProgram.fromJson(json)).toList(),
+        (json) {
+          List<dynamic> entries = json;
+          return entries.map((item) => OnDemandEpisode.fromJson(item)).toList();
+        },
       ),
       onDemandPrograms: RemoteEntityState<OnDemandProgram>.fromJson(
         json['onDemandPrograms'],
