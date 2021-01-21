@@ -11,6 +11,7 @@ import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
+import 'package:player/widgets/days_left_badge.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 class ShowDetailsScreen extends StatefulWidget {
@@ -191,19 +192,10 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                                               episodes[index].date))
                                           .inDays >
                                       21)
-                                    Chip(
-                                      label: Text(S.of(context).daysLeft(max(
-                                          28 -
-                                              DateTime.now()
-                                                  .difference(DateTime.parse(
-                                                      episodes[index].date))
-                                                  .inDays,
-                                          0))),
-                                      labelStyle: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black),
-                                      backgroundColor: Colors.amberAccent,
-                                      visualDensity: VisualDensity.compact,
+                                    DaysLeftBadge(
+                                      showDate: DateTime.parse(
+                                        episodes[index].date,
+                                      ),
                                     ),
                                 ],
                               ),
