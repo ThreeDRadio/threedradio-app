@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -132,10 +134,11 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
             SliverPadding(
               padding: EdgeInsets.only(left: 8, bottom: 8),
               sliver: SliverToBoxAdapter(
-                  child: Text(
-                'On Demand Episodes',
-                style: Theme.of(context).textTheme.headline5,
-              )),
+                child: Text(
+                  S.of(context).onDemandEpisodes,
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
             ),
             StoreConnector<AppState, List<OnDemandEpisode>>(
                 converter: (store) =>
@@ -189,15 +192,13 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                                           .inDays >
                                       21)
                                     Chip(
-                                      label: Text((28 -
-                                                  DateTime.now()
-                                                      .difference(
-                                                          DateTime.parse(
-                                                              episodes[index]
-                                                                  .date))
-                                                      .inDays)
-                                              .toString() +
-                                          ' Days Left'),
+                                      label: Text(S.of(context).daysLeft(max(
+                                          28 -
+                                              DateTime.now()
+                                                  .difference(DateTime.parse(
+                                                      episodes[index].date))
+                                                  .inDays,
+                                          0))),
                                       labelStyle: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black),
