@@ -1,6 +1,7 @@
 {
   "appName": "Three D Radio",
   "daysLeft": "{days} Days Left",
+  "defaultLiveShowName": "Three D Radio",
   "defaultShortDescription": "Three D Blend",
   "listenLive": "Listen Live",
   "onDemand": "On Demand",
