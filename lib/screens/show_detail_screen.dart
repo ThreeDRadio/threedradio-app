@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
+import 'package:player/widgets/days_left_badge.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 class ShowDetailsScreen extends StatefulWidget {
@@ -132,10 +135,11 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
             SliverPadding(
               padding: EdgeInsets.only(left: 8, bottom: 8),
               sliver: SliverToBoxAdapter(
-                  child: Text(
-                'On Demand Episodes',
-                style: Theme.of(context).textTheme.headline5,
-              )),
+                child: Text(
+                  S.of(context).onDemandEpisodes,
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
             ),
             StoreConnector<AppState, List<OnDemandEpisode>>(
                 converter: (store) =>
@@ -188,21 +192,10 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                                               episodes[index].date))
                                           .inDays >
                                       21)
-                                    Chip(
-                                      label: Text((28 -
-                                                  DateTime.now()
-                                                      .difference(
-                                                          DateTime.parse(
-                                                              episodes[index]
-                                                                  .date))
-                                                      .inDays)
-                                              .toString() +
-                                          ' Days Left'),
-                                      labelStyle: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black),
-                                      backgroundColor: Colors.amberAccent,
-                                      visualDensity: VisualDensity.compact,
+                                    DaysLeftBadge(
+                                      showDate: DateTime.parse(
+                                        episodes[index].date,
+                                      ),
                                     ),
                                 ],
                               ),

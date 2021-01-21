@@ -44,3 +44,4 @@ app.*.map.json
 *.g.dart
 *.un~
 
+lib/generated
