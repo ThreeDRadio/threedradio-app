@@ -11,6 +11,7 @@ jobs:
     steps:
       - checkout
       - run: flutter pub get
+      - run: flutter pub run intl_utils:generate
       - run: flutter packages pub run build_runner build
       - run: mkdir reports
       - run: 
@@ -37,6 +38,7 @@ jobs:
       - attach_workspace:
           at: .
       - run: flutter pub get
+      - run: flutter pub run intl_utils:generate
       - run: flutter packages pub run build_runner build
       - run: echo $ANDROID_KEYSTORE_B64 | base64 --decode > android/threedradio-upload.keystore
       - run: flutter build appbundle --release --build-number $(expr 1000 + << pipeline.number >> )
