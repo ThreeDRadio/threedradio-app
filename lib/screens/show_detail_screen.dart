@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:player/generated/l10n.dart';
 import 'package:player/screens/now_playing_screen.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
@@ -125,7 +126,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                     : Html(
                         data: widget.show.meta.show_incipit?.isNotEmpty == true
                             ? widget.show.meta.show_incipit[0]
-                            : 'All The Hits'),
+                            : S.of(context).defaultShortDescription),
               ),
             ),
             SliverPadding(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:player/generated/l10n.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/on_demand_programs/on_demand_selectors.dart';
@@ -46,7 +47,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
         SliverPadding(padding: EdgeInsets.only(top: 8)),
         SliverToBoxAdapter(
           child: Text(
-            'Listen Live',
+            S.of(context).listenLive,
             style: Theme.of(context).textTheme.headline3,
           ),
         ),
@@ -69,7 +70,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
         SliverPadding(padding: EdgeInsets.only(top: 32)),
         SliverToBoxAdapter(
           child: Text(
-            'On Demand',
+            S.of(context).onDemand,
             style: Theme.of(context).textTheme.headline3,
           ),
         ),
