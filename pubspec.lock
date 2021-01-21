@@ -293,6 +293,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0+14"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_redux:
     dependency: "direct main"
     description:
@@ -381,12 +386,12 @@ packages:
     source: hosted
     version: "3.1.4"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.16.1"
+    version: "0.17.0-nullsafety.2"
   io:
     dependency: transitive
     description:
@@ -418,12 +423,10 @@ packages:
   junitreport:
     dependency: "direct dev"
     description:
-      path: "."
-      ref: relax-xml
-      resolved-ref: "1c2f14e440e6733816d50e03c414f18713af04a7"
-      url: "https://github.com/careapp-inc/dart-junitreport.git"
-    source: git
-    version: "1.3.1-dev"
+      name: junitreport
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.3.1"
   just_audio:
     dependency: "direct main"
     description:

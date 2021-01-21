@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:player/generated/l10n.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
@@ -276,7 +277,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                           data: snapshot.show?.meta?.show_incipit?.isNotEmpty ==
                                   true
                               ? snapshot.show.meta.show_incipit[0]
-                              : 'All The Hits'),
+                              : S.of(context).defaultShortDescription),
                 ),
               ),
             ],

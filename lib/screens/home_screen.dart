@@ -1,7 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:player/generated/l10n.dart';
 import 'package:player/screens/all_in_one_tab.dart';
 import 'package:player/screens/now_playing_screen.dart';
 import 'package:player/screens/show_detail_screen.dart';
@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Three D Radio'),
+        title: Text(S.of(context).appName),
       ),
       body: SafeArea(
         bottom: false,
