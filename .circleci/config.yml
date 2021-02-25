@@ -28,7 +28,7 @@ jobs:
 
   build-android:
     docker:
-      - image: cirrusci/flutter:beta
+      - image: cirrusci/flutter:1.25.0-8.2.pre
     resource_class: medium
 
     working_directory: ~/repo
