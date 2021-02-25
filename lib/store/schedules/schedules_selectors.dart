@@ -43,7 +43,7 @@ String getCurrentShowId(AppState state) {
   }, orElse: () => null);
 
   if (currentShow != null) {
-    return currentShow?.show_id?.first;
+    return currentShow?.show_id?.first?.trim();
   }
   return null;
 }
