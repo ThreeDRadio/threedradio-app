@@ -119,7 +119,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        if (snapshot.item.artUri != null)
+                        if (snapshot.item?.artUri != null)
                           CachedNetworkImage(
                             imageUrl: snapshot.item.artUri,
                             fit: BoxFit.cover,

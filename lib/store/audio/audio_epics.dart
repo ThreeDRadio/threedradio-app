@@ -75,7 +75,7 @@ class AudioEpics extends EpicClass<AppState> {
           title: show?.title?.text ?? 'Three D Radio',
           artUri: show?.thumbnail is String ? show?.thumbnail : null,
           album: action.episode.date,
-          extras: {'episode': action.episode.id},
+          extras: {'episode': action.episode.id, 'showId': show.id},
           id: action.episode.url,
         ),
       );
