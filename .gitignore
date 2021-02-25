@@ -45,3 +45,6 @@ app.*.map.json
 *.un~
 
 lib/generated
+
+ios/vendor/bundle
+

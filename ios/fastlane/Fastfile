@@ -1,0 +1,50 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  before_all do
+    setup_circle_ci
+  end
+
+  desc "Prepare signing for Production"
+  lane :match_production do
+    match(
+      type: "appstore",
+      api_key_path: './appstore_api_key.json',
+      readonly: true,
+      app_identifier: 'com.threedradio.player2'
+    )
+  end
+
+  desc "Build Production app"
+  lane :build_production do
+    build_app(
+      export_method: 'app-store',
+      output_name: 'threedradio-player.ipa'
+    )
+  end
+
+  desc "Push a new Production build to TestFlight"
+  lane :testflight_deploy do
+    pilot(
+      api_key_path: './appstore_api_key.json',
+      team_id: "122623647",
+      skip_waiting_for_build_processing: true,
+      ipa: 'threedradio-player.ipa'
+    )
+  end
+end

@@ -72,6 +72,95 @@ jobs:
             cd android
             bundle exec fastlane internal_deploy
 
+
+  build-ios:
+    macos:
+      xcode: '12.3.0'
+    resource_class: medium
+
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install Flutter
+          command: |
+            curl https://storage.googleapis.com/flutter_infra/releases/beta/macos/flutter_macos_1.25.0-8.2.pre-beta.zip --output flutter.zip
+            unzip flutter.zip
+            export PATH="$PATH:`pwd`/flutter/bin"
+            flutter precache --ios --no-android 
+            flutter doctor
+      - run: echo $APPSTORE_API_KEY_B64 | base64 --decode > ios/appstore_api_key.json
+      - restore_cache:
+          keys:
+            - gem-cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Gemfile.lock" }}
+            - gem-cache-v2-{{ arch }}-{{ .Branch }}
+            - gem-cache-v1
+      - restore_cache:
+          keys:
+            - pod-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Podfile.lock" }}
+            - pod-cache-v1-{{ arch }}-{{ .Branch }}
+            - pod-cache-v1
+      - run:
+          name: Build Flutter App
+          command: |
+            export PATH="$PATH:`pwd`/flutter/bin"
+            flutter pub get
+            flutter pub run build_runner build
+            flutter build ios --release --no-codesign --config-only  --build-number $(expr << pipeline.number >> ) 
+            cd ios
+            chruby 2.7
+            gem install bundler:2.1.4
+            bundle install --path vendor/bundle
+            bundle exec fastlane ios match_production
+            bundle exec fastlane ios build_production
+      - save_cache:
+          key: gem-cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Gemfile.lock" }}
+          paths:
+            - ./ios/vendor/bundle
+      - save_cache:
+          key: pod-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Podfile.lock" }}
+          paths:
+            - ./ios/Pods
+      - store_artifacts:
+          path: ./ios/threedradio-player.ipa
+          destination: app-production
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./ios/threedradio-player.ipa
+      - slack/status:
+          fail_only: true
+          only_for_branches: master
+
+  deploy-ios:
+    macos:
+      xcode: '12.3.0'
+    resource_class: medium
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - restore_cache:
+          keys:
+            - gem-cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Gemfile.lock" }}
+            - gem-cache-v2-{{ arch }}-{{ .Branch }}
+            - gem-cache-v1
+      - run: echo $APPSTORE_API_KEY_B64 | base64 --decode > ios/appstore_api_key.json
+      - run:
+          name: TestFlight Deploy
+          command: |
+            cd ios
+            chruby 2.7
+            gem install bundler:2.1.4
+            bundle install --path vendor/bundle
+            bundle exec fastlane ios testflight_deploy
+      - slack/status:
+          fail_only: true
+          only_for_branches: master
+
 workflows:
   version: 2.1
   test-build-deploy:
