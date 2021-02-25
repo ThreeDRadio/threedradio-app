@@ -121,7 +121,7 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
-        title: 'Flutter Demo',
+        title: 'Three D Radio',
         theme: ThemeData(
           brightness: Brightness.dark,
           accentColor: Color(0xff2F9B17),
