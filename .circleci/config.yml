@@ -108,7 +108,7 @@ jobs:
             export PATH="$PATH:`pwd`/flutter/bin"
             flutter pub get
             flutter pub run build_runner build
-            flutter build ios --release --no-codesign --config-only  --build-number $(expr << pipeline.number >> ) 
+            flutter build ios --release --no-codesign --config-only  --build-number $(expr 1000 + << pipeline.number >> ) 
             cd ios
             chruby 2.7
             gem install bundler:2.1.4
