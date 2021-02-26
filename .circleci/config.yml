@@ -130,9 +130,6 @@ jobs:
           root: .
           paths:
             - ./ios/threedradio-player.ipa
-      - slack/status:
-          fail_only: true
-          only_for_branches: master
 
   deploy-ios:
     macos:
@@ -157,9 +154,6 @@ jobs:
             gem install bundler:2.1.4
             bundle install --path vendor/bundle
             bundle exec fastlane ios testflight_deploy
-      - slack/status:
-          fail_only: true
-          only_for_branches: master
 
 workflows:
   version: 2.1
@@ -174,6 +168,20 @@ workflows:
               only:
                 - master
       - deploy-android:
+          requires:
+            - build-android
+          filters:
+            branches:
+              only:
+                - master
+      - build-ios:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-ios:
           requires:
             - build-android
           filters:
