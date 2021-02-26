@@ -183,7 +183,7 @@ workflows:
                 - master
       - deploy-ios:
           requires:
-            - build-android
+            - build-ios
           filters:
             branches:
               only:
