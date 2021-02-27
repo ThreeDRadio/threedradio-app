@@ -1,9 +1,15 @@
 {
+  "about": "About",
+  "aboutBody": "Three D Radio - broadcasting the best in progressive, alternative, and South Australian music. 93.7fm in Adelaide and online all over the world!",
   "appName": "Three D Radio",
+  "credits": "Credits",
+  "creditsBody": "Michael Marner\nZak Barbuto\nMark Verlingieri\nNextFaze",
   "daysLeft": "{days} Days Left",
   "defaultLiveShowName": "Three D Radio",
   "defaultShortDescription": "Three D Blend",
   "listenLive": "Listen Live",
   "onDemand": "On Demand",
-  "onDemandEpisodes": "On Demand Episodes"
+  "onDemandEpisodes": "On Demand Episodes",
+  "version": "App Version: {version}",
+  "versionBuildNumber": "Build Number: {buildNumber}"
 }
