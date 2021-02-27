@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:player/generated/l10n.dart';
+import 'package:player/screens/about_screen.dart';
 import 'package:player/screens/home_screen.dart';
 import 'package:player/store/app_epics.dart';
 import 'package:player/store/app_reducer.dart';
@@ -164,6 +165,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => AudioServiceWidget(
                 child: HomeScreen(),
               ),
+          '/about': (context) => AboutScreen(),
         },
         initialRoute: '/',
       ),

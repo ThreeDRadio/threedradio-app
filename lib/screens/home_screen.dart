@@ -73,6 +73,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       appBar: AppBar(
         title: Text(S.of(context).appName),
       ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text(S.of(context).about),
+              onTap: () => Navigator.of(context).popAndPushNamed('/about'),
+            )
+          ],
+        ),
+      ),
       body: SafeArea(
         bottom: false,
         child: Column(
