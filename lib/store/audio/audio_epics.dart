@@ -85,6 +85,10 @@ class AudioEpics extends EpicClass<AppState> {
 
   Stream _playLiveStream(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<RequestPlayLive>().asyncMap((event) async {
+      if (store.state.audio.state.playing &&
+          store.state.audio.currentItem.id == Environment.liveStreamUrl) {
+        return SuccessPlayLive();
+      }
       final currentShowId = getCurrentShowId(store.state);
       Show currentShow;
       if (currentShowId != null) {
