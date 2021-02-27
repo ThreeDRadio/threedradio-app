@@ -48,3 +48,9 @@ lib/generated
 
 ios/vendor/bundle
 
+appstore_api_key.json
+deploy_key.json
+upload_certificate.pem
+threedradio-upload.keystore
+
+*.ipa
