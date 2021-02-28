@@ -76,6 +76,47 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       drawer: Drawer(
         child: ListView(
           children: [
+            Stack(
+              fit: StackFit.passthrough,
+              children: [
+                Image.asset(
+                  'assets/images/header.png',
+                  fit: BoxFit.fill,
+                ),
+                AspectRatio(
+                  aspectRatio: 205.0 / 115.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.black.withAlpha(60),
+                          Colors.black.withAlpha(120),
+                          Colors.black.withAlpha(60)
+                        ],
+                        stops: [0, 0.5, 1],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        S.of(context).appName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            .copyWith(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            ListTile(
+              leading: Icon(Icons.star),
+              title: Text(S.of(context).favourites),
+              onTap: () => Navigator.of(context).popAndPushNamed('/favourites'),
+            ),
             ListTile(
               leading: Icon(Icons.info),
               title: Text(S.of(context).about),

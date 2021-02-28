@@ -7,6 +7,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:player/generated/l10n.dart';
 import 'package:player/screens/about_screen.dart';
+import 'package:player/screens/favourites_screen.dart';
 import 'package:player/screens/home_screen.dart';
 import 'package:player/store/app_epics.dart';
 import 'package:player/store/app_reducer.dart';
@@ -132,14 +133,10 @@ class MyApp extends StatelessWidget {
           textTheme: TextTheme(
             bodyText2: GoogleFonts.openSans(fontSize: 16),
             button: GoogleFonts.arvo(fontWeight: FontWeight.bold),
-            headline2: GoogleFonts.arvo(),
+            headline2: GoogleFonts.arvo(fontSize: 40),
             headline3: GoogleFonts.arvo(color: Colors.white, fontSize: 36),
             headline4: GoogleFonts.arvo(
-              fontWeight: FontWeight.bold,
               fontSize: 32,
-              shadows: [
-                Shadow(offset: Offset(0, 4)),
-              ],
             ),
             headline5: GoogleFonts.arvo(
               color: Colors.white,
@@ -166,6 +163,7 @@ class MyApp extends StatelessWidget {
                 child: HomeScreen(),
               ),
           '/about': (context) => AboutScreen(),
+          '/favourites': (context) => FavouritesScreen(),
         },
         initialRoute: '/',
       ),

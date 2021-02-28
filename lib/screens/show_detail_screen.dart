@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +9,18 @@ import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
+import 'package:player/store/favourites/favourites_actions.dart';
 import 'package:player/widgets/days_left_badge.dart';
 import 'package:redux_entity/redux_entity.dart';
+
+class _FaveMV {
+  const _FaveMV(
+      {this.isFavourite, this.addToFavourites, this.removeFromFavourites});
+
+  final bool isFavourite;
+  final VoidCallback addToFavourites;
+  final VoidCallback removeFromFavourites;
+}
 
 class ShowDetailsScreen extends StatefulWidget {
   ShowDetailsScreen(
@@ -70,6 +78,27 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
             SliverAppBar(
               expandedHeight: 220,
               pinned: true,
+              actions: [
+                StoreConnector<AppState, _FaveMV>(
+                    converter: (store) => _FaveMV(
+                        isFavourite: store.state.favourites.entities
+                            .containsKey(widget.show.id.toString()),
+                        addToFavourites: () => store.dispatch(
+                            CreateOne<Favourite>(
+                                Favourite(showId: widget.show.id.toString()))),
+                        removeFromFavourites: () => store.dispatch(
+                            DeleteOne<Favourite>(widget.show.id.toString()))),
+                    builder: (context, vm) {
+                      return IconButton(
+                        icon: vm.isFavourite
+                            ? Icon(Icons.star)
+                            : Icon(Icons.star_border),
+                        onPressed: vm.isFavourite
+                            ? vm.removeFromFavourites
+                            : vm.addToFavourites,
+                      );
+                    })
+              ],
               flexibleSpace: FlexibleSpaceBar(
                 title: AnimatedOpacity(
                   duration: widget.fadeInDuration,

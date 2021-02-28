@@ -29,7 +29,7 @@ dependencies:
   provider: ^4.3.2+2
   redux: ^4.0.0+3
   redux_dev_tools: ^0.5.2
-  redux_entity: ^0.1.1
+  redux_entity: ^0.2.0
   redux_epics: ^0.14.0
   redux_persist: ^0.8.4
   redux_persist_flutter: ^0.8.3
@@ -68,6 +68,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/2.0x/
+    - assets/images/3.0x/
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
