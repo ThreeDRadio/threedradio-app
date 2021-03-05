@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1002994482606-iu529ipl66sqvi4s34cg7ap62c6hm9h9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1002994482606-iu529ipl66sqvi4s34cg7ap62c6hm9h9</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB1OoiNPneIM2WpQvIVQhggvOAGdJod_qQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1002994482606</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.threedradio.player2</string>
+	<key>PROJECT_ID</key>
+	<string>three-d-radio-player</string>
+	<key>STORAGE_BUCKET</key>
+	<string>three-d-radio-player.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1002994482606:ios:3db3cdfd9d21785ae95c3f</string>
+	<key>DATABASE_URL</key>
+	<string>https://three-d-radio-player.firebaseio.com</string>
+</dict>
+</plist>

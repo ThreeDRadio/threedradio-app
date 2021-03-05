@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -30,6 +32,8 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
+
+  FirebaseAnalytics analytics = FirebaseAnalytics();
 
   final persistor = Persistor<AppState>(
     storage: FlutterStorage(
@@ -93,6 +97,7 @@ void main() async {
   runZonedGuarded(
     () => runApp(MyApp(
       store: store,
+      analytics: analytics,
     )),
     (error, stackTrace) async {
       if (sentry != null) {
@@ -107,15 +112,22 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({@required this.store});
+  MyApp({
+    @required this.analytics,
+    @required this.store,
+  });
 
   final Store<AppState> store;
+  final FirebaseAnalytics analytics;
 
   @override
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: analytics),
+        ],
         localizationsDelegates: [
           S.delegate,
           GlobalMaterialLocalizations.delegate,

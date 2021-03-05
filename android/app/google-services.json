@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1002994482606",
+    "firebase_url": "https://three-d-radio-player.firebaseio.com",
+    "project_id": "three-d-radio-player",
+    "storage_bucket": "three-d-radio-player.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1002994482606:android:4cd427ce7d5e6ac7e95c3f",
+        "android_client_info": {
+          "package_name": "com.threedradio.player"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1002994482606-djj2v6nlfhq1i7a8dm4iruvjbk59lkn9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeooRQgQroOldnbxvUDuHl_QMTiHIL-y0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1002994482606-djj2v6nlfhq1i7a8dm4iruvjbk59lkn9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1002994482606-iu529ipl66sqvi4s34cg7ap62c6hm9h9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.threedradio.player2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
