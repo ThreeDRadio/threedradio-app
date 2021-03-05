@@ -14,7 +14,10 @@ class OnDemandEpics extends EpicClass<AppState> {
       if (action is RequestRetrieveAll<OnDemandProgram>) {
         final now = DateTime.now();
         if (store.state.onDemandPrograms.lastFetchAllTime == null ||
-            now.difference(store.state.shows.lastFetchAllTime).inMinutes > 30) {
+            now
+                    .difference(store.state.onDemandPrograms.lastFetchAllTime)
+                    .inMinutes >
+                30) {
           final shows = await api.getOnDemandPrograms();
           yield SuccessRetrieveAll<OnDemandProgram>(shows);
         } else {
