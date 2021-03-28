@@ -1,13 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:redux_entity/redux_entity.dart';
 import 'package:redux_epics/redux_epics.dart';
-import 'package:rxdart/rxdart.dart';
 
 class ShowsEpics extends EpicClass<AppState> {
   ShowsEpics({
-    @required this.api,
+    required this.api,
   }) {
     _epic = combineEpics([
       _getShows,
@@ -15,7 +13,7 @@ class ShowsEpics extends EpicClass<AppState> {
   }
 
   final WpScheduleApiService api;
-  Epic<AppState> _epic;
+  late Epic<AppState> _epic;
 
   Stream<dynamic> call(Stream<dynamic> actions, EpicStore<AppState> store) {
     return _epic(actions, store);
@@ -27,7 +25,7 @@ class ShowsEpics extends EpicClass<AppState> {
       if (action is RequestRetrieveAll<Show>) {
         final now = DateTime.now();
         if (store.state.shows.lastFetchAllTime == null ||
-            now.difference(store.state.shows.lastFetchAllTime).inHours > 2) {
+            now.difference(store.state.shows.lastFetchAllTime!).inHours > 2) {
           try {
             final shows = await api.getShows();
             yield SuccessRetrieveAll<Show>(shows);

@@ -11,7 +11,7 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-  Future<PackageInfo> pkgInfo;
+  late Future<PackageInfo> pkgInfo;
 
   @override
   initState() {
@@ -83,13 +83,13 @@ class _AboutScreenState extends State<AboutScreen> {
                     if (snapshot.hasData) {
                       return Column(
                         children: [
-                          Text(S.of(context).version(snapshot.data.version),
+                          Text(S.of(context).version(snapshot.data!.version),
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.grey[600])),
                           Text(
                             S
                                 .of(context)
-                                .versionBuildNumber(snapshot.data.buildNumber),
+                                .versionBuildNumber(snapshot.data!.buildNumber),
                             textAlign: TextAlign.center,
                             style: TextStyle(color: Colors.grey[600]),
                           ),

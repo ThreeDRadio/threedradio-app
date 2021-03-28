@@ -7,10 +7,10 @@ part 'on_demand_api.g.dart';
 @JsonSerializable()
 class OnDemandProgram {
   const OnDemandProgram({
-    this.id,
-    this.createdAt,
-    this.name,
-    this.updatedAt,
+    required this.id,
+    required this.createdAt,
+    required this.name,
+    required this.updatedAt,
   });
 
   final String createdAt;
@@ -28,12 +28,12 @@ class OnDemandProgram {
 @JsonSerializable()
 class OnDemandEpisode {
   const OnDemandEpisode({
-    this.id,
-    this.showId,
-    this.date,
-    this.size,
-    this.url,
-    this.showSlug,
+    required this.id,
+    required this.showId,
+    required this.date,
+    required this.size,
+    required this.url,
+    required this.showSlug,
   });
   final String id;
   final String showId;
@@ -49,8 +49,8 @@ class OnDemandEpisode {
 
 class OnDemandApiService {
   OnDemandApiService({
-    @required this.http,
-    @required this.apiKey,
+    required this.http,
+    required this.apiKey,
   });
   final Dio http;
   final String apiKey;
@@ -63,7 +63,7 @@ class OnDemandApiService {
       ),
     );
 
-    return response.data.map((e) => OnDemandProgram.fromJson(e)).toList();
+    return response.data!.map((e) => OnDemandProgram.fromJson(e)).toList();
   }
 
   Future<List<OnDemandEpisode>> getEpisodes(String showId) async {
@@ -73,7 +73,7 @@ class OnDemandApiService {
         headers: {'x-api-key': apiKey},
       ),
     );
-    return response.data
+    return response.data!
         .map((e) => OnDemandEpisode.fromJson({...e, 'showId': showId}))
         .toList();
   }

@@ -4,7 +4,7 @@ import 'package:redux_entity/redux_entity.dart';
 import 'package:redux_epics/redux_epics.dart';
 
 class SchedulesEpics extends EpicClass<AppState> {
-  SchedulesEpics({this.api});
+  SchedulesEpics({required this.api});
 
   final WpScheduleApiService api;
 
@@ -14,7 +14,7 @@ class SchedulesEpics extends EpicClass<AppState> {
       if (action is RequestRetrieveAll<Schedule>) {
         final now = DateTime.now();
         if (store.state.schedules.lastFetchAllTime == null ||
-            now.difference(store.state.schedules.lastFetchAllTime).inHours >
+            now.difference(store.state.schedules.lastFetchAllTime!).inHours >
                 2) {
           final schedules = await api.getSchedules();
           yield SuccessRetrieveAll<Schedule>(schedules);

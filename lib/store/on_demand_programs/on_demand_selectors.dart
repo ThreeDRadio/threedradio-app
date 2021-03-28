@@ -14,10 +14,10 @@ List<Show> getShowsForOnDemandStreaming(AppState s) {
   final onDemand = getOnDemandEntities(s);
   final shows = getShowEntitiesBySlug(s);
 
-  final sorted = onDemand.values
+  final List<Show> sorted = onDemand.values
       .map((p) => shows[p.slug])
       .where((item) => item != null)
-      .toList();
+      .toList() as List<Show>;
   sorted.sort((a, b) => a.title.text.compareTo(b.title.text));
 
   return sorted;

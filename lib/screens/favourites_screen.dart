@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:player/generated/l10n.dart';
 import 'package:player/screens/show_detail_screen.dart';
 import 'package:player/services/wp_schedule_api.dart';

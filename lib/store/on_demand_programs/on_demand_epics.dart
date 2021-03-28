@@ -4,7 +4,7 @@ import 'package:redux_entity/redux_entity.dart';
 import 'package:redux_epics/redux_epics.dart';
 
 class OnDemandEpics extends EpicClass<AppState> {
-  OnDemandEpics({this.api});
+  OnDemandEpics({required this.api});
 
   final OnDemandApiService api;
 
@@ -15,7 +15,7 @@ class OnDemandEpics extends EpicClass<AppState> {
         final now = DateTime.now();
         if (store.state.onDemandPrograms.lastFetchAllTime == null ||
             now
-                    .difference(store.state.onDemandPrograms.lastFetchAllTime)
+                    .difference(store.state.onDemandPrograms.lastFetchAllTime!)
                     .inMinutes >
                 30) {
           final shows = await api.getOnDemandPrograms();

@@ -17,33 +17,37 @@ RemoteEntityState<Schedule> getScheduleState(AppState state) {
   return state.schedules;
 }
 
-Schedule getToday(AppState state) {
+Schedule? getToday(AppState state) {
   final today = DateTime.now().weekday;
-  return getScheduleState(state).entities.values.firstWhere(
-      (element) => element.slug == scheduleSlugs[today],
-      orElse: () => null);
+  try {
+    return getScheduleState(state).entities.values.firstWhere(
+          (element) => element.slug == scheduleSlugs[today],
+        );
+  } catch (err) {
+    return null;
+  }
 }
 
-String getCurrentShowId(AppState state) {
+String? getCurrentShowId(AppState state) {
   var adl = tz.getLocation('Australia/Adelaide');
   var now = tz.TZDateTime.now(adl);
 
   final schedule = getToday(state);
 
-  final currentShow = schedule?.shows?.firstWhere((show) {
-    final start = show.show_time.split(':');
-    final end = show.show_time_end.split(':');
+  try {
+    final currentShow = schedule?.shows.firstWhere((show) {
+      final start = show.show_time.split(':');
+      final end = show.show_time_end.split(':');
 
-    final startTime = tz.TZDateTime(adl, now.year, now.month, now.day,
-        int.parse(start[0]), int.parse(start[1]));
-    final endTime = tz.TZDateTime(adl, now.year, now.month, now.day,
-        int.parse(end[0]), int.parse(end[1]));
+      final startTime = tz.TZDateTime(adl, now.year, now.month, now.day,
+          int.parse(start[0]), int.parse(start[1]));
+      final endTime = tz.TZDateTime(adl, now.year, now.month, now.day,
+          int.parse(end[0]), int.parse(end[1]));
 
-    return now.isBefore(endTime) && now.isAfter(startTime);
-  }, orElse: () => null);
-
-  if (currentShow != null) {
-    return currentShow?.show_id?.first?.trim();
+      return now.isBefore(endTime) && now.isAfter(startTime);
+    });
+    return currentShow?.show_id.first.trim();
+  } catch (err) {
+    return null;
   }
-  return null;
 }

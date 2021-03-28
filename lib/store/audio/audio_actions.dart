@@ -1,6 +1,5 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:player/services/on_demand_api.dart';
-import 'package:player/store/on_demand_programs/on_demand_epics.dart';
 
 class RequestPlayLive {}
 
@@ -29,7 +28,7 @@ class RequestSeek {
 class SuccessSeek {}
 
 class RequestPlayEpisode {
-  const RequestPlayEpisode({this.episode});
+  const RequestPlayEpisode({required this.episode});
   final OnDemandEpisode episode;
 }
 
@@ -37,20 +36,20 @@ class SuccessPlayEpisode {}
 
 class AudioStateChange {
   AudioStateChange({this.state});
-  PlaybackState state;
+  PlaybackState? state;
 
   Map<String, dynamic> toJson() => {
         'object': state == null ? 'null' : 'exists',
-        'currentPosition': state?.currentPosition?.toString(),
-        'processingState': state?.processingState?.toString(),
+        'currentPosition': state?.currentPosition.toString(),
+        'processingState': state?.processingState.toString(),
         'playing': state?.playing,
       };
 }
 
 class MediaItemChange {
   MediaItemChange({this.item});
-  final MediaItem item;
+  final MediaItem? item;
   Map<String, dynamic> toJson() => {
-        'item': item.toJson(),
+        'item': item?.toJson(),
       };
 }

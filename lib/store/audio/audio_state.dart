@@ -6,12 +6,12 @@ class AudioState {
     this.currentItem,
   });
 
-  final PlaybackState state;
-  final MediaItem currentItem;
+  final PlaybackState? state;
+  final MediaItem? currentItem;
 
   AudioState copyWith({
-    PlaybackState state,
-    MediaItem currentItem,
+    PlaybackState? state,
+    MediaItem? currentItem,
   }) {
     return AudioState(
       currentItem: currentItem ?? this.currentItem,
@@ -23,9 +23,9 @@ class AudioState {
         'currentItem': currentItem?.toJson(),
         if (state != null)
           'state': {
-            'currentPosition': state.currentPosition.toString(),
-            'processingState': state.processingState.toString(),
-            'playing': state.playing,
+            'currentPosition': state?.currentPosition.toString(),
+            'processingState': state?.processingState.toString(),
+            'playing': state?.playing,
           },
       };
 }

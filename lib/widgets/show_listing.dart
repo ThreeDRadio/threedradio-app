@@ -5,14 +5,14 @@ import 'package:player/services/wp_schedule_api.dart';
 
 class ShowListing extends StatelessWidget {
   const ShowListing({
-    @required this.data,
-    @required this.heroTag,
+    this.data,
+    required this.heroTag,
     this.onTap,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
-  final Show data;
-  final VoidCallback onTap;
+  final Show? data;
+  final VoidCallback? onTap;
   final String heroTag;
 
   @override
@@ -53,17 +53,18 @@ class ShowListing extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data?.title?.text ?? S.of(context).defaultLiveShowName,
-                        style: Theme.of(context).textTheme.headline5.copyWith(
+                        data?.title.text ?? S.of(context).defaultLiveShowName,
+                        style: Theme.of(context).textTheme.headline5!.copyWith(
                           shadows: [
                             Shadow(offset: Offset(0, 2)),
                           ],
                         ),
                       ),
-                      if (data?.meta?.subtitle2 != null)
+                      if (data?.meta.subtitle2 != null)
                         Text(
-                          data.meta.subtitle2[0],
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          data!.meta.subtitle2![0],
+                          style:
+                              Theme.of(context).textTheme.bodyText2!.copyWith(
                             shadows: [
                               Shadow(offset: Offset(0, 2)),
                             ],
@@ -72,7 +73,8 @@ class ShowListing extends StatelessWidget {
                       else
                         Text(
                           S.of(context).defaultShortDescription,
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          style:
+                              Theme.of(context).textTheme.bodyText2!.copyWith(
                             shadows: [
                               Shadow(offset: Offset(0, 2)),
                             ],

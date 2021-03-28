@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 
 part 'wp_schedule_api.g.dart';
+
+// ignore_for_file: non_constant_identifier_names
 
 @JsonSerializable()
 class WpMeta {
@@ -12,8 +13,8 @@ class WpMeta {
     this.show_incipit,
     this.subtitle2,
   });
-  final List<String> show_incipit;
-  final List<String> subtitle2;
+  final List<String>? show_incipit;
+  final List<String>? subtitle2;
 
   factory WpMeta.fromJson(Map<String, dynamic> json) => _$WpMetaFromJson(json);
   Map<String, dynamic> toJson() => _$WpMetaToJson(this);
@@ -33,9 +34,9 @@ class WpText {
 @JsonSerializable()
 class ScheduledShowInfo {
   const ScheduledShowInfo({
-    this.show_id,
-    this.show_time,
-    this.show_time_end,
+    required this.show_id,
+    required this.show_time,
+    required this.show_time_end,
   });
   final List<String> show_id;
   final String show_time;
@@ -49,11 +50,11 @@ class ScheduledShowInfo {
 @JsonSerializable()
 class Schedule {
   const Schedule({
-    this.id,
-    this.slug,
-    this.status,
-    this.title,
-    this.shows,
+    required this.id,
+    required this.slug,
+    required this.status,
+    required this.title,
+    required this.shows,
   });
 
   final int id;
@@ -71,15 +72,15 @@ class Schedule {
 @JsonSerializable()
 class Show {
   const Show({
-    this.id,
-    this.status,
-    this.slug,
-    this.title,
-    this.content,
-    this.excerpt,
-    this.featured_media,
-    this.thumbnail,
-    this.meta,
+    required this.id,
+    required this.status,
+    required this.slug,
+    required this.title,
+    required this.content,
+    required this.excerpt,
+    required this.featured_media,
+    required this.thumbnail,
+    required this.meta,
   });
 
   String get onDemandShowId => slug.replaceAll('-', '+');
@@ -100,7 +101,7 @@ class Show {
 
 class WpScheduleApiService {
   WpScheduleApiService({
-    @required this.http,
+    required this.http,
   });
   final Dio http;
 
@@ -108,19 +109,19 @@ class WpScheduleApiService {
     final response = await http.get<List<dynamic>>(
       'https://www.threedradio.com/wp-json/wp/v2/schedule?_embed',
     );
-    return response.data.map((entry) => Schedule.fromJson(entry)).toList();
+    return response.data!.map((entry) => Schedule.fromJson(entry)).toList();
   }
 
   Future<List<Show>> getShows() async {
     final response = await http.get<List<dynamic>>(
         'https://www.threedradio.com/wp-json/wp/v2/shows/?_embed&per_page=100');
 
-    return response.data.map((entry) => Show.fromJson(entry)).toList();
+    return response.data!.map((entry) => Show.fromJson(entry)).toList();
   }
 
   Future<Show> getShow(int id) async {
     final response = await http.get<Map<String, dynamic>>(
         'https://www.threedradio.com/wp-json/wp/v2/shows/$id?_embed');
-    return Show.fromJson(response.data);
+    return Show.fromJson(response.data!);
   }
 }

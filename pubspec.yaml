@@ -5,7 +5,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 2.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -13,50 +13,47 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  audio_service: ^0.16.1
-  cached_network_image: ^2.3.1
-  dio: ^3.0.10
-  firebase_analytics: ^6.2.0
-  flutter_html: ^1.0.0
-  flutter_redux: ^0.6.0
-  font_awesome_flutter: ^8.11.0
-  google_fonts: ^1.1.0
-  hive: ^1.4.4
-  html_unescape: ^1.0.1+3
-  intl: ^0.17.0-nullsafety.2
-  json_annotation: ^3.0.1
-  just_audio: ^0.6.5
-  package_info: ^0.4.3+4
-  provider: ^4.3.2+2
-  redux: ^4.0.0+3
-  redux_dev_tools: ^0.5.2
-  redux_entity: ^0.2.0
-  redux_epics: ^0.14.0
-  redux_persist: ^0.8.4
-  redux_persist_flutter: ^0.8.3
-  redux_remote_devtools: ^2.0.0
-  rxdart: ^0.24.1
-  sentry: ">=3.0.0 <4.0.0"
-  timezone: ^0.5.7
-  url_launcher: ^5.7.10
+  audio_service: ^0.17.0-nullsafety.0
+  cached_network_image: ^3.0.0-nullsafety
+  dio: ^4.0.0-prev3
+  firebase_analytics: ^7.1.1
+  flutter_html: ^2.0.0-nullsafety.0
+  flutter_redux: ^0.8.2
+  font_awesome_flutter: ^9.0.0
+  google_fonts: ^2.0.0
+  hive: ^2.0.0
+  html_unescape: ^2.0.0
+  json_annotation: ^4.0.1
+  just_audio: ^0.7.2
+  package_info: ^2.0.0
+  provider: ^5.0.0
+  redux: ^5.0.0
+  redux_dev_tools: ^0.7.0
+  redux_entity: ^1.0.1
+  redux_epics: ^0.15.0
+  redux_persist: ^0.9.0
+  redux_persist_flutter: ^0.9.0
+  redux_remote_devtools: ^3.0.0
+  rxdart: ^0.26.0
+  sentry: ^4.1.0-nullsafety.1
+  timezone: ^0.7.0-nullsafety.0
+  url_launcher: ^6.0.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.3
+  cupertino_icons: ^1.0.2
 
 dependency_overrides:
-  analyzer: ^0.40.6
-  intl: ^0.17.0-nullsafety.2
+  test: ^1.16.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.0.0
-  intl_utils: ^1.9.0
-  json_serializable: ^3.4.1
-  junitreport: ^1.3.1
-  mockito: ^4.1.1
+  intl_utils: ^2.1.0
+  json_serializable: ^4.1.0
+  mockito: ^5.0.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

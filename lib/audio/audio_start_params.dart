@@ -16,9 +16,9 @@ class AudioStartParams {
     this.item,
   });
 
-  final PlaybackMode mode;
-  final String url;
-  final MediaItem item;
+  final PlaybackMode? mode;
+  final String? url;
+  final MediaItem? item;
 
   factory AudioStartParams.fromJson(Map<String, dynamic> json) =>
       _$AudioStartParamsFromJson(json);
