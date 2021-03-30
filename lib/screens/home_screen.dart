@@ -18,8 +18,8 @@ class _NowPlayingBarData {
     this.state,
   });
 
-  final MediaItem item;
-  final PlaybackState state;
+  final MediaItem? item;
+  final PlaybackState? state;
 }
 
 class HomeScreen extends StatefulWidget {
@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         S.of(context).appName,
                         style: Theme.of(context)
                             .textTheme
-                            .headline4
+                            .headline4!
                             .copyWith(color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     state: store.state.audio.state,
                   ),
                   builder: (context, snapshot) {
-                    final state = snapshot?.state?.processingState ??
+                    final state = snapshot.state?.processingState ??
                         AudioProcessingState.none;
                     if (state != AudioProcessingState.stopped &&
                         state != AudioProcessingState.none) {

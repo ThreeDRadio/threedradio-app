@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
@@ -75,15 +76,17 @@ void main() async {
 
   if (!debug) {
     sentry = SentryClient(
-      dsn:
-          "https://bd6bdccfd169415fa82fca062ad02b25@o120815.ingest.sentry.io/5421277",
+      SentryOptions(
+        dsn:
+            "https://bd6bdccfd169415fa82fca062ad02b25@o120815.ingest.sentry.io/5421277",
+      ),
     );
   }
   if (sentry != null) {
     FlutterError.onError = (details, {bool forceReport = false}) {
       try {
         sentry.captureException(
-          exception: details.exception,
+          details.exception,
           stackTrace: details.stack,
         );
       } catch (e) {
@@ -102,7 +105,7 @@ void main() async {
     (error, stackTrace) async {
       if (sentry != null) {
         await sentry.captureException(
-          exception: error,
+          error,
           stackTrace: stackTrace,
         );
       }
@@ -113,8 +116,8 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   MyApp({
-    @required this.analytics,
-    @required this.store,
+    this.analytics,
+    this.store,
   });
 
   final Store<AppState> store;

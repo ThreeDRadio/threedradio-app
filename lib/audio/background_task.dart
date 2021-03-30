@@ -31,7 +31,7 @@ backgroundTaskEntrypoint() {
 
 class ThreeDBackgroundTask extends BackgroundAudioTask {
   AudioPlayer _player = AudioPlayer();
-  PlaybackMode mode;
+  PlaybackMode? mode;
 
   List<MediaControl> get currentMediaControls {
     if (mode == PlaybackMode.live) {
@@ -53,7 +53,7 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
     _player.durationStream.listen((duration) {
       if (AudioServiceBackground.mediaItem != null) {
         AudioServiceBackground.setMediaItem(
-            AudioServiceBackground.mediaItem?.copyWith(duration: duration));
+            AudioServiceBackground.mediaItem!.copyWith(duration: duration));
       }
     });
 

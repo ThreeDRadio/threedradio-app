@@ -4,7 +4,7 @@ part 'favourites_actions.g.dart';
 
 @JsonSerializable()
 class Favourite {
-  const Favourite({this.showId});
+  const Favourite({required this.showId});
   factory Favourite.fromJson(Map<String, dynamic> json) =>
       _$FavouriteFromJson(json);
   Map<String, dynamic> toJson() => _$FavouriteToJson(this);

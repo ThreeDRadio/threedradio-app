@@ -22,12 +22,12 @@ class _ViewModel {
     this.item,
     this.state,
     this.show,
-    this.seekToPosition,
+    required this.seekToPosition,
   });
 
-  final MediaItem item;
-  final Show show;
-  final PlaybackState state;
+  final MediaItem? item;
+  final Show? show;
+  final PlaybackState? state;
   final ValueChanged<Duration> seekToPosition;
 }
 
@@ -46,7 +46,7 @@ class NowPlayingScreen extends StatefulWidget {
 class _NowPlayingScreenState extends State<NowPlayingScreen> {
   bool transitionComplete = false;
   bool seekInProgress = false;
-  double seekingPosition;
+  late double seekingPosition;
 
   void initState() {
     Future.delayed(widget.fadeInDelay, () {
@@ -121,7 +121,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                       children: [
                         if (snapshot.item?.artUri != null)
                           CachedNetworkImage(
-                            imageUrl: snapshot.item.artUri,
+                            imageUrl: snapshot.item!.artUri.toString(),
                             fit: BoxFit.cover,
                           ),
                         Container(
@@ -156,14 +156,15 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          if (snapshot.state.actions
-                              .contains(MediaAction.rewind))
+                          if (snapshot.state?.actions
+                                  .contains(MediaAction.rewind) ??
+                              false)
                             IconButton(
                               icon: Icon(Icons.replay_30),
-                              onPressed: snapshot.state.currentPosition >
+                              onPressed: snapshot.state!.currentPosition >
                                       const Duration(seconds: 30)
                                   ? () => snapshot.seekToPosition(
-                                      snapshot.state.currentPosition -
+                                      snapshot.state!.currentPosition -
                                           const Duration(seconds: 30))
                                   : null,
                               iconSize: 48,
@@ -174,16 +175,17 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               onPressed: null,
                               iconSize: 48,
                             ),
-                          if (snapshot.state.actions
-                              .contains(MediaAction.fastForward))
+                          if (snapshot.state?.actions
+                                  .contains(MediaAction.fastForward) ??
+                              false)
                             IconButton(
                               icon: Icon(Icons.forward_30),
                               onPressed:
-                                  (snapshot?.item?.duration ?? Duration.zero) -
-                                              snapshot.state.currentPosition >
+                                  (snapshot.item?.duration ?? Duration.zero) -
+                                              snapshot.state!.currentPosition >
                                           const Duration(seconds: 30)
                                       ? () => snapshot.seekToPosition(
-                                          snapshot.state.currentPosition +
+                                          snapshot.state!.currentPosition +
                                               const Duration(seconds: 30))
                                       : null,
                               iconSize: 48,
@@ -194,29 +196,36 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               onPressed: null,
                               iconSize: 48,
                             ),
-                          if (snapshot.state.actions
-                              .contains(MediaAction.pause))
+                          if (snapshot.state?.actions
+                                  .contains(MediaAction.pause) ??
+                              false)
                             IconButton(
                               icon: Icon(Icons.pause),
                               onPressed: pause,
                               iconSize: 48,
                             ),
-                          if (snapshot.state.actions.contains(MediaAction.play))
+                          if (snapshot.state?.actions
+                                  .contains(MediaAction.play) ??
+                              false)
                             IconButton(
                               icon: Icon(Icons.play_arrow),
                               onPressed: resume,
                               iconSize: 48,
                             ),
-                          if (!snapshot.state.actions
-                                  .contains(MediaAction.play) &&
-                              !snapshot.state.actions
-                                  .contains(MediaAction.pause))
+                          if (!(snapshot.state?.actions
+                                      .contains(MediaAction.play) ??
+                                  false) &&
+                              !(snapshot.state?.actions
+                                      .contains(MediaAction.pause) ??
+                                  false))
                             IconButton(
                               icon: Icon(Icons.play_arrow),
                               iconSize: 48,
                               onPressed: null,
                             ),
-                          if (snapshot.state.actions.contains(MediaAction.stop))
+                          if (snapshot.state?.actions
+                                  .contains(MediaAction.stop) ??
+                              false)
                             IconButton(
                               icon: Icon(Icons.stop),
                               onPressed: stop,
@@ -235,10 +244,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         Duration.zero)
                       Slider(
                         min: 0,
-                        max: snapshot.item.duration.inSeconds.toDouble(),
+                        max: snapshot.item!.duration!.inSeconds.toDouble(),
                         value: seekInProgress
                             ? seekingPosition
-                            : snapshot.state.currentPosition.inSeconds
+                            : snapshot.state!.currentPosition.inSeconds
                                 .toDouble(),
                         onChangeStart: onSeekStart,
                         onChangeEnd: (value) {
@@ -258,10 +267,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         Duration.zero)
                       if (seekInProgress)
                         Text(
-                            '${Duration(seconds: seekingPosition.round()).format()} / ${snapshot.item.duration.format()}')
+                            '${Duration(seconds: seekingPosition.round()).format()} / ${snapshot.item!.duration!.format()}')
                       else
                         Text(
-                            '${snapshot.state.currentPosition.format()} / ${snapshot.item.duration.format()}')
+                            '${snapshot.state!.currentPosition.format()} / ${snapshot.item!.duration!.format()}')
                   ],
                 ),
               ),
@@ -272,11 +281,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                     vertical: 32,
                   ),
                   child: snapshot.show?.content?.text?.isNotEmpty ?? false
-                      ? Html(data: snapshot.show.content.rendered)
+                      ? Html(data: snapshot.show!.content.rendered)
                       : Html(
-                          data: snapshot.show?.meta?.show_incipit?.isNotEmpty ==
+                          data: snapshot.show?.meta.show_incipit?.isNotEmpty ==
                                   true
-                              ? snapshot.show.meta.show_incipit[0]
+                              ? snapshot.show!.meta.show_incipit![0]
                               : S.of(context).defaultShortDescription),
                 ),
               ),

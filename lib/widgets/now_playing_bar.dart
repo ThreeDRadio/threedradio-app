@@ -7,13 +7,13 @@ class NowPlayingBar extends StatelessWidget {
   NowPlayingBar({
     this.state,
     this.item,
-    this.onPause,
-    this.onPlay,
-    this.onStop,
+    required this.onPause,
+    required this.onPlay,
+    required this.onStop,
   });
 
-  final MediaItem item;
-  final PlaybackState state;
+  final MediaItem? item;
+  final PlaybackState? state;
 
   final VoidCallback onPause;
   final VoidCallback onPlay;
@@ -32,7 +32,7 @@ class NowPlayingBar extends StatelessWidget {
                 AspectRatio(
                   aspectRatio: 1,
                   child: CachedNetworkImage(
-                    imageUrl: item.artUri,
+                    imageUrl: item!.artUri.toString(),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -47,32 +47,36 @@ class NowPlayingBar extends StatelessWidget {
                         style: Theme.of(context).textTheme.headline6,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (item?.album != null) Text(item.album),
+                      if (item?.album != null) Text(item!.album),
                     ],
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: state.processingState ==
-                        AudioProcessingState.buffering
-                    ? [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: CupertinoActivityIndicator(),
-                        )
-                      ]
-                    : [
-                        if (state.actions.contains(MediaAction.pause))
-                          IconButton(
-                              icon: Icon(Icons.pause), onPressed: onPause),
-                        if (state.actions.contains(MediaAction.play))
-                          IconButton(
-                              icon: Icon(Icons.play_arrow), onPressed: onPlay),
-                        if (state.actions.contains(MediaAction.stop))
-                          IconButton(icon: Icon(Icons.stop), onPressed: onStop)
-                      ],
-              )
+              if (state != null)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: state!.processingState ==
+                          AudioProcessingState.buffering
+                      ? [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: CupertinoActivityIndicator(),
+                          )
+                        ]
+                      : [
+                          if (state!.actions.contains(MediaAction.pause))
+                            IconButton(
+                                icon: Icon(Icons.pause), onPressed: onPause),
+                          if (state!.actions.contains(MediaAction.play))
+                            IconButton(
+                                icon: Icon(Icons.play_arrow),
+                                onPressed: onPlay),
+                          if (state!.actions.contains(MediaAction.stop))
+                            IconButton(
+                                icon: Icon(Icons.stop), onPressed: onStop)
+                        ],
+                )
             ],
           ),
         ),

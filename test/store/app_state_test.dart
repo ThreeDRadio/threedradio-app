@@ -53,8 +53,8 @@ void main() {
         };
         final result = AppState.fromJson(json);
         expect(result.onDemandEpisodes.ids, ['show1', 'show2']);
-        expect(result.onDemandEpisodes.entities['show1'].length, 1);
-        expect(result.onDemandEpisodes.entities['show2'].length, 2);
+        expect(result.onDemandEpisodes.entities['show1']!.length, 1);
+        expect(result.onDemandEpisodes.entities['show2']!.length, 2);
       });
     });
   });

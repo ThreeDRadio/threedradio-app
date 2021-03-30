@@ -24,7 +24,7 @@ class AudioEpics extends EpicClass<AppState> {
     ]);
   }
 
-  Epic<AppState> _epic;
+  late Epic<AppState> _epic;
   Stream call(Stream actions, EpicStore<AppState> store) {
     return _epic(actions, store);
   }
@@ -54,9 +54,9 @@ class AudioEpics extends EpicClass<AppState> {
     return actions
         .whereType<RequestPlayEpisode>()
         .asyncMap((RequestPlayEpisode action) async {
-      final currentShowId = getCurrentShowId(store.state);
-      final program =
-          store.state.onDemandPrograms.entities[action.episode.showId];
+//      final currentShowId = getCurrentShowId(store.state);
+//      final program =
+//          store.state.onDemandPrograms.entities[action.episode.showId];
       final show = store.state.shows.entities.values.firstWhere(
           (element) => element.onDemandShowId == action.episode.showId);
 
@@ -85,14 +85,14 @@ class AudioEpics extends EpicClass<AppState> {
 
   Stream _playLiveStream(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<RequestPlayLive>().asyncMap((event) async {
-      if (store.state.audio.state.playing &&
-          store.state.audio.currentItem.id == Environment.liveStreamUrl) {
+      if (store.state.audio.state!.playing &&
+          store.state.audio.currentItem!.id == Environment.liveStreamUrl) {
         return SuccessPlayLive();
       }
       final currentShowId = getCurrentShowId(store.state);
-      Show currentShow;
+      late Show? currentShow;
       if (currentShowId != null) {
-        currentShow = store.state.shows.entities[currentShowId];
+        currentShow = store.state.shows.entities[currentShowId] as Show;
       }
       if (!AudioService.running) {
         await AudioService.start(
@@ -102,7 +102,7 @@ class AudioEpics extends EpicClass<AppState> {
       }
       await AudioService.playMediaItem(
         MediaItem(
-          title: currentShow?.title?.text ?? 'Three D Radio',
+          title: currentShow?.title.text ?? 'Three D Radio',
           artUri:
               currentShow?.thumbnail is String ? currentShow?.thumbnail : null,
           album: 'Three D Radio - Live',

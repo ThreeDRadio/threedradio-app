@@ -14,8 +14,11 @@ import 'package:player/widgets/days_left_badge.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 class _FaveMV {
-  const _FaveMV(
-      {this.isFavourite, this.addToFavourites, this.removeFromFavourites});
+  const _FaveMV({
+    required this.isFavourite,
+    required this.addToFavourites,
+    required this.removeFromFavourites,
+  });
 
   final bool isFavourite;
   final VoidCallback addToFavourites;
@@ -23,10 +26,11 @@ class _FaveMV {
 }
 
 class ShowDetailsScreen extends StatefulWidget {
-  ShowDetailsScreen(
-      {this.show,
-      this.fadeInDelay = const Duration(milliseconds: 300),
-      this.fadeInDuration = const Duration(milliseconds: 300)});
+  ShowDetailsScreen({
+    required this.show,
+    this.fadeInDelay = const Duration(milliseconds: 300),
+    this.fadeInDuration = const Duration(milliseconds: 300),
+  });
 
   final Show show;
   final Duration fadeInDelay;
@@ -157,7 +161,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                     ? Html(data: widget.show.content.rendered)
                     : Html(
                         data: widget.show.meta.show_incipit?.isNotEmpty == true
-                            ? widget.show.meta.show_incipit[0]
+                            ? widget.show.meta.show_incipit![0]
                             : S.of(context).defaultShortDescription),
               ),
             ),
@@ -174,7 +178,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                 converter: (store) =>
                     store.state.onDemandEpisodes
                         .entities[widget.show.onDemandShowId]?.reversed
-                        ?.toList() ??
+                        .toList() ??
                     <OnDemandEpisode>[],
                 builder: (context, episodes) {
                   if (episodes.isEmpty) {

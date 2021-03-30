@@ -12,8 +12,8 @@ import 'package:player/widgets/show_listing.dart';
 
 class AllInOneTab extends StatefulWidget {
   AllInOneTab({
-    this.playLive,
-    this.openShow,
+    required this.playLive,
+    required this.openShow,
   });
   final VoidCallback playLive;
   final ValueChanged<Show> openShow;
@@ -23,7 +23,7 @@ class AllInOneTab extends StatefulWidget {
 }
 
 class _AllInOneTabState extends State<AllInOneTab> {
-  Timer refresher;
+  late Timer refresher;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
           ),
         ),
         SliverToBoxAdapter(
-          child: StoreConnector<AppState, Show>(
+          child: StoreConnector<AppState, Show?>(
             converter: (store) {
               final currentShowId = getCurrentShowId(store.state);
               if (currentShowId != null) {
