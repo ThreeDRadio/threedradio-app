@@ -15,7 +15,8 @@ class OnDemandEpisodesEpics extends EpicClass<AppState> {
         final now = DateTime.now();
         if (store.state.onDemandEpisodes.updateTimes[action.id] == null ||
             now
-                    .difference(store.state.shows.updateTimes[action.id]!)
+                    .difference(
+                        store.state.onDemandEpisodes.updateTimes[action.id]!)
                     .inMinutes >
                 30) {
           final episodes = await api.getEpisodes(action.id);
