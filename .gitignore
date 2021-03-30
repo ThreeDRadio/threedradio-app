@@ -54,3 +54,5 @@ upload_certificate.pem
 threedradio-upload.keystore
 
 *.ipa
+
+*.mocks.dart
