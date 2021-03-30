@@ -15,6 +15,7 @@ jobs:
     steps:
       - checkout
       - run: flutter pub get
+      - run: flutter pub global activate junitreport
       - run: flutter pub run intl_utils:generate
       - run: flutter packages pub run build_runner build
       - run: mkdir reports
@@ -22,8 +23,9 @@ jobs:
           name: Run Tests
           command: |
             set +e
-            TEST_RESULT=`flutter test --coverage --machine > test_output.json`
-            flutter pub run junitreport:tojunit --input test_output.json --output reports/test-results.xml
+            flutter test --coverage --machine | tee test_output.json
+            TEST_RESULT=${PIPESTATUS[0]}
+            flutter pub global run junitreport:tojunit --input test_output.json --output reports/test-results.xml
             exit $TEST_RESULT
       - codecov/upload:
           file: coverage/lcov.info
