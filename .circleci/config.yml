@@ -1,10 +1,14 @@
 version: 2.1
+parameters:
+  flutter-version:
+    type: string
+    default: "2.1.0-12.2.pre"
 orbs:
   codecov: codecov/codecov@1.0.2
 jobs:
   test:
     docker:
-      - image: cirrusci/flutter:1.25.0-8.2.pre
+      - image: cirrusci/flutter:<< pipeline.parameters.flutter-version >>
 
     working_directory: ~/repo
 
@@ -28,7 +32,7 @@ jobs:
 
   build-android:
     docker:
-      - image: cirrusci/flutter:1.25.0-8.2.pre
+      - image: cirrusci/flutter:<< pipeline.parameters.flutter-version >>
     resource_class: medium
 
     working_directory: ~/repo
@@ -86,7 +90,7 @@ jobs:
       - run:
           name: Install Flutter
           command: |
-            curl https://storage.googleapis.com/flutter_infra/releases/beta/macos/flutter_macos_1.25.0-8.2.pre-beta.zip --output flutter.zip
+            curl https://storage.googleapis.com/flutter_infra/releases/beta/macos/flutter_macos_<< pipeline.parameters.flutter-version >>-beta.zip --output flutter.zip
             unzip flutter.zip
             export PATH="$PATH:`pwd`/flutter/bin"
             flutter precache --ios --no-android 
