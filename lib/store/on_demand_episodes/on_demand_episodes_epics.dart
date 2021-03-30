@@ -14,7 +14,9 @@ class OnDemandEpisodesEpics extends EpicClass<AppState> {
       if (action is RequestRetrieveOne<List<OnDemandEpisode>>) {
         final now = DateTime.now();
         if (store.state.onDemandEpisodes.updateTimes[action.id] == null ||
-            now.difference(store.state.shows.lastFetchAllTime!).inMinutes >
+            now
+                    .difference(store.state.shows.updateTimes[action.id]!)
+                    .inMinutes >
                 30) {
           final episodes = await api.getEpisodes(action.id);
           yield SuccessRetrieveOne<List<OnDemandEpisode>>(episodes);
