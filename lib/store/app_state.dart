@@ -27,10 +27,12 @@ class AppState {
 
   factory AppState.fromJson(Map<String, dynamic> json) {
     return AppState(
-      favourites: EntityState<Favourite>.fromJson(
-        json['favourites'],
-        (json) => Favourite.fromJson(json),
-      ),
+      favourites: json['favourites'] != null
+          ? EntityState<Favourite>.fromJson(
+              json['favourites'],
+              (json) => Favourite.fromJson(json),
+            )
+          : EntityState<Favourite>(),
       onDemandEpisodes: RemoteEntityState<List<OnDemandEpisode>>.fromJson(
         json['onDemandEpisodes'],
         (json) {

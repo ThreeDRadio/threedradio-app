@@ -1,24 +1,44 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/shows/shows_epics.dart';
+import 'package:redux/redux.dart';
 import 'package:redux_entity/redux_entity.dart';
 import 'package:redux_epics/redux_epics.dart';
 
-class MockApi extends Mock implements WpScheduleApiService {}
+import 'shows_epics_test.mocks.dart';
 
-class MockStore extends Mock implements EpicStore<AppState> {}
+Show buildShow({required int id}) {
+  return Show(
+    content: WpText('Show $id'),
+    excerpt: WpText('Show $id'),
+    title: WpText('Show $id'),
+    id: id,
+    featured_media: 0,
+    thumbnail: null,
+    slug: 'show-$id',
+    status: 'published',
+    meta: WpMeta(),
+  );
+}
 
+@GenerateMocks([WpScheduleApiService])
 void main() {
-  MockApi api;
-  ShowsEpics epics;
-  MockStore store;
+  late MockWpScheduleApiService api;
+  late ShowsEpics epics;
+  late EpicStore<AppState> store;
 
   setUp(() {
-    api = MockApi();
+    api = MockWpScheduleApiService();
     epics = ShowsEpics(api: api);
-    store = MockStore();
+    store = EpicStore<AppState>(
+      Store<AppState>(
+        (state, action) => state,
+        initialState: AppState(),
+      ),
+    );
   });
 
   group(ShowsEpics, () {
@@ -27,13 +47,12 @@ void main() {
         when(api.getShows()).thenAnswer(
           (realInvocation) => Future.value(
             [
-              Show(id: 1),
-              Show(id: 2),
+              buildShow(id: 1),
+              buildShow(id: 2),
             ],
           ),
         );
-        when(store.state).thenReturn(AppState());
-        expectLater(
+        await expectLater(
           epics.call(
               Stream<dynamic>.fromIterable([const RequestRetrieveAll<Show>()])
                   .asBroadcastStream(),
@@ -47,20 +66,23 @@ void main() {
         when(api.getShows()).thenAnswer(
           (realInvocation) => Future.value(
             [
-              Show(id: 1),
-              Show(id: 2),
+              buildShow(id: 1),
+              buildShow(id: 2),
             ],
           ),
         );
-        when(store.state).thenReturn(
-          AppState(
-            shows: RemoteEntityState<Show>(
-              entities: {
-                '1': Show(id: 1),
-                '2': Show(id: 2),
-              },
-              ids: ['1', '2'],
-              lastFetchAllTime: DateTime.now(),
+        store = EpicStore<AppState>(
+          Store<AppState>(
+            (state, action) => state,
+            initialState: AppState(
+              shows: RemoteEntityState<Show>(
+                entities: {
+                  '1': buildShow(id: 1),
+                  '2': buildShow(id: 2),
+                },
+                ids: ['1', '2'],
+                lastFetchAllTime: DateTime.now(),
+              ),
             ),
           ),
         );
@@ -79,7 +101,6 @@ void main() {
         when(api.getShows()).thenAnswer(
           (realInvocation) => Future.error('some error'),
         );
-        when(store.state).thenReturn(AppState());
         expectLater(
           epics.call(
               Stream<dynamic>.fromIterable([const RequestRetrieveAll<Show>()])
