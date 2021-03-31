@@ -73,7 +73,7 @@ class AudioEpics extends EpicClass<AppState> {
       await AudioService.playMediaItem(
         MediaItem(
           title: show?.title?.text ?? 'Three D Radio',
-          artUri: show?.thumbnail is String ? show?.thumbnail : null,
+          artUri: show?.thumbnail is Uri ? show?.thumbnail : null,
           album: action.episode.date,
           extras: {'episode': action.episode.id, 'showId': show.id},
           id: action.episode.url,
@@ -90,7 +90,7 @@ class AudioEpics extends EpicClass<AppState> {
         return SuccessPlayLive();
       }
       final currentShowId = getCurrentShowId(store.state);
-      late Show? currentShow;
+      Show? currentShow;
       if (currentShowId != null) {
         currentShow = store.state.shows.entities[currentShowId] as Show;
       }
