@@ -107,7 +107,7 @@ class WpScheduleApiService {
 
   Future<List<Schedule>> getSchedules() async {
     final response = await http.get<List<dynamic>>(
-      'https://www.threedradio.com/wp-json/wp/v2/schedule?_embed',
+      'https://www.threedradio.com/wp-json/wp/v2/schedule?_embed&per_page=100',
     );
     return response.data!.map((entry) => Schedule.fromJson(entry)).toList();
   }
