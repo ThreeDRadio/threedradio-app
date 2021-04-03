@@ -57,7 +57,7 @@ class OnDemandApiService {
 
   Future<List<OnDemandProgram>> getOnDemandPrograms() async {
     final response = await http.get<List<dynamic>>(
-      'https://e5yf0dn2f7.execute-api.ap-southeast-2.amazonaws.com/production/shows',
+      'https://ondemand.threedradio.com/shows',
       options: Options(
         headers: {'x-api-key': apiKey},
       ),
@@ -68,7 +68,7 @@ class OnDemandApiService {
 
   Future<List<OnDemandEpisode>> getEpisodes(String showId) async {
     final response = await http.get<List<dynamic>>(
-      'https://e5yf0dn2f7.execute-api.ap-southeast-2.amazonaws.com/production/shows/$showId/episodes',
+      'https://ondemand.threedradio.com/shows/$showId/episodes',
       options: Options(
         headers: {'x-api-key': apiKey},
       ),
