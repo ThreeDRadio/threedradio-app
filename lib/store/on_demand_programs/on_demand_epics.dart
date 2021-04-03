@@ -18,8 +18,12 @@ class OnDemandEpics extends EpicClass<AppState> {
                     .difference(store.state.onDemandPrograms.lastFetchAllTime!)
                     .inMinutes >
                 30) {
-          final shows = await api.getOnDemandPrograms();
-          yield SuccessRetrieveAll<OnDemandProgram>(shows);
+          try {
+            final shows = await api.getOnDemandPrograms();
+            yield SuccessRetrieveAll<OnDemandProgram>(shows);
+          } catch (error) {
+            yield FailRetrieveAll<OnDemandProgram>(error.toString());
+          }
         } else {
           yield SuccessRetrieveAllFromCache<OnDemandProgram>(
               store.state.onDemandPrograms.entities.values.toList());
