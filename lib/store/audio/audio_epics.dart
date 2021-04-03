@@ -73,7 +73,7 @@ class AudioEpics extends EpicClass<AppState> {
       await AudioService.playMediaItem(
         MediaItem(
           title: show?.title?.text ?? 'Three D Radio',
-          artUri: show?.thumbnail is Uri ? show?.thumbnail : null,
+          artUri: show.thumbnail is String ? Uri.parse(show.thumbnail) : null,
           album: action.episode.date,
           extras: {'episode': action.episode.id, 'showId': show.id},
           id: action.episode.url,
@@ -103,8 +103,9 @@ class AudioEpics extends EpicClass<AppState> {
       await AudioService.playMediaItem(
         MediaItem(
           title: currentShow?.title.text ?? 'Three D Radio',
-          artUri:
-              currentShow?.thumbnail is String ? currentShow?.thumbnail : null,
+          artUri: currentShow?.thumbnail is String
+              ? Uri.parse(currentShow?.thumbnail)
+              : null,
           album: 'Three D Radio - Live',
           extras: {
             'showId': currentShow?.id,
