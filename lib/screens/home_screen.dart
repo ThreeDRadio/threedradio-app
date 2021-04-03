@@ -28,6 +28,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  bool needToFetch = true;
+
   @override
   initState() {
     super.initState();
@@ -35,11 +37,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   didChangeDependencies() {
+    if (needToFetch) {
+      initialFetch();
+      needToFetch = false;
+    }
+    super.didChangeDependencies();
+  }
+
+  void initialFetch() {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(RequestRetrieveAll<Schedule>());
     store.dispatch(RequestRetrieveAll<Show>());
     store.dispatch(RequestRetrieveAll<OnDemandProgram>());
-    super.didChangeDependencies();
   }
 
   openShowDetail(Show show) {
