@@ -18,8 +18,8 @@ class FavouritesScreen extends StatelessWidget {
             builder: (context, snapshot) => snapshot.isNotEmpty
                 ? ListView.builder(
                     padding: EdgeInsets.all(8),
-                    itemBuilder: (context, index) => ShowListing(
-                      data: snapshot[index],
+                    itemBuilder: (context, index) => ShowListing.fromShow(
+                      snapshot[index],
                       heroTag: snapshot[index].slug,
                       onTap: () {
                         Navigator.of(context).push(

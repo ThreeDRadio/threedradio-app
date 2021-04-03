@@ -28,8 +28,12 @@ class RequestSeek {
 class SuccessSeek {}
 
 class RequestPlayEpisode {
-  const RequestPlayEpisode({required this.episode});
+  const RequestPlayEpisode({
+    required this.episode,
+    this.position,
+  });
   final OnDemandEpisode episode;
+  final Duration? position;
 }
 
 class SuccessPlayEpisode {}

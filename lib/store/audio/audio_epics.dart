@@ -79,6 +79,9 @@ class AudioEpics extends EpicClass<AppState> {
           id: action.episode.url,
         ),
       );
+      if (action.position != null) {
+        await AudioService.seekTo(action.position!);
+      }
       return SuccessPlayEpisode();
     });
   }

@@ -3,6 +3,7 @@ import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/audio/audio_state.dart';
 import 'package:player/store/favourites/favourites_actions.dart';
+import 'package:player/store/history/history_item.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 part 'app_state.g.dart';
@@ -12,6 +13,7 @@ class AppState {
   const AppState({
     this.audio = const AudioState(),
     this.favourites = const EntityState<Favourite>(),
+    this.history = const EntityState<HistoryItem>(),
     this.onDemandEpisodes = const RemoteEntityState<List<OnDemandEpisode>>(),
     this.onDemandPrograms = const RemoteEntityState<OnDemandProgram>(),
     this.schedules = const RemoteEntityState<Schedule>(),
@@ -20,6 +22,7 @@ class AppState {
 
   final AudioState audio;
   final EntityState<Favourite> favourites;
+  final EntityState<HistoryItem> history;
   final RemoteEntityState<List<OnDemandEpisode>> onDemandEpisodes;
   final RemoteEntityState<OnDemandProgram> onDemandPrograms;
   final RemoteEntityState<Schedule> schedules;
@@ -33,6 +36,12 @@ class AppState {
               (json) => Favourite.fromJson(json),
             )
           : EntityState<Favourite>(),
+      history: json['history'] != null
+          ? EntityState<HistoryItem>.fromJson(
+              json['history'],
+              (json) => HistoryItem.fromJson(json),
+            )
+          : EntityState<HistoryItem>(),
       onDemandEpisodes: RemoteEntityState<List<OnDemandEpisode>>.fromJson(
         json['onDemandEpisodes'],
         (json) {

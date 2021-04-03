@@ -4,11 +4,34 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:player/generated/l10n.dart';
+import 'package:player/screens/now_playing_screen.dart';
+import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
+import 'package:player/store/audio/audio_actions.dart';
+import 'package:player/store/history/history_item.dart';
+import 'package:player/store/history/history_selectors.dart';
 import 'package:player/store/on_demand_programs/on_demand_selectors.dart';
 import 'package:player/store/schedules/schedules_selectors.dart';
 import 'package:player/widgets/show_listing.dart';
+import 'package:redux_entity/redux_entity.dart';
+
+class _HistoryVM {
+  const _HistoryVM({
+    this.item,
+    this.show,
+    this.episode,
+    required this.playing,
+    this.removeItem,
+  });
+
+  final HistoryItem? item;
+  final OnDemandEpisode? episode;
+  final Show? show;
+  final bool playing;
+
+  final VoidCallback? removeItem;
+}
 
 class AllInOneTab extends StatefulWidget {
   AllInOneTab({
@@ -40,6 +63,20 @@ class _AllInOneTabState extends State<AllInOneTab> {
     super.dispose();
   }
 
+  resumeEpisode(_HistoryVM e) {
+    StoreProvider.of<AppState>(context).dispatch(RequestPlayEpisode(
+      episode: e.episode!,
+      position: e.item!.position,
+    ));
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => NowPlayingScreen(),
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -60,18 +97,91 @@ class _AllInOneTabState extends State<AllInOneTab> {
               }
               return null;
             },
-            builder: (context, show) => ShowListing(
-              data: show,
-              onTap: widget.playLive,
-              heroTag: 'live',
-            ),
+            builder: (context, show) => show != null
+                ? ShowListing.fromShow(
+                    show,
+                    onTap: widget.playLive,
+                    heroTag: 'live',
+                  )
+                : ShowListing(
+                    title: S.of(context).defaultLiveShowName,
+                    onTap: widget.playLive,
+                    heroTag: 'live',
+                  ),
           ),
         ),
-        SliverPadding(padding: EdgeInsets.only(top: 32)),
         SliverToBoxAdapter(
-          child: Text(
-            S.of(context).onDemand,
-            style: Theme.of(context).textTheme.headline3,
+          child: StoreConnector<AppState, _HistoryVM>(
+            converter: (store) {
+              final item = getLatestPlayable(store.state);
+              if (item == null) {
+                return _HistoryVM(
+                    playing: store.state.audio.state?.playing ?? false);
+              }
+              final show = store.state.shows.entities[item.showId];
+              final episode = store.state.onDemandEpisodes
+                  .entities[show!.slug.replaceAll('-', '+')]
+                  ?.where((element) => element.date == item.episodeDate)
+                  .first;
+              return _HistoryVM(
+                item: item,
+                show: show,
+                episode: episode,
+                playing: store.state.audio.state?.playing ?? false,
+                removeItem: () =>
+                    store.dispatch(DeleteOne<HistoryItem>(item.id)),
+              );
+            },
+            builder: (context, snapshot) => !snapshot.playing &&
+                    snapshot.show != null &&
+                    snapshot.episode != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 32.0),
+                        child: Text(
+                          S.of(context).jumpBackIn,
+                          style: Theme.of(context).textTheme.headline3,
+                        ),
+                      ),
+                      ShowListing(
+                        title:
+                            '${snapshot.show!.title.text} - ${snapshot.item!.episodeDate}',
+                        thumbnail: snapshot.show!.thumbnail,
+                        subtitle:
+                            '${snapshot.item!.position.format()} / ${snapshot.item!.showLength.format()}',
+                        heroTag: snapshot.item!.id,
+                        onTap: () => resumeEpisode(snapshot),
+                        action: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(200),
+                            gradient: RadialGradient(
+                              colors: [
+                                Colors.black.withAlpha(100),
+                                Colors.black.withAlpha(0),
+                              ],
+                              center: Alignment.center,
+                            ),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: snapshot.removeItem,
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : Container(),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 32),
+            child: Text(
+              S.of(context).onDemand,
+              style: Theme.of(context).textTheme.headline3,
+            ),
           ),
         ),
         StoreConnector<AppState, List<Show>>(
@@ -79,8 +189,8 @@ class _AllInOneTabState extends State<AllInOneTab> {
           builder: (context, snapshot) => snapshot.isNotEmpty
               ? SliverList(
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) => ShowListing(
-                      data: snapshot[index],
+                    (context, index) => ShowListing.fromShow(
+                      snapshot[index],
                       heroTag: snapshot[index].slug,
                       onTap: () => widget.openShow(
                         snapshot[index],

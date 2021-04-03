@@ -5,15 +5,36 @@ import 'package:player/services/wp_schedule_api.dart';
 
 class ShowListing extends StatelessWidget {
   const ShowListing({
-    this.data,
+    required this.title,
+    this.subtitle,
     required this.heroTag,
+    this.thumbnail,
     this.onTap,
+    this.action,
     Key? key,
   }) : super(key: key);
 
-  final Show? data;
+  factory ShowListing.fromShow(
+    Show show, {
+    required String heroTag,
+    VoidCallback? onTap,
+    Widget? action,
+  }) {
+    return ShowListing(
+      heroTag: heroTag,
+      onTap: onTap,
+      title: show.title.text,
+      thumbnail: show.thumbnail is String ? show.thumbnail : null,
+      subtitle: show.meta.subtitle2?[0],
+      action: action,
+    );
+  }
   final VoidCallback? onTap;
   final String heroTag;
+  final String? thumbnail;
+  final String title;
+  final String? subtitle;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +49,11 @@ class ShowListing extends StatelessWidget {
             tag: heroTag,
             child: Stack(
               children: [
-                if (data?.thumbnail is String)
+                if (thumbnail is String)
                   AspectRatio(
                     aspectRatio: 3,
                     child: CachedNetworkImage(
-                      imageUrl: data?.thumbnail,
+                      imageUrl: thumbnail!,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -49,37 +70,52 @@ class ShowListing extends StatelessWidget {
                 ),
                 Container(
                   padding: EdgeInsets.all(8),
-                  child: Column(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        data?.title.text ?? S.of(context).defaultLiveShowName,
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                          shadows: [
-                            Shadow(offset: Offset(0, 2)),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5!
+                                  .copyWith(
+                                shadows: [
+                                  Shadow(offset: Offset(0, 2)),
+                                ],
+                              ),
+                            ),
+                            if (subtitle != null)
+                              Text(
+                                subtitle!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2!
+                                    .copyWith(
+                                  shadows: [
+                                    Shadow(offset: Offset(0, 2)),
+                                  ],
+                                ),
+                              )
+                            else
+                              Text(
+                                S.of(context).defaultShortDescription,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2!
+                                    .copyWith(
+                                  shadows: [
+                                    Shadow(offset: Offset(0, 2)),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       ),
-                      if (data?.meta.subtitle2 != null)
-                        Text(
-                          data!.meta.subtitle2![0],
-                          style:
-                              Theme.of(context).textTheme.bodyText2!.copyWith(
-                            shadows: [
-                              Shadow(offset: Offset(0, 2)),
-                            ],
-                          ),
-                        )
-                      else
-                        Text(
-                          S.of(context).defaultShortDescription,
-                          style:
-                              Theme.of(context).textTheme.bodyText2!.copyWith(
-                            shadows: [
-                              Shadow(offset: Offset(0, 2)),
-                            ],
-                          ),
-                        ),
+                      if (action != null) action!
                     ],
                   ),
                 ),
