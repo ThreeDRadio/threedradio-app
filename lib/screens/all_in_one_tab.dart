@@ -148,7 +148,9 @@ class _AllInOneTabState extends State<AllInOneTab> {
                       ShowListing(
                         title:
                             '${snapshot.show!.title.text} - ${snapshot.item!.episodeDate}',
-                        thumbnail: snapshot.show!.thumbnail,
+                        thumbnail: snapshot.show is String
+                            ? snapshot.show!.thumbnail
+                            : null,
                         subtitle:
                             '${snapshot.item!.position.format()} / ${snapshot.item!.showLength.format()}',
                         heroTag: snapshot.item!.id,
