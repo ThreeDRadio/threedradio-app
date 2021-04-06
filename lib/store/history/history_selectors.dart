@@ -26,8 +26,14 @@ List<HistoryItem> getPlayableItems(AppState s) {
       .toList();
 }
 
+List<HistoryItem> getUnfinishedPlayableItems(AppState s) {
+  return getPlayableItems(s)
+      .where((element) => (element.showLength - element.position).inMinutes > 5)
+      .toList();
+}
+
 HistoryItem? getLatestPlayable(AppState s) {
-  final items = getPlayableItems(s);
+  final items = getUnfinishedPlayableItems(s);
 
   if (items.isEmpty) {
     return null;
