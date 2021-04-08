@@ -81,7 +81,14 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
     );
     // Show the media notification, and let all clients no what
     // playback state and media item to display.
-    await _player.setUrl(mediaItem.id);
+    if (mode == PlaybackMode.live) {
+      await _player.setUrl(mediaItem.id);
+    } else {
+      // we use the caching audio source in on-demand mode
+      // to improve network performance
+      await _player
+          .setAudioSource(LockCachingAudioSource(Uri.parse(mediaItem.id)));
+    }
     _player.play();
     await AudioServiceBackground.setState(
       playing: true,
