@@ -4,6 +4,7 @@ import 'package:player/store/history/history_item.dart';
 import 'package:redux_entity/redux_entity.dart';
 import 'package:redux_epics/redux_epics.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:player/environment/environment.dart';
 
 class HistoryEpics extends EpicClass<AppState> {
   HistoryEpics() {
@@ -20,7 +21,8 @@ class HistoryEpics extends EpicClass<AppState> {
     return actions
         .whereType<AudioStateChange>()
         .where((action) => action.state?.playing ?? false)
-        .where((action) => store.state.audio.currentItem?.duration != null)
+        .where((action) =>
+            store.state.audio.currentItem?.id != Environment.liveStreamUrl)
         .throttleTime(const Duration(seconds: 1))
         .map((action) {
       return UpdateOne<HistoryItem>(
