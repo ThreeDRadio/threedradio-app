@@ -10,10 +10,11 @@ jobs:
     docker:
       - image: cirrusci/flutter:<< pipeline.parameters.flutter-version >>
 
-    working_directory: ~/repo
+    working_directory: ~/repo/app
 
     steps:
-      - checkout
+      - checkout:
+          path: ~/repo
       - run: flutter pub get
       - run: flutter pub global activate junitreport
       - run: flutter pub run intl_utils:generate
@@ -37,10 +38,11 @@ jobs:
       - image: cirrusci/flutter:<< pipeline.parameters.flutter-version >>
     resource_class: medium
 
-    working_directory: ~/repo
+    working_directory: ~/repo/app
 
     steps:
-      - checkout
+      - checkout:
+          path: ~/repo
       - attach_workspace:
           at: .
       - run: flutter pub get
@@ -60,9 +62,10 @@ jobs:
     docker:
       - image: 'cimg/ruby:2.7.2-node'
     resource_class: small
-    working_directory: ~/repo
+    working_directory: ~/repo/app
     steps:
-      - checkout
+      - checkout:
+          path: ~/repo
       - attach_workspace:
           at: .
       - run:
@@ -84,9 +87,10 @@ jobs:
       xcode: '12.3.0'
     resource_class: medium
 
-    working_directory: ~/repo
+    working_directory: ~/repo/app
     steps:
-      - checkout
+      - checkout:
+          path: ~/repo
       - attach_workspace:
           at: .
       - run:
@@ -142,9 +146,10 @@ jobs:
     macos:
       xcode: '12.3.0'
     resource_class: medium
-    working_directory: ~/repo
+    working_directory: ~/repo/app
     steps:
-      - checkout
+      - checkout:
+          path: ~/repo
       - attach_workspace:
           at: .
       - restore_cache:
