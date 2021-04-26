@@ -1,12 +1,10 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import { Cache } from 'cache-manager';
-import { exception } from 'node:console';
 import { EpisodeDto } from './models/episode.dto';
 import { Episode } from './models/episode.entity';
 import { ShowDto } from './models/show.dto';
 
-export const S3_SERVICE = Symbol('S3 service');
 export const S3_BUCKET_NAME = Symbol('S3 bucket name');
 
 const CACHE_KEY = 'S3_CACHE_DATA';
