@@ -1,202 +1,23 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
 version: 2.1
-parameters:
-  flutter-version:
-    type: string
-    default: "2.1.0-12.2.pre"
+
+setup: true
+
 orbs:
-  codecov: codecov/codecov@1.0.2
-jobs:
-  test:
-    docker:
-      - image: cirrusci/flutter:<< pipeline.parameters.flutter-version >>
-
-    working_directory: ~/repo/app
-
-    steps:
-      - checkout:
-          path: ~/repo
-      - run: flutter pub get
-      - run: flutter pub global activate junitreport
-      - run: flutter pub run intl_utils:generate
-      - run: flutter packages pub run build_runner build
-      - run: mkdir reports
-      - run: 
-          name: Run Tests
-          command: |
-            set +e
-            flutter test --coverage --machine | tee test_output.json
-            TEST_RESULT=${PIPESTATUS[0]}
-            flutter pub global run junitreport:tojunit --input test_output.json --output reports/test-results.xml
-            exit $TEST_RESULT
-      - codecov/upload:
-          file: coverage/lcov.info
-      - store_test_results:
-          path: ./reports
-
-  build-android:
-    docker:
-      - image: cirrusci/flutter:<< pipeline.parameters.flutter-version >>
-    resource_class: medium
-
-    working_directory: ~/repo/app
-
-    steps:
-      - checkout:
-          path: ~/repo
-      - attach_workspace:
-          at: .
-      - run: flutter pub get
-      - run: flutter pub run intl_utils:generate
-      - run: flutter packages pub run build_runner build
-      - run: echo $ANDROID_KEYSTORE_B64 | base64 --decode > android/threedradio-upload.keystore
-      - run: flutter build appbundle --release --build-number $(expr 1000 + << pipeline.number >> )
-      - store_artifacts:
-          path: ./build/app/outputs/bundle/release/app-release.aab
-          destination: app-production
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./build/app/outputs/bundle/release/app-release.aab
-
-  deploy-android:
-    docker:
-      - image: 'cimg/ruby:2.7.2-node'
-    resource_class: small
-    working_directory: ~/repo/app
-    steps:
-      - checkout:
-          path: ~/repo
-      - attach_workspace:
-          at: .
-      - run:
-          name: Fastlane Install
-          command: |
-            cd android
-            echo $GOOGLE_PLAY_KEY_B64 | base64 --decode > deploy_key.json
-            gem install bundler:2.1.4
-            bundle install --path vender/bundle
-      - run:
-          name: 'Run Fastlane'
-          command: |
-            cd android
-            bundle exec fastlane internal_deploy
-
-
-  build-ios:
-    macos:
-      xcode: '12.3.0'
-    resource_class: medium
-
-    working_directory: ~/repo/app
-    steps:
-      - checkout:
-          path: ~/repo
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Flutter
-          command: |
-            curl https://storage.googleapis.com/flutter_infra/releases/beta/macos/flutter_macos_<< pipeline.parameters.flutter-version >>-beta.zip --output flutter.zip
-            unzip flutter.zip
-            export PATH="$PATH:`pwd`/flutter/bin"
-            flutter precache --ios --no-android 
-            flutter doctor
-      - run: echo $APPSTORE_API_KEY_B64 | base64 --decode > ios/appstore_api_key.json
-      - restore_cache:
-          keys:
-            - gem-cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Gemfile.lock" }}
-            - gem-cache-v2-{{ arch }}-{{ .Branch }}
-            - gem-cache-v1
-      - restore_cache:
-          keys:
-            - pod-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Podfile.lock" }}
-            - pod-cache-v1-{{ arch }}-{{ .Branch }}
-            - pod-cache-v1
-      - run:
-          name: Build Flutter App
-          command: |
-            export PATH="$PATH:`pwd`/flutter/bin"
-            flutter pub get
-            flutter pub run intl_utils:generate
-            flutter pub run build_runner build
-            flutter build ios --release --no-codesign --config-only  --build-number $(expr 1000 + << pipeline.number >> ) 
-            cd ios
-            chruby 2.7
-            gem install bundler:2.1.4
-            bundle install --path vendor/bundle
-            bundle exec fastlane ios match_production
-            bundle exec fastlane ios build_production
-      - save_cache:
-          key: gem-cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Gemfile.lock" }}
-          paths:
-            - ./ios/vendor/bundle
-      - save_cache:
-          key: pod-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Podfile.lock" }}
-          paths:
-            - ./ios/Pods
-      - store_artifacts:
-          path: ./ios/threedradio-player.ipa
-          destination: app-production
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./ios/threedradio-player.ipa
-
-  deploy-ios:
-    macos:
-      xcode: '12.3.0'
-    resource_class: medium
-    working_directory: ~/repo/app
-    steps:
-      - checkout:
-          path: ~/repo
-      - attach_workspace:
-          at: .
-      - restore_cache:
-          keys:
-            - gem-cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "./ios/Gemfile.lock" }}
-            - gem-cache-v2-{{ arch }}-{{ .Branch }}
-            - gem-cache-v1
-      - run: echo $APPSTORE_API_KEY_B64 | base64 --decode > ios/appstore_api_key.json
-      - run:
-          name: TestFlight Deploy
-          command: |
-            cd ios
-            chruby 2.7
-            gem install bundler:2.1.4
-            bundle install --path vendor/bundle
-            bundle exec fastlane ios testflight_deploy
+  path-filtering: circleci/path-filtering@0.0.1
 
 workflows:
-  version: 2.1
-  test-build-deploy:
+  setup-workflow:
     jobs:
-      - test
-      - build-android:
-          requires:
-            - test
-          filters:
-            branches:
-              only:
-                - master
-      - deploy-android:
-          requires:
-            - build-android
-          filters:
-            branches:
-              only:
-                - master
-      - build-ios:
-          requires:
-            - test
-          filters:
-            branches:
-              only:
-                - master
-      - deploy-ios:
-          requires:
-            - build-ios
-          filters:
-            branches:
-              only:
-                - master
+      # The default filter runs on all branches except master
+      # And compares changes with develop.
+      # Perfect for Pull Requests and merges to master
+      - path-filtering/filter:
+          mapping: |
+            app/.* build-app true
+            ondemand-api/.* build-api true
+          # Optional, defaults to main:
+          base-revision: origin/master
