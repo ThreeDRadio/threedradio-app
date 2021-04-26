@@ -12,8 +12,11 @@ import 'package:player/store/shows/shows_epics.dart';
 import 'package:redux_epics/redux_epics.dart';
 
 final dio = Dio();
-final onDemandApi =
-    OnDemandApiService(http: dio, apiKey: Environment.onDemandApiKey);
+final onDemandApi = OnDemandApiService(
+  http: dio,
+  apiKey: Environment.onDemandApiKey,
+  baseUrl: Environment.onDemandApi,
+);
 final wpApi = WpScheduleApiService(http: dio);
 
 final appEpics = combineEpics<AppState>([

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'on_demand_api.g.dart';
@@ -51,13 +50,15 @@ class OnDemandApiService {
   OnDemandApiService({
     required this.http,
     required this.apiKey,
+    required this.baseUrl,
   });
   final Dio http;
   final String apiKey;
+  final String baseUrl;
 
   Future<List<OnDemandProgram>> getOnDemandPrograms() async {
     final response = await http.get<List<dynamic>>(
-      'https://ondemand.threedradio.com/shows',
+      '$baseUrl/shows',
       options: Options(
         headers: {'x-api-key': apiKey},
       ),
@@ -68,7 +69,7 @@ class OnDemandApiService {
 
   Future<List<OnDemandEpisode>> getEpisodes(String showId) async {
     final response = await http.get<List<dynamic>>(
-      'https://ondemand.threedradio.com/shows/$showId/episodes',
+      '$baseUrl/shows/$showId/episodes',
       options: Options(
         headers: {'x-api-key': apiKey},
       ),
