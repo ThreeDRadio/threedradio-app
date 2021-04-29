@@ -21,9 +21,13 @@ HistoryItem? getLastPlayed(AppState s) {
 
 List<HistoryItem> getPlayableItems(AppState s) {
   final oldest = DateTime.now().subtract(const Duration(days: 28));
-  return getHistoryItems(s)
-      .where((element) => DateTime.parse(element.episodeDate).isAfter(oldest))
-      .toList();
+  return getHistoryItems(s).where((element) {
+    try {
+      return DateTime.parse(element.episodeDate).isAfter(oldest);
+    } catch (exception) {
+      return false;
+    }
+  }).toList();
 }
 
 List<HistoryItem> getUnfinishedPlayableItems(AppState s) {
