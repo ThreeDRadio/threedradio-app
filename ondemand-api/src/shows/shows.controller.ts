@@ -7,7 +7,7 @@ import {
   SerializeOptions,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 import { EpisodeDto } from './models/episode.dto';
 import { ShowDto } from './models/show.dto';
 import { ShowsService } from './shows.service';
