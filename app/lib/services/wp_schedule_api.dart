@@ -113,10 +113,27 @@ class WpScheduleApiService {
   }
 
   Future<List<Show>> getShows() async {
-    final response = await http.get<List<dynamic>>(
-        'https://www.threedradio.com/wp-json/wp/v2/shows/?_embed&per_page=100');
+    List<Show> shows = [];
+    for (int page = 1;; page++) {
+      final response = await _getPageOfShows(page);
+      shows = [
+        ...shows,
+        ...response.data!.map((entry) => Show.fromJson(entry)).toList()
+      ];
+      final count =
+          int.parse(response.headers['x-wp-totalpages']?.first as String);
+      if (page == count) {
+        break;
+      }
+    }
+    return shows;
+  }
 
-    return response.data!.map((entry) => Show.fromJson(entry)).toList();
+  Future<Response<List<dynamic>>> _getPageOfShows(int page) async {
+    final response = await http.get<List<dynamic>>(
+        'https://www.threedradio.com/wp-json/wp/v2/shows/?_embed&page=${page}&per_page=100');
+
+    return response;
   }
 
   Future<Show> getShow(int id) async {
