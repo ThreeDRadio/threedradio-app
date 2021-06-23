@@ -13,7 +13,8 @@ class OnDemandEpics extends EpicClass<AppState> {
     await for (final action in actions) {
       if (action is RequestRetrieveAll<OnDemandProgram>) {
         final now = DateTime.now();
-        if (store.state.onDemandPrograms.lastFetchAllTime == null ||
+        if (action.forceRefresh ||
+            store.state.onDemandPrograms.lastFetchAllTime == null ||
             now
                     .difference(store.state.onDemandPrograms.lastFetchAllTime!)
                     .inMinutes >

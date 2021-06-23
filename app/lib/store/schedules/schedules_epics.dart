@@ -13,7 +13,8 @@ class SchedulesEpics extends EpicClass<AppState> {
     await for (final action in actions) {
       if (action is RequestRetrieveAll<Schedule>) {
         final now = DateTime.now();
-        if (store.state.schedules.lastFetchAllTime == null ||
+        if (action.forceRefresh ||
+            store.state.schedules.lastFetchAllTime == null ||
             now.difference(store.state.schedules.lastFetchAllTime!).inHours >
                 2) {
           final schedules = await api.getSchedules();

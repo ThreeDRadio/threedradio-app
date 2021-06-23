@@ -7,6 +7,7 @@ import 'package:player/screens/now_playing_screen.dart';
 import 'package:player/screens/show_detail_screen.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
+import 'package:player/store/app_selectors.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/widgets/now_playing_bar.dart';
@@ -49,6 +50,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     store.dispatch(RequestRetrieveAll<Schedule>());
     store.dispatch(RequestRetrieveAll<Show>());
     store.dispatch(RequestRetrieveAll<OnDemandProgram>());
+  }
+
+  Future<void> refresh() {
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(RequestRetrieveAll<Schedule>(forceRefresh: true));
+    store.dispatch(RequestRetrieveAll<Show>(forceRefresh: true));
+    store.dispatch(RequestRetrieveAll<OnDemandProgram>(forceRefresh: true));
+    return store.onChange.firstWhere((state) => !somethingLoading(state));
   }
 
   openShowDetail(Show show) {
@@ -144,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: AllInOneTab(
                   playLive: startLiveStream,
                   openShow: openShowDetail,
+                  onRefresh: refresh,
                 ),
               ),
             ),
