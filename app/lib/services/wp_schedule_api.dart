@@ -79,15 +79,23 @@ class Show {
     required this.content,
     required this.excerpt,
     required this.featured_media,
+    this.on_demand,
     required this.thumbnail,
     required this.meta,
   });
 
-  String get onDemandShowId => slug.replaceAll('-', '+');
+  String get onDemandShowId {
+    if (on_demand?.isNotEmpty ?? false) {
+      return on_demand!.replaceAll('-', '+');
+    }
+
+    return (slug).replaceAll('-', '+');
+  }
 
   final int id;
   final String status;
   final String slug;
+  final String? on_demand;
   final WpText title;
   final WpText content;
   final WpText excerpt;

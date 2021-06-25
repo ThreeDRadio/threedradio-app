@@ -12,12 +12,14 @@ Map<String, OnDemandProgram> getOnDemandEntities(AppState s) =>
 
 List<Show> getShowsForOnDemandStreaming(AppState s) {
   final onDemand = getOnDemandEntities(s);
-  final shows = getShowEntitiesBySlug(s);
+  final shows = getShowEntities(s).values;
 
-  final List<Show> sorted = onDemand.values
-      .map((p) => shows[p.slug])
-      .where((item) => item != null)
-      .toList() as List<Show>;
+  final List<Show> sorted = shows.where((s) {
+    final onDemandKey = s.onDemandShowId;
+    print(onDemandKey);
+    return onDemand[onDemandKey] != null;
+  }).toList();
+
   sorted.sort((a, b) => a.title.text.compareTo(b.title.text));
 
   return sorted;
