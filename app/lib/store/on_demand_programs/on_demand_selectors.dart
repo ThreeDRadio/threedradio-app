@@ -16,7 +16,6 @@ List<Show> getShowsForOnDemandStreaming(AppState s) {
 
   final List<Show> sorted = shows.where((s) {
     final onDemandKey = s.onDemandShowId;
-    print(onDemandKey);
     return onDemand[onDemandKey] != null;
   }).toList();
 
