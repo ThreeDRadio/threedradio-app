@@ -6,6 +6,7 @@ import { Episode } from './models/episode.entity';
 import { ShowDto } from './models/show.dto';
 
 export const S3_BUCKET_NAME = Symbol('S3 bucket name');
+export const S3_HOSTING_ENDPOINT = Symbol('S3 hosting endpoint');
 
 const CACHE_KEY = 'S3_CACHE_DATA';
 
@@ -16,6 +17,7 @@ export class ShowsService {
   constructor(
     private s3: S3,
     @Inject(S3_BUCKET_NAME) private bucketName: string,
+    @Inject(S3_HOSTING_ENDPOINT) private endpoint: string,
     @Inject(CACHE_MANAGER) private cache: Cache,
   ) {}
 
@@ -30,7 +32,7 @@ export class ShowsService {
 
     const shows: { [id: string]: Episode[] } = {};
 
-    for (let episode of episodes) {
+    for (const episode of episodes) {
       if (shows[episode.id]) {
         shows[episode.id] = [...shows[episode.id], episode];
       } else {
@@ -38,7 +40,7 @@ export class ShowsService {
       }
     }
 
-    let showIds = Object.keys(shows);
+    const showIds = Object.keys(shows);
     return showIds.map(
       (id) =>
         new ShowDto({
@@ -52,22 +54,21 @@ export class ShowsService {
 
   public async getEpisodesForShow(showId: string): Promise<EpisodeDto[]> {
     const data = await this.getAndCache();
-    const episodes: Episode[] = data.map((item) => ({
-      ...this.parsePodcastKey(item.Key),
-      updatedAt: item.LastModified,
-      key: item.Key,
-      size: item.Size,
-    }));
+    const episodes: Episode[] = data
+      .map((item) => ({
+        ...this.parsePodcastKey(item.Key),
+        updatedAt: item.LastModified,
+        key: item.Key,
+        size: item.Size,
+      }))
+      .filter((item) => item.key != null);
 
     const shows: { [id: string]: EpisodeDto[] } = {};
 
-    for (let episode of episodes) {
+    for (const episode of episodes) {
       const episodeDto: EpisodeDto = new EpisodeDto({
         ...episode,
-        url: `https://${this.bucketName}.s3.amazonaws.com/${episode.key.replace(
-          ' ',
-          '+',
-        )}`,
+        url: `${this.endpoint}/${encodeURI(episode.key)}`,
         showId: showId,
       });
       if (shows[episode.id]) {
@@ -122,17 +123,21 @@ export class ShowsService {
   private parsePodcastKey(
     key: string,
   ): Omit<Episode, 'updatedAt' | 'key' | 'size'> {
-    const pathParts = key.split('/');
-    const filename = pathParts[pathParts.length - 1];
-    const parts = filename.split(
-      /([a-zA-Z0-9\+\% ]+)-(\d\d\d\d-\d\d-\d\d)-([A-Za-z]+).mp3/,
-    );
-    return {
-      id: decodeURIComponent(parts[1].toLowerCase())
-        .replace(/\+\&\+/g, '+')
-        .replace(/ /g, '+'),
-      name: decodeURIComponent(parts[1].replace(/\+/g, ' ')),
-      date: parts[2],
-    };
+    try {
+      const pathParts = key.split('/');
+      const filename = pathParts[pathParts.length - 1];
+      const parts = filename.split(
+        /([a-zA-Z0-9\+\% ]+)-(\d\d\d\d-\d\d-\d\d)-([A-Za-z]+).mp3/,
+      );
+      return {
+        id: decodeURIComponent(parts[1].toLowerCase())
+          .replace(/\+\&\+/g, '+')
+          .replace(/ /g, '+'),
+        name: decodeURIComponent(parts[1].replace(/\+/g, ' ')),
+        date: parts[2],
+      };
+    } catch (error) {
+      return null;
+    }
   }
 }

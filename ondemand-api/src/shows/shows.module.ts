@@ -1,5 +1,9 @@
 import { CacheModule, Module } from '@nestjs/common';
-import { S3_BUCKET_NAME, ShowsService } from './shows.service';
+import {
+  S3_BUCKET_NAME,
+  S3_HOSTING_ENDPOINT,
+  ShowsService,
+} from './shows.service';
 import { ShowsController } from './shows.controller';
 import { S3 } from 'aws-sdk';
 
@@ -14,11 +18,18 @@ import { S3 } from 'aws-sdk';
     ShowsService,
     {
       provide: S3,
-      useValue: new S3({}),
+      useValue: new S3({
+        endpoint: 'https://sfo3.digitaloceanspaces.com',
+      }),
     },
     {
       provide: S3_BUCKET_NAME,
-      useValue: 'threedradio-podcasts-production',
+      useValue: 'threedradio-ondemand-files',
+    },
+    {
+      provide: S3_HOSTING_ENDPOINT,
+      useValue:
+        'https://threedradio-ondemand-files.sfo3.cdn.digitaloceanspaces.com',
     },
   ],
 })
