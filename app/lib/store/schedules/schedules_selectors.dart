@@ -17,25 +17,30 @@ RemoteEntityState<Schedule> getScheduleState(AppState state) {
   return state.schedules;
 }
 
-/// Returns the week of the month for the [date].
-///
-/// Number will be between 1-5 (inclusive)
-///
-/// This implementation is copied from the OnAir2 theme
-/// so that the app shows the same thing as the website.
-///
-/// See /onair2/functions.php:989
-///
-/// Defaults to the current time if [date] is not provided.
-///
-int weekOfMonth({DateTime? date}) {
+/// Returns the week number for the date, in the range (1,2).
+int weekNumber({DateTime? date}) {
   date ??= DateTime.now();
-  return (date.day / 7).ceil();
+
+  // Unix Epoch was Thursday, January 1, 1970
+  // we are treating the start of the first full week
+  // since epoch as week 0
+  // This hard coded timestamp is
+  // Mon Jan 05 1970 00:00:00 GMT+0930 (Australian Central Standard Time)
+  const threeDEpoch = 311400;
+
+  // so we are subtracting this epoch from the current time, and then
+  // converting to weeks
+  final elapsedSeconds = (date.millisecondsSinceEpoch / 1000) - threeDEpoch;
+  final weekNumber = elapsedSeconds / 60 / 60 / 24 / 7;
+
+  // finally, we modulus with 2 then add 1 to get a number in the range (1, 2)
+  // which is what the wordpress schedule requires
+  return (weekNumber.toInt() % 2) + 1;
 }
 
 Schedule? getToday(AppState state) {
   final today = DateTime.now().weekday;
-  final week = weekOfMonth();
+  final week = weekNumber();
 
   final suffix = (week % 2 == 0) ? '-b' : '-a';
   try {
