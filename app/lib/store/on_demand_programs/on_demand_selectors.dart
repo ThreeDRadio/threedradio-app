@@ -1,6 +1,7 @@
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
+import 'package:player/store/schedules/schedules_selectors.dart';
 import 'package:player/store/shows/shows_selectors.dart';
 import 'package:redux_entity/redux_entity.dart';
 
@@ -22,4 +23,22 @@ List<Show> getShowsForOnDemandStreaming(AppState s) {
   sorted.sort((a, b) => a.title.text.compareTo(b.title.text));
 
   return sorted;
+}
+
+List<OnDemandEpisode> getEpisodesForShow(AppState state, Show show) {
+  final possibleEpisodes =
+      state.onDemandEpisodes.entities[show.onDemandShowId]?.reversed.toList() ??
+          <OnDemandEpisode>[];
+
+  return possibleEpisodes.where((episode) {
+    final week = weekNumber(date: DateTime.parse(episode.date));
+    print(week);
+
+    final schedule =
+        getScheduleForDate(state, DateTime.parse(episode.date).toLocal());
+    final List<int> showIds =
+        schedule?.shows.map((e) => int.parse(e.show_id[0].trim())).toList() ??
+            [];
+    return showIds.contains(show.id);
+  }).toList();
 }

@@ -10,6 +10,7 @@ import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/store/favourites/favourites_actions.dart';
+import 'package:player/store/on_demand_programs/on_demand_selectors.dart';
 import 'package:player/widgets/days_left_badge.dart';
 import 'package:redux_entity/redux_entity.dart';
 
@@ -176,10 +177,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
             ),
             StoreConnector<AppState, List<OnDemandEpisode>>(
                 converter: (store) =>
-                    store.state.onDemandEpisodes
-                        .entities[widget.show.onDemandShowId]?.reversed
-                        .toList() ??
-                    <OnDemandEpisode>[],
+                    getEpisodesForShow(store.state, widget.show),
                 builder: (context, episodes) {
                   if (episodes.isEmpty) {
                     return SliverToBoxAdapter(

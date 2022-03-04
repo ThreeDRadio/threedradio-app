@@ -39,8 +39,12 @@ int weekNumber({DateTime? date}) {
 }
 
 Schedule? getToday(AppState state) {
-  final today = DateTime.now().weekday;
-  final week = weekNumber();
+  return getScheduleForDate(state, DateTime.now());
+}
+
+Schedule? getScheduleForDate(AppState state, DateTime date) {
+  final today = date.weekday;
+  final week = weekNumber(date: date);
 
   final suffix = (week % 2 == 0) ? '-b' : '-a';
   try {
