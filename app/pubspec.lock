@@ -46,12 +46,12 @@ packages:
     source: git
     version: "0.17.1"
   audio_session:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: audio_session
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.6+1"
+    version: "0.1.6"
   boolean_selector:
     dependency: transitive
     description:
