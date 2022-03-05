@@ -35,13 +35,15 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.6.1"
+    version: "2.5.0"
   audio_service:
     dependency: "direct main"
     description:
-      name: audio_service
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "0.17.1"
+      resolved-ref: "01dc08e9d6df8957ceeb1aaa75c8a33d66e05148"
+      url: "https://github.com/ThreeDRadio/audio_service.git"
+    source: git
     version: "0.17.1"
   audio_session:
     dependency: transitive
@@ -147,7 +149,7 @@ packages:
       name: chewie
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.2"
+    version: "1.0.0"
   chewie_audio:
     dependency: transitive
     description:
@@ -327,7 +329,7 @@ packages:
       name: flutter_html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.0.0"
   flutter_isolate:
     dependency: transitive
     description:
@@ -553,13 +555,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  numerus:
-    dependency: transitive
-    description:
-      name: numerus
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.1"
   octo_image:
     dependency: transitive
     description:
@@ -914,7 +909,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.2.19"
   timezone:
     dependency: "direct main"
     description:
@@ -1026,7 +1021,7 @@ packages:
       name: wakelock
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.2"
+    version: "0.4.0"
   wakelock_macos:
     dependency: transitive
     description:
@@ -1048,13 +1043,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0+1"
-  wakelock_windows:
-    dependency: transitive
-    description:
-      name: wakelock_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
   watcher:
     dependency: transitive
     description:
@@ -1082,7 +1070,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.0.5"
   xdg_directories:
     dependency: transitive
     description:
@@ -1105,5 +1093,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.13.0 <3.0.0"
-  flutter: ">=2.2.0"
+  dart: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
