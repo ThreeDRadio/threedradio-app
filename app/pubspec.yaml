@@ -27,7 +27,7 @@ dependencies:
   hive: ^2.0.0
   html_unescape: ^2.0.0
   json_annotation: ^4.0.1
-  just_audio: ^0.7.3
+  just_audio: ^0.9.20
   package_info: ^2.0.0
   provider: ^5.0.0
   redux: ^5.0.0
