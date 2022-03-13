@@ -90,7 +90,7 @@ jobs:
 
   build-ios:
     macos:
-      xcode: '12.3.0'
+      xcode: '13.1.0'
     resource_class: medium
 
     working_directory: ~/repo/app
@@ -150,7 +150,7 @@ jobs:
 
   deploy-ios:
     macos:
-      xcode: '12.3.0'
+      xcode: '13.1.0'
     resource_class: medium
     working_directory: ~/repo/app
     steps:
