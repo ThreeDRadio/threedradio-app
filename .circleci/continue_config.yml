@@ -2,7 +2,7 @@ version: 2.1
 parameters:
   flutter-version:
     type: string
-    default: "2.10.0-0.1.pre"
+    default: "2.11.0-0.1.pre"
   build-app:
     type: boolean
     default: false
