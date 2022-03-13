@@ -161,20 +161,23 @@ class _AllInOneTabState extends State<AllInOneTab> {
                               '${snapshot.item!.position.format()} / ${snapshot.item!.showLength.format()}',
                           heroTag: snapshot.item!.id,
                           onTap: () => resumeEpisode(snapshot),
-                          action: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(200),
-                              gradient: RadialGradient(
-                                colors: [
-                                  Colors.black.withAlpha(100),
-                                  Colors.black.withAlpha(0),
-                                ],
-                                center: Alignment.center,
+                          action: Material(
+                            type: MaterialType.transparency,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(200),
+                                gradient: RadialGradient(
+                                  colors: [
+                                    Colors.black.withAlpha(100),
+                                    Colors.black.withAlpha(0),
+                                  ],
+                                  center: Alignment.center,
+                                ),
                               ),
-                            ),
-                            child: IconButton(
-                              icon: Icon(Icons.close),
-                              onPressed: snapshot.removeItem,
+                              child: IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: snapshot.removeItem,
+                              ),
                             ),
                           ),
                         )

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
@@ -19,11 +20,13 @@ final onDemandApi = OnDemandApiService(
 );
 final wpApi = WpScheduleApiService(http: dio);
 
-final appEpics = combineEpics<AppState>([
-  AudioEpics(),
-  HistoryEpics(),
-  OnDemandEpisodesEpics(api: onDemandApi),
-  OnDemandEpics(api: onDemandApi),
-  SchedulesEpics(api: wpApi),
-  ShowsEpics(api: wpApi),
-]);
+Epic<AppState> buildEpics(ThreeDBackgroundTask audioService) {
+  return combineEpics<AppState>([
+    AudioEpics(audioService),
+    HistoryEpics(),
+    OnDemandEpisodesEpics(api: onDemandApi),
+    OnDemandEpics(api: onDemandApi),
+    SchedulesEpics(api: wpApi),
+    ShowsEpics(api: wpApi),
+  ]);
+}

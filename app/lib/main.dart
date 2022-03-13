@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:player/audio/background_task.dart';
 import 'package:player/generated/l10n.dart';
 import 'package:player/screens/about_screen.dart';
 import 'package:player/screens/favourites_screen.dart';
@@ -34,6 +35,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
 
+  final audioService = ThreeDBackgroundTask();
+  AudioService.init(
+    builder: () => audioService,
+    config: AudioServiceConfig(
+      androidNotificationIcon: 'drawable/ic_threedradio',
+    ),
+  );
+
   FirebaseAnalytics analytics = FirebaseAnalytics();
 
   final persistor = Persistor<AppState>(
@@ -49,8 +58,9 @@ void main() async {
   AppState initialState;
   try {
     initialState = await persistor.load();
-  } catch (err) {
+  } catch (err, trace) {
     print(err);
+    print(trace);
   }
 
   final remoteDev = RemoteDevToolsMiddleware('192.168.1.207:8000');
@@ -59,7 +69,7 @@ void main() async {
     appReducer,
     initialState: initialState ?? AppState(),
     middleware: [
-      EpicMiddleware(appEpics),
+      EpicMiddleware(buildEpics(audioService)),
       persistor.createMiddleware(),
       if (debug) remoteDev
     ],
@@ -174,9 +184,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         routes: {
-          '/': (context) => AudioServiceWidget(
-                child: HomeScreen(),
-              ),
+          '/': (context) => HomeScreen(),
           '/about': (context) => AboutScreen(),
           '/favourites': (context) => FavouritesScreen(),
         },

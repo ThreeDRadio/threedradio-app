@@ -47,7 +47,7 @@ class NowPlayingBar extends StatelessWidget {
                         style: Theme.of(context).textTheme.headline6,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (item?.album != null) Text(item!.album),
+                      if (item?.album != null) Text(item!.album!),
                     ],
                   ),
                 ),
@@ -65,14 +65,22 @@ class NowPlayingBar extends StatelessWidget {
                           )
                         ]
                       : [
-                          if (state!.actions.contains(MediaAction.pause))
+                          if (state!.controls
+                              .map((c) => c.action)
+                              .contains(MediaAction.pause))
                             IconButton(
                                 icon: Icon(Icons.pause), onPressed: onPause),
-                          if (state!.actions.contains(MediaAction.play))
+                          if (state!.controls
+                              .map(
+                                (e) => e.action,
+                              )
+                              .contains(MediaAction.play))
                             IconButton(
                                 icon: Icon(Icons.play_arrow),
                                 onPressed: onPlay),
-                          if (state!.actions.contains(MediaAction.stop))
+                          if (state!.controls
+                              .map((e) => e.action)
+                              .contains(MediaAction.stop))
                             IconButton(
                                 icon: Icon(Icons.stop), onPressed: onStop)
                         ],

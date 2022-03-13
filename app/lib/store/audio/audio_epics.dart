@@ -11,7 +11,7 @@ import 'package:redux_epics/redux_epics.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AudioEpics extends EpicClass<AppState> {
-  AudioEpics() {
+  AudioEpics(this.audioService) {
     _epic = combineEpics([
       _audioStateChanges,
       _mediaItemChange,
@@ -24,6 +24,7 @@ class AudioEpics extends EpicClass<AppState> {
     ]);
   }
 
+  ThreeDBackgroundTask audioService;
   late Epic<AppState> _epic;
   Stream call(Stream actions, EpicStore<AppState> store) {
     return _epic(actions, store);
@@ -31,21 +32,21 @@ class AudioEpics extends EpicClass<AppState> {
 
   Stream _pause(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<RequestPause>().asyncMap((event) async {
-      await AudioService.pause();
+      await audioService.pause();
       return SuccessPause();
     });
   }
 
   Stream _resume(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<RequestResume>().asyncMap((event) async {
-      await AudioService.play();
+      await audioService.play();
       return SuccessResume();
     });
   }
 
   Stream _stop(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<RequestStop>().asyncMap((event) async {
-      await AudioService.stop();
+      await audioService.stop();
       return SuccessStop();
     });
   }
@@ -60,19 +61,19 @@ class AudioEpics extends EpicClass<AppState> {
       final show = store.state.shows.entities.values.firstWhere(
           (element) => element.onDemandShowId == action.episode.showId);
 
-      if (!AudioService.running) {
-        await AudioService.start(
-          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
-          androidNotificationIcon: 'drawable/ic_threedradio',
-          params: AudioStartParams(
-            mode: PlaybackMode.onDemand,
-            url: action.episode.url,
-          ).toJson(),
-        );
-      }
-      await AudioService.playMediaItem(
+//      if (!AudioService.running) {
+//        await AudioService.start(
+//          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
+//          androidNotificationIcon: 'drawable/ic_threedradio',
+//          params: AudioStartParams(
+//            mode: PlaybackMode.onDemand,
+//            url: action.episode.url,
+//          ).toJson(),
+//        );
+//      }
+      await audioService.playMediaItem(
         MediaItem(
-          title: show?.title?.text ?? 'Three D Radio',
+          title: show.title.text,
           artUri: show.thumbnail is String ? Uri.parse(show.thumbnail) : null,
           album: action.episode.date,
           extras: {'episode': action.episode.id, 'showId': show.id},
@@ -80,7 +81,7 @@ class AudioEpics extends EpicClass<AppState> {
         ),
       );
       if (action.position != null) {
-        await AudioService.seekTo(action.position!);
+        await audioService.seek(action.position!);
       }
       return SuccessPlayEpisode();
     });
@@ -88,56 +89,60 @@ class AudioEpics extends EpicClass<AppState> {
 
   Stream _playLiveStream(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<RequestPlayLive>().asyncMap((event) async {
-      if (store.state.audio.state!.playing &&
-          store.state.audio.currentItem!.id == Environment.liveStreamUrl) {
-        return SuccessPlayLive();
-      }
-      final currentShowId = getCurrentShowId(store.state);
-      Show? currentShow;
-      if (currentShowId != null) {
-        currentShow = store.state.shows.entities[currentShowId] as Show;
-      }
-      if (!AudioService.running) {
-        await AudioService.start(
-          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
-          androidNotificationIcon: 'drawable/ic_threedradio',
+      try {
+        if (store.state.audio.state!.playing &&
+            store.state.audio.currentItem!.id == Environment.liveStreamUrl) {
+          return SuccessPlayLive();
+        }
+        final currentShowId = getCurrentShowId(store.state);
+        Show? currentShow;
+        if (currentShowId != null) {
+          currentShow = store.state.shows.entities[currentShowId] as Show;
+        }
+//      if (!AudioService.running) {
+//        await AudioService.start(
+//          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
+//          androidNotificationIcon: 'drawable/ic_threedradio',
+//        );
+//      }
+        await audioService.playMediaItem(
+          MediaItem(
+            title: currentShow?.title.text ?? 'Three D Radio',
+            artUri: currentShow?.thumbnail is String
+                ? Uri.parse(currentShow?.thumbnail)
+                : null,
+            album: 'Three D Radio - Live',
+            extras: {
+              'showId': currentShow?.id,
+            },
+            id: Environment.liveStreamUrl,
+          ),
         );
+        return SuccessPlayLive();
+      } catch (error) {
+        print(error);
+        return FailPlayLive();
       }
-      await AudioService.playMediaItem(
-        MediaItem(
-          title: currentShow?.title.text ?? 'Three D Radio',
-          artUri: currentShow?.thumbnail is String
-              ? Uri.parse(currentShow?.thumbnail)
-              : null,
-          album: 'Three D Radio - Live',
-          extras: {
-            'showId': currentShow?.id,
-          },
-          id: Environment.liveStreamUrl,
-        ),
-      );
-      return SuccessPlayLive();
     });
   }
 
   Stream _audioStateChanges(Stream actions, EpicStore<AppState> store) {
-    return actions.whereType<AppStartAction>().switchMap((_) => AudioService
-        .playbackStateStream
+    return actions.whereType<AppStartAction>().switchMap((_) => audioService
+        .playbackState
         .where((event) => event != null)
         .throttleTime(const Duration(milliseconds: 100), trailing: true)
         .map((event) => AudioStateChange(state: event)));
   }
 
   Stream _mediaItemChange(Stream actions, EpicStore<AppState> store) {
-    return actions.whereType<AppStartAction>().switchMap((_) => AudioService
-        .currentMediaItemStream
-        .map((event) => MediaItemChange(item: event)));
+    return actions.whereType<AppStartAction>().switchMap((_) =>
+        audioService.mediaItem.map((event) => MediaItemChange(item: event)));
     // .debounceTime(const Duration(seconds: 1)));
   }
 
   Stream _seekToPosition(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<RequestSeek>().asyncMap((action) async {
-      await AudioService.seekTo(action.position);
+      await audioService.seek(action.position);
       return SuccessSeek();
     });
   }

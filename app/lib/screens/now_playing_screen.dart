@@ -22,12 +22,14 @@ class _ViewModel {
     this.item,
     this.state,
     this.show,
+    this.controls = const [],
     required this.seekToPosition,
   });
 
   final MediaItem? item;
   final Show? show;
   final PlaybackState? state;
+  final List<MediaAction> controls;
   final ValueChanged<Duration> seekToPosition;
 }
 
@@ -85,6 +87,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       converter: (store) => _ViewModel(
         item: store.state.audio.currentItem,
         state: store.state.audio.state,
+        controls:
+            store.state.audio.state?.controls.map((e) => e.action).toList() ??
+                [],
         show: store.state.shows.entities[
             (store.state.audio.currentItem?.extras ?? const {})['showId']
                 ?.toString()],
@@ -156,15 +161,13 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          if (snapshot.state?.actions
-                                  .contains(MediaAction.rewind) ??
-                              false)
+                          if (snapshot.controls.contains(MediaAction.rewind))
                             IconButton(
                               icon: Icon(Icons.replay_30),
-                              onPressed: snapshot.state!.currentPosition >
+                              onPressed: snapshot.state!.position >
                                       const Duration(seconds: 30)
                                   ? () => snapshot.seekToPosition(
-                                      snapshot.state!.currentPosition -
+                                      snapshot.state!.position -
                                           const Duration(seconds: 30))
                                   : null,
                               iconSize: 48,
@@ -175,17 +178,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               onPressed: null,
                               iconSize: 48,
                             ),
-                          if (snapshot.state?.actions
-                                  .contains(MediaAction.fastForward) ??
-                              false)
+                          if (snapshot.controls
+                              .contains(MediaAction.fastForward))
                             IconButton(
                               icon: Icon(Icons.forward_30),
                               onPressed:
                                   (snapshot.item?.duration ?? Duration.zero) -
-                                              snapshot.state!.currentPosition >
+                                              snapshot.state!.position >
                                           const Duration(seconds: 30)
                                       ? () => snapshot.seekToPosition(
-                                          snapshot.state!.currentPosition +
+                                          snapshot.state!.position +
                                               const Duration(seconds: 30))
                                       : null,
                               iconSize: 48,
@@ -196,36 +198,26 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               onPressed: null,
                               iconSize: 48,
                             ),
-                          if (snapshot.state?.actions
-                                  .contains(MediaAction.pause) ??
-                              false)
+                          if (snapshot.controls.contains(MediaAction.pause))
                             IconButton(
                               icon: Icon(Icons.pause),
                               onPressed: pause,
                               iconSize: 48,
                             ),
-                          if (snapshot.state?.actions
-                                  .contains(MediaAction.play) ??
-                              false)
+                          if (snapshot.controls.contains(MediaAction.play))
                             IconButton(
                               icon: Icon(Icons.play_arrow),
                               onPressed: resume,
                               iconSize: 48,
                             ),
-                          if (!(snapshot.state?.actions
-                                      .contains(MediaAction.play) ??
-                                  false) &&
-                              !(snapshot.state?.actions
-                                      .contains(MediaAction.pause) ??
-                                  false))
+                          if (!(snapshot.controls.contains(MediaAction.play)) &&
+                              !(snapshot.controls.contains(MediaAction.pause)))
                             IconButton(
                               icon: Icon(Icons.play_arrow),
                               iconSize: 48,
                               onPressed: null,
                             ),
-                          if (snapshot.state?.actions
-                                  .contains(MediaAction.stop) ??
-                              false)
+                          if (snapshot.controls.contains(MediaAction.stop))
                             IconButton(
                               icon: Icon(Icons.stop),
                               onPressed: stop,
@@ -247,8 +239,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         max: snapshot.item!.duration!.inSeconds.toDouble(),
                         value: seekInProgress
                             ? seekingPosition
-                            : snapshot.state!.currentPosition.inSeconds
-                                .toDouble(),
+                            : snapshot.state!.position.inSeconds.toDouble(),
                         onChangeStart: onSeekStart,
                         onChangeEnd: (value) {
                           setState(() {
@@ -270,7 +261,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                             '${Duration(seconds: seekingPosition.round()).format()} / ${snapshot.item!.duration!.format()}')
                       else
                         Text(
-                            '${snapshot.state!.currentPosition.format()} / ${snapshot.item!.duration!.format()}')
+                            '${snapshot.state!.position.format()} / ${snapshot.item!.duration!.format()}')
                   ],
                 ),
               ),

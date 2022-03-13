@@ -32,7 +32,6 @@ List<OnDemandEpisode> getEpisodesForShow(AppState state, Show show) {
 
   return possibleEpisodes.where((episode) {
     final week = weekNumber(date: DateTime.parse(episode.date));
-    print(week);
 
     final schedule =
         getScheduleForDate(state, DateTime.parse(episode.date).toLocal());

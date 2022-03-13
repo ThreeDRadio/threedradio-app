@@ -25,11 +25,7 @@ final onDemandMediaControlsPlaying = [
   MediaControl.rewind,
 ];
 
-backgroundTaskEntrypoint() {
-  AudioServiceBackground.run(() => ThreeDBackgroundTask());
-}
-
-class ThreeDBackgroundTask extends BackgroundAudioTask {
+class ThreeDBackgroundTask extends BaseAudioHandler {
   AudioPlayer _player = AudioPlayer();
   PlaybackMode? mode;
 
@@ -51,96 +47,111 @@ class ThreeDBackgroundTask extends BackgroundAudioTask {
 
   ThreeDBackgroundTask() {
     _player.durationStream.listen((duration) {
-      if (AudioServiceBackground.mediaItem != null) {
-        AudioServiceBackground.setMediaItem(
-            AudioServiceBackground.mediaItem!.copyWith(duration: duration));
+      if (mediaItem.valueWrapper != null) {
+        mediaItem.add(
+          mediaItem.valueWrapper?.value!.copyWith(duration: duration),
+        );
       }
     });
 
-    _player.positionStream.listen((event) {
-      AudioServiceBackground.setState(
-        controls: currentMediaControls,
+    _player.positionStream.where(((event) => _player.playing)).listen((event) {
+      playbackState.add(PlaybackState(
         processingState: AudioProcessingState.ready,
+        controls: currentMediaControls,
         playing: _player.playing,
-        position: event,
-      );
+        updatePosition: event,
+      ));
     });
+    playbackState.add(
+      PlaybackState(
+        controls: [],
+        playing: false,
+        processingState: AudioProcessingState.idle,
+      ),
+    );
   }
 
-  Future<void> onPlayMediaItem(MediaItem mediaItem) async {
-    mode = mediaItem.id == Environment.liveStreamUrl
+  @override
+  Future<void> playMediaItem(MediaItem item) async {
+    mode = item.id == Environment.liveStreamUrl
         ? PlaybackMode.live
         : PlaybackMode.onDemand;
 
-    await AudioServiceBackground.setMediaItem(mediaItem);
+    mediaItem.add(item);
 
-    await AudioServiceBackground.setState(
+    playbackState.add(PlaybackState(
       playing: false,
       controls: currentMediaControls,
       processingState: AudioProcessingState.buffering,
-    );
+    ));
+
     // Show the media notification, and let all clients no what
     // playback state and media item to display.
     if (mode == PlaybackMode.live) {
-      await _player.setUrl(mediaItem.id);
+      await _player.setUrl(item.id);
     } else {
       // we use the caching audio source in on-demand mode
       // to improve network performance
-      await _player
-          .setAudioSource(LockCachingAudioSource(Uri.parse(mediaItem.id)));
+      await _player.setAudioSource(LockCachingAudioSource(Uri.parse(item.id)));
     }
     _player.play();
-    await AudioServiceBackground.setState(
+    playbackState.add(PlaybackState(
       playing: true,
       controls: currentMediaControls,
       processingState: AudioProcessingState.ready,
-    );
+    ));
 
-    super.onPlayMediaItem(mediaItem);
+    super.playMediaItem(item);
   }
 
   @override
-  Future<void> onUpdateMediaItem(MediaItem mediaItem) {
-    AudioServiceBackground.setMediaItem(mediaItem);
-    return super.onUpdateMediaItem(mediaItem);
+  Future<void> updateMediaItem(MediaItem item) {
+    mediaItem.add(item);
+    return super.updateMediaItem(item);
   }
 
   @override
-  Future<void> onSeekTo(Duration position) {
+  Future<void> seek(Duration position) {
     if (_player.playing && mode == PlaybackMode.onDemand) {
       _player.seek(position);
     }
-    return super.onSeekTo(position);
+    return super.seek(position);
   }
 
   @override
-  Future<void> onStop() async {
+  Future<void> stop() async {
     await _player.stop();
-    await _player.dispose();
-    await AudioServiceBackground.setState(
+    //await _player.dispose();
+    playbackState.add(PlaybackState(
       controls: [],
-      processingState: AudioProcessingState.stopped,
+      processingState: AudioProcessingState.ready,
       playing: false,
-    );
-    await super.onStop();
+    ));
+    await super.stop();
   }
 
   @override
-  Future<void> onPause() async {
+  Future<void> pause() async {
     await _player.pause();
-    await AudioServiceBackground.setState(
+    playbackState.add(
+      PlaybackState(
         controls: currentMediaControls,
         playing: false,
-        processingState: AudioProcessingState.ready);
-    return super.onPause();
+        processingState: AudioProcessingState.ready,
+      ),
+    );
+    return super.pause();
   }
 
-  Future<void> onPlay() async {
+  Future<void> play() async {
     await _player.play();
-    await AudioServiceBackground.setState(
+    playbackState.add(
+      PlaybackState(
         controls: currentMediaControls,
         playing: true,
-        processingState: AudioProcessingState.ready);
-    super.onPlay();
+        processingState: AudioProcessingState.ready,
+      ),
+    );
+    super.play();
   }
 }

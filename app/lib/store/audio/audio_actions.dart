@@ -1,9 +1,12 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:player/audio/audio_start_params.dart';
 import 'package:player/services/on_demand_api.dart';
 
 class RequestPlayLive {}
 
 class SuccessPlayLive {}
+
+class FailPlayLive {}
 
 class RequestPause {}
 
@@ -44,7 +47,7 @@ class AudioStateChange {
 
   Map<String, dynamic> toJson() => {
         'object': state == null ? 'null' : 'exists',
-        'currentPosition': state?.currentPosition.toString(),
+        'currentPosition': state?.position.toString(),
         'processingState': state?.processingState.toString(),
         'playing': state?.playing,
       };
@@ -54,6 +57,6 @@ class MediaItemChange {
   MediaItemChange({this.item});
   final MediaItem? item;
   Map<String, dynamic> toJson() => {
-        'item': item?.toJson(),
+        'item': mediaItemToJson(item),
       };
 }

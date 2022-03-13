@@ -161,7 +161,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               flex: 0,
               child: AnimatedSize(
                 duration: const Duration(milliseconds: 200),
-                vsync: this,
                 curve: Curves.easeInOut,
                 child: StoreConnector<AppState, _NowPlayingBarData>(
                   converter: (store) => _NowPlayingBarData(
@@ -170,9 +169,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                   builder: (context, snapshot) {
                     final state = snapshot.state?.processingState ??
-                        AudioProcessingState.none;
-                    if (state != AudioProcessingState.stopped &&
-                        state != AudioProcessingState.none) {
+                        AudioProcessingState.idle;
+                    if (state != AudioProcessingState.completed &&
+                        state != AudioProcessingState.idle) {
                       return GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(

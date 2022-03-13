@@ -27,10 +27,10 @@ class HistoryEpics extends EpicClass<AppState> {
         .map((action) {
       return UpdateOne<HistoryItem>(
         HistoryItem(
-          episodeDate: store.state.audio.currentItem!.album,
+          episodeDate: store.state.audio.currentItem!.album!,
           id: store.state.audio.currentItem!.id,
-          position: action.state!.currentPosition,
-          showLength: store.state.audio.currentItem!.duration!,
+          position: action.state!.position,
+          showLength: store.state.audio.currentItem?.duration ?? Duration.zero,
           showId: store.state.audio.currentItem!.extras!['showId'].toString(),
         ),
       );
