@@ -19,5 +19,7 @@ workflows:
           mapping: |
             app/.* build-app true
             ondemand-api/.* build-api true
+            .circleci/.* build-app true
+            .circleci/.* build-api true
           # Optional, defaults to main:
           base-revision: origin/master
