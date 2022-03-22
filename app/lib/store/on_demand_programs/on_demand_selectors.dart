@@ -35,9 +35,11 @@ List<OnDemandEpisode> getEpisodesForShow(AppState state, Show show) {
 
     final schedule =
         getScheduleForDate(state, DateTime.parse(episode.date).toLocal());
-    final List<int> showIds =
-        schedule?.shows.map((e) => int.parse(e.show_id[0].trim())).toList() ??
-            [];
+    final List<int> showIds = schedule?.shows
+            .where((e) => e.show_id[0].isNotEmpty)
+            .map((e) => int.tryParse(e.show_id[0].trim()) ?? 0)
+            .toList() ??
+        [];
     return showIds.contains(show.id);
   }).toList();
 }
