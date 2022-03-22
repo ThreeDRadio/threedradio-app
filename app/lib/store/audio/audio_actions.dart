@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:player/audio/audio_start_params.dart';
 import 'package:player/services/on_demand_api.dart';
+import 'package:player/services/wp_schedule_api.dart';
 
 class RequestPlayLive {}
 
@@ -33,10 +34,18 @@ class SuccessSeek {}
 class RequestPlayEpisode {
   const RequestPlayEpisode({
     required this.episode,
+    required this.show,
     this.position,
   });
   final OnDemandEpisode episode;
+  final Show show;
   final Duration? position;
+
+  Map<String, dynamic> toJson() => {
+        'episode': episode.toJson(),
+        'show': show.toJson(),
+        'position': position
+      };
 }
 
 class SuccessPlayEpisode {}

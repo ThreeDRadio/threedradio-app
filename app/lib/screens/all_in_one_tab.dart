@@ -69,6 +69,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
   resumeEpisode(_HistoryVM e) {
     StoreProvider.of<AppState>(context).dispatch(RequestPlayEpisode(
       episode: e.episode!,
+      show: e.show!,
       position: e.item!.position,
     ));
 
@@ -122,11 +123,12 @@ class _AllInOneTabState extends State<AllInOneTab> {
                 final item = getLatestPlayable(store.state);
                 if (item == null) {
                   return _HistoryVM(
-                      playing: store.state.audio.state?.playing ?? false);
+                    playing: store.state.audio.state?.playing ?? false,
+                  );
                 }
                 final show = store.state.shows.entities[item.showId];
                 final episode = store.state.onDemandEpisodes
-                    .entities[show!.slug.replaceAll('-', '+')]
+                    .entities[show!.onDemandShowId.replaceAll('-', '+')]
                     ?.where((element) => element.date == item.episodeDate)
                     .first;
                 return _HistoryVM(

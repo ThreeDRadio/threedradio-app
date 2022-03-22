@@ -62,8 +62,10 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
   }
 
   playEpisode(OnDemandEpisode e) {
-    StoreProvider.of<AppState>(context)
-        .dispatch(RequestPlayEpisode(episode: e));
+    StoreProvider.of<AppState>(context).dispatch(RequestPlayEpisode(
+      episode: e,
+      show: widget.show,
+    ));
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(

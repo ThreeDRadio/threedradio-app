@@ -58,8 +58,6 @@ class AudioEpics extends EpicClass<AppState> {
 //      final currentShowId = getCurrentShowId(store.state);
 //      final program =
 //          store.state.onDemandPrograms.entities[action.episode.showId];
-      final show = store.state.shows.entities.values.firstWhere(
-          (element) => element.onDemandShowId == action.episode.showId);
 
 //      if (!AudioService.running) {
 //        await AudioService.start(
@@ -73,10 +71,12 @@ class AudioEpics extends EpicClass<AppState> {
 //      }
       await audioService.playMediaItem(
         MediaItem(
-          title: show.title.text,
-          artUri: show.thumbnail is String ? Uri.parse(show.thumbnail) : null,
+          title: action.show.title.text,
+          artUri: action.show.thumbnail is String
+              ? Uri.parse(action.show.thumbnail)
+              : null,
           album: action.episode.date,
-          extras: {'episode': action.episode.id, 'showId': show.id},
+          extras: {'episode': action.episode.id, 'showId': action.show.id},
           id: action.episode.url,
         ),
       );
