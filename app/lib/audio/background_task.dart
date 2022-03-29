@@ -25,7 +25,7 @@ final onDemandMediaControlsPlaying = [
   MediaControl.rewind,
 ];
 
-class ThreeDBackgroundTask extends BaseAudioHandler {
+class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
   AudioPlayer _player = AudioPlayer();
   PlaybackMode? mode;
 
