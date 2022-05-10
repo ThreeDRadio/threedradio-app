@@ -63,7 +63,7 @@ void main() async {
     print(trace);
   }
 
-  final remoteDev = RemoteDevToolsMiddleware('192.168.1.207:8000');
+  final remoteDev = RemoteDevToolsMiddleware('localhost:8000');
 
   final store = Store<AppState>(
     appReducer,
