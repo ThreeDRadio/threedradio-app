@@ -105,7 +105,7 @@ jobs:
       - run:
           name: Install Flutter
           command: |
-            curl https://storage.googleapis.com/flutter_infra_release/releases/beta/macos/flutter_macos_<< pipeline.parameters.flutter-version >>-beta.zip --output flutter.zip
+            curl https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_<< pipeline.parameters.flutter-version >>-stable.zip  --output flutter.zip
             unzip flutter.zip
             export PATH="$PATH:`pwd`/flutter/bin"
             flutter precache --ios --no-android 
