@@ -84,7 +84,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: Theme.of(context).accentColor,
+      color: Theme.of(context).colorScheme.onBackground,
       onRefresh: widget.onRefresh,
       child: CustomScrollView(
         slivers: [

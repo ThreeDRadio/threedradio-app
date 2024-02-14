@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
@@ -43,7 +42,7 @@ void main() async {
     ),
   );
 
-  FirebaseAnalytics analytics = FirebaseAnalytics();
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   final persistor = Persistor<AppState>(
     storage: FlutterStorage(
@@ -55,7 +54,7 @@ void main() async {
   );
 
   // Load initial state
-  AppState initialState;
+  AppState? initialState;
   try {
     initialState = await persistor.load();
   } catch (err, trace) {
@@ -82,7 +81,7 @@ void main() async {
 
   store.dispatch(AppStartAction());
 
-  SentryClient sentry;
+  SentryClient? sentry;
 
   if (!debug) {
     sentry = SentryClient(
@@ -95,7 +94,7 @@ void main() async {
   if (sentry != null) {
     FlutterError.onError = (details, {bool forceReport = false}) {
       try {
-        sentry.captureException(
+        sentry?.captureException(
           details.exception,
           stackTrace: details.stack,
         );
@@ -126,8 +125,8 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   MyApp({
-    this.analytics,
-    this.store,
+    required this.analytics,
+    required this.store,
   });
 
   final Store<AppState> store;
@@ -151,8 +150,9 @@ class MyApp extends StatelessWidget {
         title: 'Three D Radio',
         theme: ThemeData(
           brightness: Brightness.dark,
-          accentColor: Color(0xff2F9B17),
-          buttonColor: Color(0xff2F9B17),
+          colorScheme: ColorScheme.dark().copyWith(
+            primary: Color(0xff2F9B17),
+          ),
           indicatorColor: Color(0xff2F9B17),
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: TextTheme(

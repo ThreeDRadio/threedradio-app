@@ -2,7 +2,7 @@ version: 2.1
 parameters:
   flutter-version:
     type: string
-    default: "2.11.0-0.1.pre"
+    default: "3.13.6"
   build-app:
     type: boolean
     default: false
@@ -14,7 +14,7 @@ orbs:
 jobs:
   test:
     docker:
-      - image: cirrusci/flutter:<< pipeline.parameters.flutter-version >>
+      - image: ghcr.io/cirruslabs/flutter:<< pipeline.parameters.flutter-version >>
 
     working_directory: ~/repo/app
 
@@ -41,7 +41,7 @@ jobs:
 
   build-android:
     docker:
-      - image: cirrusci/flutter:<< pipeline.parameters.flutter-version >>
+      - image: ghcr.io/cirruslabs/flutter:<< pipeline.parameters.flutter-version >>
     resource_class: medium
 
     working_directory: ~/repo/app
