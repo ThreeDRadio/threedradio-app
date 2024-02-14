@@ -3,6 +3,9 @@ parameters:
   flutter-version:
     type: string
     default: "3.13.6"
+  xcode-version:
+    type: string
+    default: "14.1.0"
   build-app:
     type: boolean
     default: false
@@ -90,8 +93,8 @@ jobs:
 
   build-ios:
     macos:
-      xcode: '13.1.0'
-    resource_class: medium
+      xcode: << pipeline.parameters.xcode-version >>
+    resource_class: macos.x86.medium.gen2
 
     working_directory: ~/repo/app
     steps:
@@ -150,8 +153,9 @@ jobs:
 
   deploy-ios:
     macos:
-      xcode: '13.1.0'
-    resource_class: medium
+      xcode: << pipeline.parameters.xcode-version >>
+    resource_class: macos.x86.medium.gen2
+
     working_directory: ~/repo/app
     steps:
       - checkout:
