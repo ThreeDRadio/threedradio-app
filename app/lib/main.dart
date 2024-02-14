@@ -23,6 +23,7 @@ import 'package:redux_persist_flutter/redux_persist_flutter.dart';
 import 'package:redux_remote_devtools/redux_remote_devtools.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:sentry/sentry.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   bool debug = false;
@@ -33,6 +34,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
+  await Firebase.initializeApp();
 
   final audioService = ThreeDBackgroundTask();
   AudioService.init(
