@@ -27,19 +27,19 @@ class OnDemandProgram {
 @JsonSerializable()
 class OnDemandEpisode {
   const OnDemandEpisode({
-    required this.id,
     required this.showId,
     required this.date,
     required this.size,
     required this.url,
-    required this.showSlug,
+    this.showSlug,
   });
-  final String id;
   final String showId;
   final String date;
   final int size;
   final String url;
-  final String showSlug;
+  final String? showSlug;
+
+  String get id => '$showId::$date';
 
   factory OnDemandEpisode.fromJson(Map<String, dynamic> json) =>
       _$OnDemandEpisodeFromJson(json);
