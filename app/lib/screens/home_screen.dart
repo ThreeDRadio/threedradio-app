@@ -12,6 +12,7 @@ import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/widgets/now_playing_bar.dart';
 import 'package:redux_entity/redux_entity.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class _NowPlayingBarData {
   _NowPlayingBarData({
@@ -134,6 +135,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               leading: Icon(Icons.star),
               title: Text(S.of(context).favourites),
               onTap: () => Navigator.of(context).popAndPushNamed('/favourites'),
+            ),
+            ListTile(
+              leading: Icon(Icons.storefront),
+              title: Text(S.of(context).shop),
+              onTap: () =>
+                  launchUrl(Uri.parse('https://www.threedradio.com/shop')),
             ),
             ListTile(
               leading: Icon(Icons.info),

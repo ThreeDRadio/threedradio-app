@@ -15,5 +15,6 @@
   "onDemand": "On Demand",
   "onDemandEpisodes": "On Demand Episodes",
   "version": "App Version: {version}",
-  "versionBuildNumber": "Build Number: {buildNumber}"
+  "versionBuildNumber": "Build Number: {buildNumber}",
+  "shop": "Shop"
 }
