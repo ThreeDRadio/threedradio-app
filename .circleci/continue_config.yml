@@ -133,7 +133,6 @@ jobs:
             flutter pub run build_runner build
             flutter build ios --release --no-codesign --config-only  --build-number $(expr 1000 + << pipeline.number >> ) 
             cd ios
-            chruby 2.7
             gem install bundler:2.1.4
             bundle install --path vendor/bundle
             bundle exec fastlane ios match_production
@@ -171,11 +170,12 @@ jobs:
             - gem-cache-v2-{{ arch }}-{{ .Branch }}
             - gem-cache-v1
       - run: echo $APPSTORE_API_KEY_B64 | base64 --decode > ios/appstore_api_key.json
+      - macos/switch-ruby:
+          version: "3.1"
       - run:
           name: TestFlight Deploy
           command: |
             cd ios
-            chruby 2.7
             gem install bundler:2.1.4
             bundle install --path vendor/bundle
             bundle exec fastlane ios testflight_deploy
