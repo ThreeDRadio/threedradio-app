@@ -200,7 +200,13 @@ class _AllInOneTabState extends State<AllInOneTab> {
           StoreConnector<AppState, List<Show>>(
             converter: (store) => getShowsForOnDemandStreaming(store.state),
             builder: (context, snapshot) => snapshot.isNotEmpty
-                ? SliverList(
+                ? SliverGrid(
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      childAspectRatio: 3,
+                      maxCrossAxisExtent: 600,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
                     delegate: SliverChildBuilderDelegate(
                       (context, index) => ShowListing.fromShow(
                         snapshot[index],
