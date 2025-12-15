@@ -173,7 +173,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
               sliver: SliverToBoxAdapter(
                 child: Text(
                   S.of(context).onDemandEpisodes,
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
             ),
@@ -208,7 +208,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                                         Text('${episodes[index].date}',
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline6),
+                                                .titleLarge),
                                         Text(
                                             (episodes[index].size / 1024 / 2014)
                                                     .round()
@@ -216,7 +216,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                                                 'mb',
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .caption)
+                                                .bodySmall)
                                       ],
                                     ),
                                   ),

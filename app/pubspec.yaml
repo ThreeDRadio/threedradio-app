@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  audio_service: 0.18.4
+  audio_service: 0.18.18
   cached_network_image: ^3.0.0-nullsafety
   dio: ^4.0.0-prev3
   firebase_analytics: ^10.5.1

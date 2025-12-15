@@ -92,7 +92,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
           SliverToBoxAdapter(
             child: Text(
               S.of(context).listenLive,
-              style: Theme.of(context).textTheme.headline3,
+              style: Theme.of(context).textTheme.displaySmall,
             ),
           ),
           SliverToBoxAdapter(
@@ -150,7 +150,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
                           padding: const EdgeInsets.only(top: 32.0),
                           child: Text(
                             S.of(context).jumpBackIn,
-                            style: Theme.of(context).textTheme.headline3,
+                            style: Theme.of(context).textTheme.displaySmall,
                           ),
                         ),
                         ShowListing(
@@ -193,7 +193,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
               padding: const EdgeInsets.only(top: 32),
               child: Text(
                 S.of(context).onDemand,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
             ),
           ),

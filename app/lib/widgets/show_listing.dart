@@ -82,7 +82,7 @@ class ShowListing extends StatelessWidget {
                                 title,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline5!
+                                    .headlineSmall!
                                     .copyWith(
                                   shadows: [
                                     Shadow(offset: Offset(0, 2)),
@@ -94,7 +94,7 @@ class ShowListing extends StatelessWidget {
                                   subtitle!,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2!
+                                      .bodyMedium!
                                       .copyWith(
                                     shadows: [
                                       Shadow(offset: Offset(0, 2)),
@@ -106,7 +106,7 @@ class ShowListing extends StatelessWidget {
                                   S.of(context).defaultShortDescription,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2!
+                                      .bodyMedium!
                                       .copyWith(
                                     shadows: [
                                       Shadow(offset: Offset(0, 2)),

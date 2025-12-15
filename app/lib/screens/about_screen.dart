@@ -67,7 +67,7 @@ class _AboutScreenState extends State<AboutScreen> {
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Text(
                 S.of(context).credits,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
             ),
