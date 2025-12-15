@@ -47,9 +47,9 @@ class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
 
   ThreeDBackgroundTask() {
     _player.durationStream.listen((duration) {
-      if (mediaItem.valueWrapper != null) {
+      if (mediaItem.valueOrNull != null) {
         mediaItem.add(
-          mediaItem.valueWrapper?.value!.copyWith(duration: duration),
+          mediaItem.valueOrNull?.copyWith(duration: duration),
         );
       }
     });
