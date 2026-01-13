@@ -7,6 +7,8 @@ import 'package:player/generated/l10n.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
+import 'package:player/store/playlists/playlist_class.dart';
+import 'package:redux_entity/redux_entity.dart';
 
 extension FormatDuration on Duration {
   String format() {
@@ -22,12 +24,14 @@ class _ViewModel {
     this.item,
     this.state,
     this.show,
+    this.playlist,
     this.controls = const [],
     required this.seekToPosition,
   });
 
   final MediaItem? item;
   final Show? show;
+  final WpPost? playlist;
   final PlaybackState? state;
   final List<MediaAction> controls;
   final ValueChanged<Duration> seekToPosition;
@@ -93,10 +97,19 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         show: store.state.shows.entities[
             (store.state.audio.currentItem?.extras ?? const {})['showId']
                 ?.toString()],
+        playlist: store
+            .state
+            .playlists
+            .entities[store.state.audio.currentItem!.extras!['episode']!]
+            ?.playlist,
         seekToPosition: (Duration position) {
           store.dispatch(RequestSeek(position));
         },
       ),
+      onInit: (store) {
+        store.dispatch(RequestRetrieveOne<EpisodePlaylistGlue>(
+            store.state.audio.currentItem!.extras!['episode']!));
+      },
       builder: (context, snapshot) => Scaffold(
         body: SafeArea(
           top: false,
@@ -265,21 +278,35 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                   ],
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 32,
+              if (snapshot.playlist != null)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 32,
+                    ),
+                    child: Html(
+                      data: snapshot.playlist!.content.rendered,
+                    ),
                   ),
-                  child: snapshot.show?.content?.text?.isNotEmpty ?? false
-                      ? Html(data: snapshot.show!.content.rendered)
-                      : Html(
-                          data: snapshot.show?.meta.show_incipit?.isNotEmpty ==
-                                  true
-                              ? snapshot.show!.meta.show_incipit![0]
-                              : S.of(context).defaultShortDescription),
+                )
+              else
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 32,
+                    ),
+                    child: snapshot.show?.content.text.isNotEmpty ?? false
+                        ? Html(data: snapshot.show!.content.rendered)
+                        : Html(
+                            data:
+                                snapshot.show?.meta.show_incipit?.isNotEmpty ==
+                                        true
+                                    ? snapshot.show!.meta.show_incipit![0]
+                                    : S.of(context).defaultShortDescription),
+                  ),
                 ),
-              ),
             ],
           ),
         ),

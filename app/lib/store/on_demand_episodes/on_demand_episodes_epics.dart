@@ -13,8 +13,7 @@ class OnDemandEpisodesEpics extends EpicClass<AppState> {
     await for (final action in actions) {
       if (action is RequestRetrieveOne<List<OnDemandEpisode>>) {
         final now = DateTime.now();
-        if (true ||
-            store.state.onDemandEpisodes.updateTimes[action.id] == null ||
+        if (store.state.onDemandEpisodes.updateTimes[action.id] == null ||
             now
                     .difference(
                         store.state.onDemandEpisodes.updateTimes[action.id]!)

@@ -4,6 +4,7 @@ import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_reducer.dart';
 import 'package:player/store/favourites/favourites_actions.dart';
 import 'package:player/store/history/history_reducer.dart';
+import 'package:player/store/playlists/playlist_class.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 AppState appReducer(AppState state, dynamic action) => AppState(
@@ -20,6 +21,11 @@ AppState appReducer(AppState state, dynamic action) => AppState(
       onDemandPrograms: RemoteEntityReducer<RemoteEntityState<OnDemandProgram>,
           OnDemandProgram>()(
         state.onDemandPrograms,
+        action,
+      ),
+      playlists: RemoteEntityReducer<RemoteEntityState<EpisodePlaylistGlue>,
+          EpisodePlaylistGlue>(selectId: (entity) => entity.id.toString())(
+        state.playlists,
         action,
       ),
       schedules: RemoteEntityReducer<RemoteEntityState<Schedule>, Schedule>(

@@ -4,6 +4,7 @@ import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/audio/audio_state.dart';
 import 'package:player/store/favourites/favourites_actions.dart';
 import 'package:player/store/history/history_item.dart';
+import 'package:player/store/playlists/playlist_class.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 part 'app_state.g.dart';
@@ -18,6 +19,7 @@ class AppState {
     this.onDemandPrograms = const RemoteEntityState<OnDemandProgram>(),
     this.schedules = const RemoteEntityState<Schedule>(),
     this.shows = const RemoteEntityState<Show>(),
+    this.playlists = const RemoteEntityState<EpisodePlaylistGlue>(),
   });
 
   final AudioState audio;
@@ -27,6 +29,7 @@ class AppState {
   final RemoteEntityState<OnDemandProgram> onDemandPrograms;
   final RemoteEntityState<Schedule> schedules;
   final RemoteEntityState<Show> shows;
+  final RemoteEntityState<EpisodePlaylistGlue> playlists;
 
   factory AppState.fromJson(Map<String, dynamic> json) {
     return AppState(
