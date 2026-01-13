@@ -1,5 +1,4 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:player/audio/audio_start_params.dart';
 import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/services/wp_schedule_api.dart';
@@ -129,7 +128,6 @@ class AudioEpics extends EpicClass<AppState> {
   Stream _audioStateChanges(Stream actions, EpicStore<AppState> store) {
     return actions.whereType<AppStartAction>().switchMap((_) => audioService
         .playbackState
-        .where((event) => event != null)
         .throttleTime(const Duration(milliseconds: 100), trailing: true)
         .map((event) => AudioStateChange(state: event)));
   }

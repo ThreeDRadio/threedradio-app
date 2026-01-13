@@ -51,8 +51,11 @@ class ShowListing extends StatelessWidget {
               child: Stack(
                 children: [
                   if (thumbnail is String)
-                    AspectRatio(
-                      aspectRatio: 3,
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
                       child: CachedNetworkImage(
                         imageUrl: thumbnail!,
                         fit: BoxFit.cover,
@@ -73,6 +76,7 @@ class ShowListing extends StatelessWidget {
                     padding: EdgeInsets.all(8),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
                         Expanded(
                           child: Column(

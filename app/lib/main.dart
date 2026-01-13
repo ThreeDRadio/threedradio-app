@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -44,6 +43,7 @@ void main() async {
     ),
   );
 
+  await Firebase.initializeApp();
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   final persistor = Persistor<AppState>(
@@ -78,7 +78,7 @@ void main() async {
 
   if (debug) {
     remoteDev.store = store;
-    await remoteDev.connect();
+    //await remoteDev.connect();
   }
 
   store.dispatch(AppStartAction());
@@ -139,6 +139,7 @@ class MyApp extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         navigatorObservers: [
           FirebaseAnalyticsObserver(analytics: analytics),
         ],
@@ -158,24 +159,24 @@ class MyApp extends StatelessWidget {
           indicatorColor: Color(0xff2F9B17),
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: TextTheme(
-            bodyText2: GoogleFonts.openSans(fontSize: 16),
-            button: GoogleFonts.arvo(fontWeight: FontWeight.bold),
-            headline2: GoogleFonts.arvo(fontSize: 40),
-            headline3: GoogleFonts.arvo(color: Colors.white, fontSize: 36),
-            headline4: GoogleFonts.arvo(
+            bodyMedium: GoogleFonts.openSans(fontSize: 16),
+            labelLarge: GoogleFonts.arvo(fontWeight: FontWeight.bold),
+            displayMedium: GoogleFonts.arvo(fontSize: 40),
+            displaySmall: GoogleFonts.arvo(color: Colors.white, fontSize: 36),
+            headlineMedium: GoogleFonts.arvo(
               fontSize: 32,
             ),
-            headline5: GoogleFonts.arvo(
+            headlineSmall: GoogleFonts.arvo(
               color: Colors.white,
             ),
-            headline6: GoogleFonts.arvo(
+            titleLarge: GoogleFonts.arvo(
               fontSize: 18,
               color: Colors.white,
             ),
           ),
           primaryTextTheme: GoogleFonts.arvoTextTheme(
             TextTheme(
-              headline6: TextStyle(color: Colors.white),
+              titleLarge: TextStyle(color: Colors.white),
             ),
           ),
           sliderTheme: SliderThemeData(

@@ -44,7 +44,7 @@ class NowPlayingBar extends StatelessWidget {
                     children: [
                       Text(
                         item?.title ?? '',
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (item?.album != null) Text(item!.album!),
