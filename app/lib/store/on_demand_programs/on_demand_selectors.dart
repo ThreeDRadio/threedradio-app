@@ -1,5 +1,5 @@
+import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/services/on_demand_api.dart';
-import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/schedules/schedules_selectors.dart';
 import 'package:player/store/shows/shows_selectors.dart';
@@ -11,11 +11,11 @@ RemoteEntityState<OnDemandProgram> getOnDemandProgramState(AppState s) =>
 Map<String, OnDemandProgram> getOnDemandEntities(AppState s) =>
     getOnDemandProgramState(s).entities;
 
-List<Show> getShowsForOnDemandStreaming(AppState s) {
+List<ShowDto> getShowsForOnDemandStreaming(AppState s) {
   final onDemand = getOnDemandEntities(s);
   final shows = getShowEntities(s).values;
 
-  final List<Show> sorted = shows.where((s) {
+  final List<ShowDto> sorted = shows.where((s) {
     final onDemandKey = s.onDemandShowId;
     return onDemand[onDemandKey] != null;
   }).toList();
@@ -25,15 +25,18 @@ List<Show> getShowsForOnDemandStreaming(AppState s) {
   return sorted;
 }
 
-List<OnDemandEpisode> getEpisodesForShow(AppState state, Show show) {
+List<OnDemandEpisode> getEpisodesForShow(AppState state, ShowDto show) {
   final possibleEpisodes =
       state.onDemandEpisodes.entities[show.onDemandShowId]?.reversed.toList() ??
-          <OnDemandEpisode>[];
+      <OnDemandEpisode>[];
 
   return possibleEpisodes.where((episode) {
-    final schedule =
-        getScheduleForDate(state, DateTime.parse(episode.date).toLocal());
-    final List<int> showIds = schedule?.shows
+    final schedule = getScheduleForDate(
+      state,
+      DateTime.parse(episode.date).toLocal(),
+    );
+    final List<int> showIds =
+        schedule?.shows
             .where((e) => e.show_id[0].isNotEmpty)
             .map((e) => int.tryParse(e.show_id[0].trim()) ?? 0)
             .toList() ??

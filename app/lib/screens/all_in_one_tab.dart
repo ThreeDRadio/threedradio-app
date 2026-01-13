@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:player/generated/l10n.dart';
 import 'package:player/screens/now_playing_screen.dart';
+import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/services/on_demand_api.dart';
-import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/store/history/history_item.dart';
@@ -28,7 +28,7 @@ class _HistoryVM {
 
   final HistoryItem? item;
   final OnDemandEpisode? episode;
-  final Show? show;
+  final ShowDto? show;
   final bool playing;
 
   final VoidCallback? removeItem;
@@ -41,7 +41,7 @@ class AllInOneTab extends StatefulWidget {
     required this.onRefresh,
   });
   final VoidCallback playLive;
-  final ValueChanged<Show> openShow;
+  final ValueChanged<ShowDto> openShow;
   final RefreshCallback onRefresh;
 
   @override
@@ -67,11 +67,13 @@ class _AllInOneTabState extends State<AllInOneTab> {
   }
 
   resumeEpisode(_HistoryVM e) {
-    StoreProvider.of<AppState>(context).dispatch(RequestPlayEpisode(
-      episode: e.episode!,
-      show: e.show!,
-      position: e.item!.position,
-    ));
+    StoreProvider.of<AppState>(context).dispatch(
+      RequestPlayEpisode(
+        episode: e.episode!,
+        show: e.show!,
+        position: e.item!.position,
+      ),
+    );
 
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -96,7 +98,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
             ),
           ),
           SliverToBoxAdapter(
-            child: StoreConnector<AppState, Show?>(
+            child: StoreConnector<AppState, ShowDto?>(
               converter: (store) {
                 final currentShowId = getCurrentShowId(store.state);
                 if (currentShowId != null) {
@@ -127,7 +129,9 @@ class _AllInOneTabState extends State<AllInOneTab> {
                   );
                 }
                 final show = store.state.shows.entities[item.showId];
-                final episode = store.state.onDemandEpisodes
+                final episode = store
+                    .state
+                    .onDemandEpisodes
                     .entities[show!.onDemandShowId.replaceAll('-', '+')]
                     ?.where((element) => element.date == item.episodeDate)
                     .first;
@@ -140,7 +144,8 @@ class _AllInOneTabState extends State<AllInOneTab> {
                       store.dispatch(DeleteOne<HistoryItem>(item.id)),
                 );
               },
-              builder: (context, snapshot) => !snapshot.playing &&
+              builder: (context, snapshot) =>
+                  !snapshot.playing &&
                       snapshot.show != null &&
                       snapshot.episode != null
                   ? Column(
@@ -155,9 +160,19 @@ class _AllInOneTabState extends State<AllInOneTab> {
                         ),
                         ShowListing(
                           title:
-                              '${snapshot.show!.title.text} - ${snapshot.item!.episodeDate}',
-                          thumbnail: snapshot.show!.thumbnail is String
-                              ? snapshot.show!.thumbnail
+                              '${snapshot.show!.name} - ${snapshot.item!.episodeDate}',
+                          thumbnail:
+                              snapshot
+                                      .show!
+                                      .acf
+                                      ?.program_featured_image
+                                      ?.thumbnail
+                                  is String
+                              ? snapshot
+                                    .show!
+                                    .acf!
+                                    .program_featured_image!
+                                    .thumbnail
                               : null,
                           subtitle:
                               '${snapshot.item!.position.format()} / ${snapshot.item!.showLength.format()}',
@@ -182,7 +197,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     )
                   : Container(),
@@ -197,7 +212,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
               ),
             ),
           ),
-          StoreConnector<AppState, List<Show>>(
+          StoreConnector<AppState, List<ShowDto>>(
             converter: (store) => getShowsForOnDemandStreaming(store.state),
             builder: (context, snapshot) => snapshot.isNotEmpty
                 ? SliverGrid(
@@ -211,16 +226,14 @@ class _AllInOneTabState extends State<AllInOneTab> {
                       (context, index) => ShowListing.fromShow(
                         snapshot[index],
                         heroTag: snapshot[index].slug,
-                        onTap: () => widget.openShow(
-                          snapshot[index],
-                        ),
+                        onTap: () => widget.openShow(snapshot[index]),
                       ),
                       childCount: snapshot.length,
                     ),
                   )
                 : SliverToBoxAdapter(child: cup.CupertinoActivityIndicator()),
           ),
-          SliverPadding(padding: EdgeInsets.all(48))
+          SliverPadding(padding: EdgeInsets.all(48)),
         ],
       ),
     );

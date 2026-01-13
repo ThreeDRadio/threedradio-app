@@ -9,11 +9,7 @@ part 'wp_schedule_api.g.dart';
 
 @JsonSerializable()
 class WpMeta {
-  const WpMeta({
-    this.show_incipit,
-    this.subtitle2,
-    this.show_category,
-  });
+  const WpMeta({this.show_incipit, this.subtitle2, this.show_category});
   final List<String>? show_incipit;
   final List<String>? subtitle2;
   final List<String>? show_category;
@@ -160,9 +156,7 @@ class WpPost {
 }
 
 class WpScheduleApiService {
-  WpScheduleApiService({
-    required this.http,
-  });
+  WpScheduleApiService({required this.http});
   final Dio http;
 
   Future<List<Schedule>> getSchedules() async {
@@ -174,14 +168,15 @@ class WpScheduleApiService {
 
   Future<List<Show>> getShows() async {
     List<Show> shows = [];
-    for (int page = 1;; page++) {
+    for (int page = 1; ; page++) {
       final response = await _getPageOfShows(page);
       shows = [
         ...shows,
-        ...response.data!.map((entry) => Show.fromJson(entry)).toList()
+        ...response.data!.map((entry) => Show.fromJson(entry)).toList(),
       ];
-      final count =
-          int.parse(response.headers['x-wp-totalpages']?.first as String);
+      final count = int.parse(
+        response.headers['x-wp-totalpages']?.first as String,
+      );
       if (page == count) {
         break;
       }
@@ -191,20 +186,23 @@ class WpScheduleApiService {
 
   Future<Response<List<dynamic>>> _getPageOfShows(int page) async {
     final response = await http.get<List<dynamic>>(
-        'https://www.threedradio.com/wp-json/wp/v2/shows/?_embed&page=${page}&per_page=100');
+      'https://www.threedradio.com/wp-json/wp/v2/shows/?_embed&page=${page}&per_page=100',
+    );
 
     return response;
   }
 
   Future<Show> getShow(int id) async {
     final response = await http.get<Map<String, dynamic>>(
-        'https://www.threedradio.com/wp-json/wp/v2/shows/$id?_embed');
+      'https://www.threedradio.com/wp-json/wp/v2/shows/$id?_embed',
+    );
     return Show.fromJson(response.data!);
   }
 
   Future<Category?> getCategoryBySlug(String slug) async {
     final response = await http.get<List<dynamic>>(
-        'https://www.threedradio.com/wp-json/wp/v2/categories?slug=$slug');
+      'https://www.threedradio.com/wp-json/wp/v2/categories?slug=$slug',
+    );
 
     if (response.data!.isNotEmpty) {
       return Category.fromJson(response.data![0]);
@@ -214,8 +212,9 @@ class WpScheduleApiService {
 
   Future<List<WpPost>> findPosts(Map<String, dynamic> query) async {
     final response = await http.get<List<dynamic>>(
-        'https://www.threedradio.com/wp-json/wp/v2/posts',
-        queryParameters: query);
+      'https://www.threedradio.com/wp-json/wp/v2/posts',
+      queryParameters: query,
+    );
 
     return response.data?.map((e) => WpPost.fromJson(e)).toList() ?? [];
   }

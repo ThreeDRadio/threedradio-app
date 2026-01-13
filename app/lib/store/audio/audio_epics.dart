@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
+import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/app_actions.dart';
@@ -51,28 +52,28 @@ class AudioEpics extends EpicClass<AppState> {
   }
 
   Stream _playEpisode(Stream actions, EpicStore<AppState> store) {
-    return actions
-        .whereType<RequestPlayEpisode>()
-        .asyncMap((RequestPlayEpisode action) async {
-//      final currentShowId = getCurrentShowId(store.state);
-//      final program =
-//          store.state.onDemandPrograms.entities[action.episode.showId];
+    return actions.whereType<RequestPlayEpisode>().asyncMap((
+      RequestPlayEpisode action,
+    ) async {
+      //      final currentShowId = getCurrentShowId(store.state);
+      //      final program =
+      //          store.state.onDemandPrograms.entities[action.episode.showId];
 
-//      if (!AudioService.running) {
-//        await AudioService.start(
-//          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
-//          androidNotificationIcon: 'drawable/ic_threedradio',
-//          params: AudioStartParams(
-//            mode: PlaybackMode.onDemand,
-//            url: action.episode.url,
-//          ).toJson(),
-//        );
-//      }
+      //      if (!AudioService.running) {
+      //        await AudioService.start(
+      //          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
+      //          androidNotificationIcon: 'drawable/ic_threedradio',
+      //          params: AudioStartParams(
+      //            mode: PlaybackMode.onDemand,
+      //            url: action.episode.url,
+      //          ).toJson(),
+      //        );
+      //      }
       await audioService.playMediaItem(
         MediaItem(
-          title: action.show.title.text,
-          artUri: action.show.thumbnail is String
-              ? Uri.parse(action.show.thumbnail)
+          title: action.show.name,
+          artUri: action.show.acf?.program_featured_image?.thumbnail is String
+              ? Uri.parse(action.show.acf!.program_featured_image!.thumbnail!)
               : null,
           album: action.episode.date,
           extras: {'episode': action.episode.id, 'showId': action.show.id},
@@ -94,26 +95,27 @@ class AudioEpics extends EpicClass<AppState> {
           return SuccessPlayLive();
         }
         final currentShowId = getCurrentShowId(store.state);
-        Show? currentShow;
+        ShowDto? currentShow;
         if (currentShowId != null) {
-          currentShow = store.state.shows.entities[currentShowId] as Show;
+          currentShow = store.state.shows.entities[currentShowId] as ShowDto;
         }
-//      if (!AudioService.running) {
-//        await AudioService.start(
-//          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
-//          androidNotificationIcon: 'drawable/ic_threedradio',
-//        );
-//      }
+        //      if (!AudioService.running) {
+        //        await AudioService.start(
+        //          backgroundTaskEntrypoint: backgroundTaskEntrypoint,
+        //          androidNotificationIcon: 'drawable/ic_threedradio',
+        //        );
+        //      }
         await audioService.playMediaItem(
           MediaItem(
-            title: currentShow?.title.text ?? 'Three D Radio',
-            artUri: currentShow?.thumbnail is String
-                ? Uri.parse(currentShow?.thumbnail)
+            title: currentShow?.name ?? 'Three D Radio',
+            artUri:
+                currentShow?.acf?.program_featured_image?.thumbnail is String
+                ? Uri.parse(
+                    currentShow!.acf!.program_featured_image!.thumbnail!,
+                  )
                 : null,
             album: 'Three D Radio - Live',
-            extras: {
-              'showId': currentShow?.id,
-            },
+            extras: {'showId': currentShow?.id},
             id: Environment.liveStreamUrl,
           ),
         );
@@ -126,15 +128,18 @@ class AudioEpics extends EpicClass<AppState> {
   }
 
   Stream _audioStateChanges(Stream actions, EpicStore<AppState> store) {
-    return actions.whereType<AppStartAction>().switchMap((_) => audioService
-        .playbackState
-        .throttleTime(const Duration(milliseconds: 100), trailing: true)
-        .map((event) => AudioStateChange(state: event)));
+    return actions.whereType<AppStartAction>().switchMap(
+      (_) => audioService.playbackState
+          .throttleTime(const Duration(milliseconds: 100), trailing: true)
+          .map((event) => AudioStateChange(state: event)),
+    );
   }
 
   Stream _mediaItemChange(Stream actions, EpicStore<AppState> store) {
-    return actions.whereType<AppStartAction>().switchMap((_) =>
-        audioService.mediaItem.map((event) => MediaItemChange(item: event)));
+    return actions.whereType<AppStartAction>().switchMap(
+      (_) =>
+          audioService.mediaItem.map((event) => MediaItemChange(item: event)),
+    );
     // .debounceTime(const Duration(seconds: 1)));
   }
 

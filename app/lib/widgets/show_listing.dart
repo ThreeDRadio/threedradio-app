@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:player/generated/l10n.dart';
-import 'package:player/services/wp_schedule_api.dart';
+import 'package:player/services/new_api/dto/show_dto.dart';
 
 class ShowListing extends StatelessWidget {
   const ShowListing({
@@ -15,7 +15,7 @@ class ShowListing extends StatelessWidget {
   }) : super(key: key);
 
   factory ShowListing.fromShow(
-    Show show, {
+    ShowDto show, {
     required String heroTag,
     VoidCallback? onTap,
     Widget? action,
@@ -23,9 +23,11 @@ class ShowListing extends StatelessWidget {
     return ShowListing(
       heroTag: heroTag,
       onTap: onTap,
-      title: show.title.text,
-      thumbnail: show.thumbnail is String ? show.thumbnail : null,
-      subtitle: show.meta.subtitle2?[0],
+      title: show.name,
+      thumbnail: show.acf?.program_featured_image?.medium is String
+          ? show.acf!.program_featured_image!.medium!
+          : null,
+      subtitle: show.acf?.hosted_by?.firstOrNull?.post_title,
       action: action,
     );
   }
@@ -63,13 +65,13 @@ class ShowListing extends StatelessWidget {
                     ),
                   Container(
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        Colors.black.withAlpha(140),
-                        Colors.black.withAlpha(0)
-                      ], stops: [
-                        0,
-                        0.8
-                      ]),
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.black.withAlpha(140),
+                          Colors.black.withAlpha(0),
+                        ],
+                        stops: [0, 0.8],
+                      ),
                     ),
                   ),
                   Container(
@@ -88,39 +90,29 @@ class ShowListing extends StatelessWidget {
                                     .textTheme
                                     .headlineSmall!
                                     .copyWith(
-                                  shadows: [
-                                    Shadow(offset: Offset(0, 2)),
-                                  ],
-                                ),
+                                      shadows: [Shadow(offset: Offset(0, 2))],
+                                    ),
                               ),
                               if (subtitle != null)
                                 Text(
                                   subtitle!,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
+                                  style: Theme.of(context).textTheme.bodyMedium!
                                       .copyWith(
-                                    shadows: [
-                                      Shadow(offset: Offset(0, 2)),
-                                    ],
-                                  ),
+                                        shadows: [Shadow(offset: Offset(0, 2))],
+                                      ),
                                 )
                               else
                                 Text(
                                   S.of(context).defaultShortDescription,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
+                                  style: Theme.of(context).textTheme.bodyMedium!
                                       .copyWith(
-                                    shadows: [
-                                      Shadow(offset: Offset(0, 2)),
-                                    ],
-                                  ),
+                                        shadows: [Shadow(offset: Offset(0, 2))],
+                                      ),
                                 ),
                             ],
                           ),
                         ),
-                        if (action != null) action!
+                        if (action != null) action!,
                       ],
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/audio/audio_state.dart';
@@ -17,7 +18,7 @@ class AppState {
     this.onDemandEpisodes = const RemoteEntityState<List<OnDemandEpisode>>(),
     this.onDemandPrograms = const RemoteEntityState<OnDemandProgram>(),
     this.schedules = const RemoteEntityState<Schedule>(),
-    this.shows = const RemoteEntityState<Show>(),
+    this.shows = const RemoteEntityState<ShowDto>(),
   });
 
   final AudioState audio;
@@ -26,7 +27,7 @@ class AppState {
   final RemoteEntityState<List<OnDemandEpisode>> onDemandEpisodes;
   final RemoteEntityState<OnDemandProgram> onDemandPrograms;
   final RemoteEntityState<Schedule> schedules;
-  final RemoteEntityState<Show> shows;
+  final RemoteEntityState<ShowDto> shows;
 
   factory AppState.fromJson(Map<String, dynamic> json) {
     return AppState(
@@ -57,9 +58,9 @@ class AppState {
         json['schedules'],
         (json) => Schedule.fromJson(json),
       ),
-      shows: RemoteEntityState<Show>.fromJson(
+      shows: RemoteEntityState<ShowDto>.fromJson(
         json['shows'],
-        (json) => Show.fromJson(json),
+        (json) => ShowDto.fromJson(json),
       ),
     );
   }

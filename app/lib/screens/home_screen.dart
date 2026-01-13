@@ -5,6 +5,7 @@ import 'package:player/generated/l10n.dart';
 import 'package:player/screens/all_in_one_tab.dart';
 import 'package:player/screens/now_playing_screen.dart';
 import 'package:player/screens/show_detail_screen.dart';
+import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/services/on_demand_api.dart';
 import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_selectors.dart';
@@ -15,10 +16,7 @@ import 'package:redux_entity/redux_entity.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class _NowPlayingBarData {
-  _NowPlayingBarData({
-    this.item,
-    this.state,
-  });
+  _NowPlayingBarData({this.item, this.state});
 
   final MediaItem? item;
   final PlaybackState? state;
@@ -49,19 +47,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initialFetch() {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(RequestRetrieveAll<Schedule>());
-    store.dispatch(RequestRetrieveAll<Show>());
+    store.dispatch(RequestRetrieveAll<ShowDto>());
     store.dispatch(RequestRetrieveAll<OnDemandProgram>());
   }
 
   Future<void> refresh() {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(RequestRetrieveAll<Schedule>(forceRefresh: true));
-    store.dispatch(RequestRetrieveAll<Show>(forceRefresh: true));
+    store.dispatch(RequestRetrieveAll<ShowDto>(forceRefresh: true));
     store.dispatch(RequestRetrieveAll<OnDemandProgram>(forceRefresh: true));
     return store.onChange.firstWhere((state) => !somethingLoading(state));
   }
 
-  openShowDetail(Show show) {
+  openShowDetail(ShowDto show) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ShowDetailsScreen(show: show),
@@ -89,19 +87,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).appName),
-      ),
+      appBar: AppBar(title: Text(S.of(context).appName)),
       drawer: Drawer(
         child: ListView(
           children: [
             Stack(
               fit: StackFit.passthrough,
               children: [
-                Image.asset(
-                  'assets/images/header.png',
-                  fit: BoxFit.fill,
-                ),
+                Image.asset('assets/images/header.png', fit: BoxFit.fill),
                 AspectRatio(
                   aspectRatio: 205.0 / 115.0,
                   child: Container(
@@ -110,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         colors: [
                           Colors.black.withAlpha(60),
                           Colors.black.withAlpha(120),
-                          Colors.black.withAlpha(60)
+                          Colors.black.withAlpha(60),
                         ],
                         stops: [0, 0.5, 1],
                         begin: Alignment.topCenter,
@@ -120,9 +113,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: Center(
                       child: Text(
                         S.of(context).appName,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
+                        style: Theme.of(context).textTheme.headlineMedium!
                             .copyWith(color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
@@ -146,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               leading: Icon(Icons.info),
               title: Text(S.of(context).about),
               onTap: () => Navigator.of(context).popAndPushNamed('/about'),
-            )
+            ),
           ],
         ),
       ),
@@ -175,7 +166,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     state: store.state.audio.state,
                   ),
                   builder: (context, snapshot) {
-                    final state = snapshot.state?.processingState ??
+                    final state =
+                        snapshot.state?.processingState ??
                         AudioProcessingState.idle;
                     if (state != AudioProcessingState.completed &&
                         state != AudioProcessingState.idle) {
@@ -202,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   },
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
