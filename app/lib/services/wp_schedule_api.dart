@@ -12,9 +12,11 @@ class WpMeta {
   const WpMeta({
     this.show_incipit,
     this.subtitle2,
+    this.show_category,
   });
   final List<String>? show_incipit;
   final List<String>? subtitle2;
+  final List<String>? show_category;
 
   factory WpMeta.fromJson(Map<String, dynamic> json) => _$WpMetaFromJson(json);
   Map<String, dynamic> toJson() => _$WpMetaToJson(this);
@@ -70,6 +72,16 @@ class Schedule {
 }
 
 @JsonSerializable()
+class Category {
+  const Category(this.slug, this.id);
+  final int id;
+  final String slug;
+  factory Category.fromJson(Map<String, dynamic> json) =>
+      _$CategoryFromJson(json);
+  Map<String, dynamic> toJson() => _$CategoryToJson(this);
+}
+
+@JsonSerializable()
 class Show {
   const Show({
     required this.id,
@@ -92,6 +104,18 @@ class Show {
     return (slug).replaceAll('-', '+');
   }
 
+  String? get playlistCategory => meta.show_category?.first;
+
+  String get sortKey {
+    final lower = title.text.toLowerCase();
+    if (lower.indexOf('the ') == 0) {
+      return lower.replaceFirst('the ', '');
+    } else if (lower.indexOf('a ') == 0) {
+      return lower.replaceFirst('a ', '');
+    }
+    return lower;
+  }
+
   final int id;
   final String status;
   final String slug;
@@ -105,6 +129,34 @@ class Show {
 
   factory Show.fromJson(Map<String, dynamic> json) => _$ShowFromJson(json);
   Map<String, dynamic> toJson() => _$ShowToJson(this);
+}
+
+@JsonSerializable()
+class WpPost {
+  const WpPost({
+    required this.id,
+    required this.status,
+    required this.slug,
+    required this.title,
+    required this.content,
+    required this.excerpt,
+    required this.featured_media,
+    required this.thumbnail,
+    required this.meta,
+  });
+
+  final int id;
+  final String status;
+  final String slug;
+  final WpText title;
+  final WpText content;
+  final WpText excerpt;
+  final int featured_media;
+  final dynamic thumbnail;
+  final WpMeta meta;
+
+  factory WpPost.fromJson(Map<String, dynamic> json) => _$WpPostFromJson(json);
+  Map<String, dynamic> toJson() => _$WpPostToJson(this);
 }
 
 class WpScheduleApiService {
@@ -148,5 +200,23 @@ class WpScheduleApiService {
     final response = await http.get<Map<String, dynamic>>(
         'https://www.threedradio.com/wp-json/wp/v2/shows/$id?_embed');
     return Show.fromJson(response.data!);
+  }
+
+  Future<Category?> getCategoryBySlug(String slug) async {
+    final response = await http.get<List<dynamic>>(
+        'https://www.threedradio.com/wp-json/wp/v2/categories?slug=$slug');
+
+    if (response.data!.isNotEmpty) {
+      return Category.fromJson(response.data![0]);
+    }
+    return null;
+  }
+
+  Future<List<WpPost>> findPosts(Map<String, dynamic> query) async {
+    final response = await http.get<List<dynamic>>(
+        'https://www.threedradio.com/wp-json/wp/v2/posts',
+        queryParameters: query);
+
+    return response.data?.map((e) => WpPost.fromJson(e)).toList() ?? [];
   }
 }

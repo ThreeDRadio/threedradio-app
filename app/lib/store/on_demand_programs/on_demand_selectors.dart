@@ -20,7 +20,7 @@ List<Show> getShowsForOnDemandStreaming(AppState s) {
     return onDemand[onDemandKey] != null;
   }).toList();
 
-  sorted.sort((a, b) => a.title.text.compareTo(b.title.text));
+  sorted.sort((a, b) => a.sortKey.compareTo(b.sortKey));
 
   return sorted;
 }
@@ -31,8 +31,6 @@ List<OnDemandEpisode> getEpisodesForShow(AppState state, Show show) {
           <OnDemandEpisode>[];
 
   return possibleEpisodes.where((episode) {
-    final week = weekNumber(date: DateTime.parse(episode.date));
-
     final schedule =
         getScheduleForDate(state, DateTime.parse(episode.date).toLocal());
     final List<int> showIds = schedule?.shows
