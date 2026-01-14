@@ -23,10 +23,10 @@ class ShowsEpics extends EpicClass<AppState> {
     await for (final action in actions) {
       if (action is RequestRetrieveAll<ShowDto>) {
         final now = DateTime.now();
-        if (true ||
-            action.forceRefresh ||
+        if (action.forceRefresh ||
             store.state.shows.lastFetchAllTime == null ||
-            now.difference(store.state.shows.lastFetchAllTime!).inHours > 2) {
+            now.difference(store.state.shows.lastFetchAllTime!).inMinutes >
+                30) {
           try {
             final shows = await api.getAllPrograms();
             yield SuccessRetrieveAll<ShowDto>(shows);
