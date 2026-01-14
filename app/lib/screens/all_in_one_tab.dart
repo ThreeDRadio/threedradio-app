@@ -13,7 +13,6 @@ import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/store/history/history_item.dart';
 import 'package:player/store/history/history_selectors.dart';
 import 'package:player/store/on_demand_programs/on_demand_selectors.dart';
-import 'package:player/store/schedules/schedules_selectors.dart';
 import 'package:player/widgets/show_listing.dart';
 import 'package:redux_entity/redux_entity.dart';
 
@@ -100,11 +99,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
           SliverToBoxAdapter(
             child: StoreConnector<AppState, ShowDto?>(
               converter: (store) {
-                final currentShowId = getCurrentShowId(store.state);
-                if (currentShowId != null) {
-                  return store.state.shows.entities[currentShowId];
-                }
-                return null;
+                return getCurrentShow(store.state);
               },
               builder: (context, show) => show != null
                   ? ShowListing.fromShow(

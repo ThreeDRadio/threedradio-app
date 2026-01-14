@@ -1,12 +1,10 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
-import 'package:player/services/new_api/dto/show_dto.dart';
-import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/app_actions.dart';
 import 'package:player/store/audio/audio_actions.dart';
-import 'package:player/store/schedules/schedules_selectors.dart';
+import 'package:player/store/on_demand_programs/on_demand_selectors.dart';
 import 'package:redux_epics/redux_epics.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -94,11 +92,7 @@ class AudioEpics extends EpicClass<AppState> {
             store.state.audio.currentItem!.id == Environment.liveStreamUrl) {
           return SuccessPlayLive();
         }
-        final currentShowId = getCurrentShowId(store.state);
-        ShowDto? currentShow;
-        if (currentShowId != null) {
-          currentShow = store.state.shows.entities[currentShowId] as ShowDto;
-        }
+        final currentShow = getCurrentShow(store.state);
         //      if (!AudioService.running) {
         //        await AudioService.start(
         //          backgroundTaskEntrypoint: backgroundTaskEntrypoint,

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:player/generated/l10n.dart';
 import 'package:player/services/new_api/dto/show_dto.dart';
 
@@ -85,7 +86,7 @@ class ShowListing extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                title,
+                                HtmlUnescape().convert(title),
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
