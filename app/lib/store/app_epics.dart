@@ -22,8 +22,7 @@ final wpApi = WpScheduleApiService(http: dio);
 
 final newApi = NewScheduleApi(
   dio: dio,
-  baseUrl:
-      'https://threedradio.stagingvps.studioveld.com.au/wp-json/radio-logic/v1',
+  baseUrl: 'https://threedradio.com/wp-json/radio-logic/v1',
 );
 
 Epic<AppState> buildEpics(ThreeDBackgroundTask audioService) {
