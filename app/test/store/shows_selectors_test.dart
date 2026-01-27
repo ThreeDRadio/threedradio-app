@@ -12,7 +12,7 @@ ShowDto buildShow({int? id, String? slug}) {
   return ShowDto(
     name: 'Show $id',
     id: id,
-    slug: 'show-$id',
+    slug: slug ?? 'show-$id',
     description: 'blah',
     link: 'http://example.com',
   );
@@ -42,12 +42,12 @@ void main() {
   });
 
   group('Odd/Even Week Calculation', () {
-    test('iSOddWeek', () {
+    test('oddOrEvenWeek', () {
       // 2026-01-01 is a Thursday
-      expect(isOddWeek(DateTime(2026, 1, 1)), true);
+      expect(oddOrEvenWeek(DateTime(2026, 1, 1)), 'odd');
 
       // which means we expect the week to change on Monday the 5th
-      expect(isOddWeek(DateTime(2026, 1, 5)), false);
+      expect(oddOrEvenWeek(DateTime(2026, 1, 6)), 'even');
     });
   });
 }

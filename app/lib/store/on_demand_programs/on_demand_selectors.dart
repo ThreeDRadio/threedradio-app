@@ -26,15 +26,6 @@ List<ShowDto> getShowsForOnDemandStreaming(AppState s) {
   return sorted;
 }
 
-int getWeekOfMonth(DateTime date) {
-  return (date.day / 7.0).ceil();
-}
-
-bool isOddWeek(DateTime date) {
-  final weekNumber = getWeekOfMonth(date);
-  return weekNumber % 2 == 1;
-}
-
 /// Returns the week number for the date, in the range (0,1).
 int weekNumber(DateTime? date) {
   date ??= DateTime.now();

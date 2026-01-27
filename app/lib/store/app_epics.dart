@@ -3,7 +3,6 @@ import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/services/new_api/schedule_api.dart';
 import 'package:player/services/on_demand_api.dart';
-import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_epics.dart';
 import 'package:player/store/history/history_epics.dart';
@@ -18,7 +17,6 @@ final onDemandApi = OnDemandApiService(
   apiKey: Environment.onDemandApiKey,
   baseUrl: Environment.onDemandApi,
 );
-final wpApi = WpScheduleApiService(http: dio);
 
 final newApi = NewScheduleApi(
   dio: dio,

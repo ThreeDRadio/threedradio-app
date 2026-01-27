@@ -7,7 +7,6 @@ import 'package:player/screens/now_playing_screen.dart';
 import 'package:player/screens/show_detail_screen.dart';
 import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/services/on_demand_api.dart';
-import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_selectors.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
@@ -46,14 +45,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void initialFetch() {
     final store = StoreProvider.of<AppState>(context);
-    store.dispatch(RequestRetrieveAll<Schedule>());
     store.dispatch(RequestRetrieveAll<ShowDto>());
     store.dispatch(RequestRetrieveAll<OnDemandProgram>());
   }
 
   Future<void> refresh() {
     final store = StoreProvider.of<AppState>(context);
-    store.dispatch(RequestRetrieveAll<Schedule>(forceRefresh: true));
     store.dispatch(RequestRetrieveAll<ShowDto>(forceRefresh: true));
     store.dispatch(RequestRetrieveAll<OnDemandProgram>(forceRefresh: true));
     return store.onChange.firstWhere((state) => !somethingLoading(state));

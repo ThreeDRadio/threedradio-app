@@ -5,7 +5,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/services/new_api/schedule_api.dart';
-import 'package:player/services/wp_schedule_api.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/shows/shows_epics.dart';
 import 'package:redux/redux.dart';
@@ -48,11 +47,11 @@ void main() {
         await expectLater(
           epics.call(
             Stream<dynamic>.fromIterable([
-              const RequestRetrieveAll<Show>(),
+              const RequestRetrieveAll<ShowDto>(),
             ]).asBroadcastStream(),
             store,
           ),
-          emitsInAnyOrder([isA<SuccessRetrieveAll<Show>>()]),
+          emitsInAnyOrder([isA<SuccessRetrieveAll<ShowDto>>()]),
         );
       });
       test('Returnes cached if we have requested recently', () async {
@@ -75,11 +74,11 @@ void main() {
         expectLater(
           epics.call(
             Stream<dynamic>.fromIterable([
-              const RequestRetrieveAll<Show>(),
+              const RequestRetrieveAll<ShowDto>(),
             ]).asBroadcastStream(),
             store,
           ),
-          emitsInAnyOrder([isA<SuccessRetrieveAllFromCache<Show>>()]),
+          emitsInAnyOrder([isA<SuccessRetrieveAllFromCache<ShowDto>>()]),
         );
         verifyNever(api.getAllPrograms());
       });
@@ -90,11 +89,11 @@ void main() {
         expectLater(
           epics.call(
             Stream<dynamic>.fromIterable([
-              const RequestRetrieveAll<Show>(),
+              const RequestRetrieveAll<ShowDto>(),
             ]).asBroadcastStream(),
             store,
           ),
-          emitsInAnyOrder([isA<FailRetrieveAll<Show>>()]),
+          emitsInAnyOrder([isA<FailRetrieveAll<ShowDto>>()]),
         );
       });
     });
