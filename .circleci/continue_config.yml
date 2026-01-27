@@ -5,7 +5,7 @@ parameters:
     default: "3.35.3"
   xcode-version:
     type: string
-    default: "15.2"
+    default: "26.1"
   build-app:
     type: boolean
     default: false
@@ -95,7 +95,7 @@ jobs:
   build-ios:
     macos:
       xcode: << pipeline.parameters.xcode-version >>
-    resource_class: macos.x86.medium.gen2
+    resource_class: m4pro.medium
 
     working_directory: ~/repo/app
     steps:
@@ -156,7 +156,7 @@ jobs:
   deploy-ios:
     macos:
       xcode: << pipeline.parameters.xcode-version >>
-    resource_class: macos.x86.medium.gen2
+    resource_class: m4pro.medium
 
     working_directory: ~/repo/app
     steps:
