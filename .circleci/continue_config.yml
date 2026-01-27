@@ -103,8 +103,6 @@ jobs:
           path: ~/repo
       - attach_workspace:
           at: .
-      - macos/switch-ruby:
-          version: "3.1"
       - run:
           name: Install Flutter
           command: |
