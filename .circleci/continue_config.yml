@@ -2,7 +2,7 @@ version: 2.1
 parameters:
   flutter-version:
     type: string
-    default: "3.19.5"
+    default: "3.35.3"
   xcode-version:
     type: string
     default: "15.2"

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:player/generated/l10n.dart';
-import 'package:player/services/wp_schedule_api.dart';
+import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
 
@@ -27,7 +27,7 @@ class _ViewModel {
   });
 
   final MediaItem? item;
-  final Show? show;
+  final ShowDto? show;
   final PlaybackState? state;
   final List<MediaAction> controls;
   final ValueChanged<Duration> seekToPosition;
@@ -89,9 +89,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         state: store.state.audio.state,
         controls:
             store.state.audio.state?.controls.map((e) => e.action).toList() ??
-                [],
-        show: store.state.shows.entities[
-            (store.state.audio.currentItem?.extras ?? const {})['showId']
+            [],
+        show:
+            store.state.shows.entities[(store.state.audio.currentItem?.extras ??
+                    const {})['showId']
                 ?.toString()],
         seekToPosition: (Duration position) {
           store.dispatch(RequestSeek(position));
@@ -111,12 +112,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                     opacity: transitionComplete ? 1 : 0,
                     child: Text(
                       snapshot.item?.title ?? '',
-                      style: TextStyle(shadows: [
-                        Shadow(
-                          color: Colors.black,
-                          offset: Offset(0, 2),
-                        )
-                      ]),
+                      style: TextStyle(
+                        shadows: [
+                          Shadow(color: Colors.black, offset: Offset(0, 2)),
+                        ],
+                      ),
                     ),
                   ),
                   background: Hero(
@@ -132,20 +132,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                                colors: [
-                                  Colors.black.withAlpha(140),
-                                  Colors.black.withAlpha(0),
-                                  Colors.black.withAlpha(0),
-                                  Colors.black.withAlpha(140),
-                                ],
-                                stops: [
-                                  0,
-                                  0.4,
-                                  0.6,
-                                  1.0
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter),
+                              colors: [
+                                Colors.black.withAlpha(140),
+                                Colors.black.withAlpha(0),
+                                Colors.black.withAlpha(0),
+                                Colors.black.withAlpha(140),
+                              ],
+                              stops: [0, 0.4, 0.6, 1.0],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
                           ),
                         ),
                       ],
@@ -164,11 +160,13 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                           if (snapshot.controls.contains(MediaAction.rewind))
                             IconButton(
                               icon: Icon(Icons.replay_30),
-                              onPressed: snapshot.state!.position >
+                              onPressed:
+                                  snapshot.state!.position >
                                       const Duration(seconds: 30)
                                   ? () => snapshot.seekToPosition(
                                       snapshot.state!.position -
-                                          const Duration(seconds: 30))
+                                          const Duration(seconds: 30),
+                                    )
                                   : null,
                               iconSize: 48,
                             )
@@ -178,18 +176,20 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               onPressed: null,
                               iconSize: 48,
                             ),
-                          if (snapshot.controls
-                              .contains(MediaAction.fastForward))
+                          if (snapshot.controls.contains(
+                            MediaAction.fastForward,
+                          ))
                             IconButton(
                               icon: Icon(Icons.forward_30),
                               onPressed:
                                   (snapshot.item?.duration ?? Duration.zero) -
-                                              snapshot.state!.position >
-                                          const Duration(seconds: 30)
-                                      ? () => snapshot.seekToPosition(
-                                          snapshot.state!.position +
-                                              const Duration(seconds: 30))
-                                      : null,
+                                          snapshot.state!.position >
+                                      const Duration(seconds: 30)
+                                  ? () => snapshot.seekToPosition(
+                                      snapshot.state!.position +
+                                          const Duration(seconds: 30),
+                                    )
+                                  : null,
                               iconSize: 48,
                             )
                           else
@@ -245,7 +245,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                           setState(() {
                             seekInProgress = false;
                             snapshot.seekToPosition(
-                                Duration(seconds: value.round()));
+                              Duration(seconds: value.round()),
+                            );
                           });
                         },
                         onChanged: (value) {
@@ -258,10 +259,12 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         Duration.zero)
                       if (seekInProgress)
                         Text(
-                            '${Duration(seconds: seekingPosition.round()).format()} / ${snapshot.item!.duration!.format()}')
+                          '${Duration(seconds: seekingPosition.round()).format()} / ${snapshot.item!.duration!.format()}',
+                        )
                       else
                         Text(
-                            '${snapshot.state!.position.format()} / ${snapshot.item!.duration!.format()}')
+                          '${snapshot.state!.position.format()} / ${snapshot.item!.duration!.format()}',
+                        ),
                   ],
                 ),
               ),
@@ -271,13 +274,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                     horizontal: 8.0,
                     vertical: 32,
                   ),
-                  child: snapshot.show?.content?.text?.isNotEmpty ?? false
-                      ? Html(data: snapshot.show!.content.rendered)
-                      : Html(
-                          data: snapshot.show?.meta.show_incipit?.isNotEmpty ==
-                                  true
-                              ? snapshot.show!.meta.show_incipit![0]
-                              : S.of(context).defaultShortDescription),
+                  child: snapshot.show?.acf?.show_excerpt?.isNotEmpty ?? false
+                      ? Html(data: snapshot.show!.acf!.show_excerpt)
+                      : Html(data: S.of(context).defaultShortDescription),
                 ),
               ),
             ],
