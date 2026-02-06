@@ -3,7 +3,7 @@ import 'package:player/store/app_state.dart';
 
 getFavouritesShows(AppState state) {
   return state.favourites.entities.values
-      .map((id) => state.shows.entities[id])
+      .map((fave) => state.shows.entities[fave.id])
       .where((val) => val != null)
       .cast<ShowDto>()
       .toList();
