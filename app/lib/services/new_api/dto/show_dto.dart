@@ -121,9 +121,7 @@ class ShowFeaturedImage {
 
   Map<String, dynamic> toJson() => {
     'id': id,
-    'thumbnail': thumbnail,
-    'medium': medium,
-    'large': large,
+    'sizes': {'thumbnail': thumbnail, 'medium': medium, 'large': large},
   };
 
   final int id;
