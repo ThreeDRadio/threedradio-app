@@ -124,6 +124,11 @@ class _AllInOneTabState extends State<AllInOneTab> {
                   );
                 }
                 final show = store.state.shows.entities[item.showId];
+                if (show == null) {
+                  return _HistoryVM(
+                    playing: store.state.audio.state?.playing ?? false,
+                  );
+                }
                 final episode = store
                     .state
                     .onDemandEpisodes
