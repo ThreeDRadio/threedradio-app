@@ -56,3 +56,4 @@ threedradio-upload.keystore
 *.ipa
 
 *.mocks.dart
+ios/build
