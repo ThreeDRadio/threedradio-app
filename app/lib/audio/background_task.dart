@@ -2,6 +2,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:player/audio/audio_start_params.dart';
 import 'package:player/environment/environment.dart';
+import 'package:sentry/sentry.dart';
 
 final liveMediaControlsPlaying = [
   MediaControl.pause,
