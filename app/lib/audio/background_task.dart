@@ -54,6 +54,10 @@ class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
       }
     });
 
+    _player.errorStream.listen((error) {
+      Sentry.captureException(error);
+    });
+
     _player.positionStream.where(((event) => _player.playing)).listen((event) {
       playbackState.add(PlaybackState(
         processingState: AudioProcessingState.ready,
