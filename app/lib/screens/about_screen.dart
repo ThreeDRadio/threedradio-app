@@ -22,7 +22,7 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).about)),
+      appBar: AppBar(title: Text(S.of(context).about.toUpperCase())),
       body: SafeArea(
         child: ListView(
           padding: EdgeInsets.all(24),
@@ -41,21 +41,21 @@ class _AboutScreenState extends State<AboutScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
-                    icon: Icon(FontAwesomeIcons.home),
+                    icon: FaIcon(FontAwesomeIcons.house),
                     onPressed: () => launch('https://www.threedradio.com'),
                   ),
                   IconButton(
-                    icon: Icon(FontAwesomeIcons.facebookF),
+                    icon: FaIcon(FontAwesomeIcons.facebookF),
                     onPressed: () =>
                         launch('https://www.facebook.com/threedradio'),
                   ),
                   IconButton(
-                    icon: Icon(FontAwesomeIcons.twitter),
+                    icon: FaIcon(FontAwesomeIcons.twitter),
                     onPressed: () =>
                         launch('https://www.twitter.com/threedradio'),
                   ),
                   IconButton(
-                    icon: Icon(FontAwesomeIcons.instagram),
+                    icon: FaIcon(FontAwesomeIcons.instagram),
                     onPressed: () =>
                         launch('https://www.instagram.com/threedradio'),
                   ),
@@ -65,7 +65,7 @@ class _AboutScreenState extends State<AboutScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Text(
-                S.of(context).credits,
+                S.of(context).credits.toUpperCase(),
                 style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
