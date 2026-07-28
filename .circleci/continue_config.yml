@@ -125,13 +125,12 @@ jobs:
       - run:
           name: Build Flutter App
           command: |
-            export PATH="$PATH:`pwd`/flutter/bin"
+            pod repo update
             flutter pub get
             flutter pub run intl_utils:generate
             flutter pub run build_runner build
             flutter build ios --release --no-codesign --config-only  --build-number $(expr 1000 + << pipeline.number >> ) 
             cd ios
-            pod repo update
             gem install bundler:2.1.4
             bundle install --path vendor/bundle
             bundle exec fastlane ios match_production
