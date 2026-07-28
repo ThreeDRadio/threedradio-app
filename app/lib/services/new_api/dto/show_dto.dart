@@ -132,7 +132,7 @@ class ShowFeaturedImage {
 
 TimeOfDay timeStringToTimeOfDay(String value) {
   try {
-    final date = DateFormat('jm').parse(value.toUpperCase());
+    final date = DateFormat('jm').parseLoose(value.toUpperCase());
     return TimeOfDay.fromDateTime(date);
   } catch (err) {
     return TimeOfDay(hour: 0, minute: 0);
