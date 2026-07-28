@@ -50,7 +50,7 @@ jobs:
 
   build-android:
     docker:
-      - image: ghcr.io/cirruslabs/flutter:<< pipeline.parameters.flutter-version >>
+      - image: cimg/android:2026.07
     resource_class: large
 
     working_directory: ~/repo/app
@@ -58,6 +58,9 @@ jobs:
     steps:
       - checkout:
           path: ~/repo
+      - flutter/install_sdk_and_pub:
+          channel: stable
+          version: << pipeline.parameters.flutter-version >>
       - attach_workspace:
           at: .
       - run: flutter pub get
@@ -83,6 +86,7 @@ jobs:
           path: ~/repo
       - attach_workspace:
           at: .
+          
       - run:
           name: Fastlane Install
           command: |
