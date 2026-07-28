@@ -15,16 +15,21 @@ parameters:
 orbs:
   codecov: codecov/codecov@1.0.2
   macos: circleci/macos@2
+  flutter: circleci/flutter@3.0.0
+
 jobs:
   test:
     docker:
-      - image: ghcr.io/cirruslabs/flutter:<< pipeline.parameters.flutter-version >>
+      - image: cimg/android:2026.07
 
     working_directory: ~/repo/app
 
     steps:
       - checkout:
           path: ~/repo
+      - flutter/install_sdk_and_pub:
+          channel: stable
+          version: << pipeline.parameters.flutter-version >>
       - run: flutter pub get
       - run: flutter pub global activate junitreport
       - run: flutter pub run intl_utils:generate
@@ -103,14 +108,9 @@ jobs:
           path: ~/repo
       - attach_workspace:
           at: .
-      - run:
-          name: Install Flutter
-          command: |
-            curl https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_<< pipeline.parameters.flutter-version >>-stable.zip --output flutter.zip
-            unzip flutter.zip
-            export PATH="$PATH:`pwd`/flutter/bin"
-            flutter precache --ios --no-android 
-            flutter doctor
+      - flutter/install_sdk_and_pub:
+          channel: stable
+          version: << pipeline.parameters.flutter-version >>
       - run: echo $APPSTORE_API_KEY_B64 | base64 --decode > ios/appstore_api_key.json
       - restore_cache:
           keys:
@@ -131,6 +131,7 @@ jobs:
             flutter pub run build_runner build
             flutter build ios --release --no-codesign --config-only  --build-number $(expr 1000 + << pipeline.number >> ) 
             cd ios
+            pod repo update
             gem install bundler:2.1.4
             bundle install --path vendor/bundle
             bundle exec fastlane ios match_production
