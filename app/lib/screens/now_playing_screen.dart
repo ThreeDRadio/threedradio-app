@@ -111,8 +111,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                     duration: widget.fadeInDuration,
                     opacity: transitionComplete ? 1 : 0,
                     child: Text(
-                      snapshot.item?.title ?? '',
+                      snapshot.item?.title.toUpperCase() ?? '',
                       style: TextStyle(
+                        color: Colors.white,
                         shadows: [
                           Shadow(color: Colors.black, offset: Offset(0, 2)),
                         ],

@@ -43,83 +43,61 @@ class ShowListing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        color: Color(0xfff2ebda),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(2.0),
+          side: BorderSide(color: Colors.black),
+        ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
-          child: AspectRatio(
-            aspectRatio: 3,
-            child: Hero(
-              tag: heroTag,
-              child: Stack(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                alignment: AlignmentGeometry.topRight,
                 children: [
-                  if (thumbnail is String)
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      child: CachedNetworkImage(
-                        imageUrl: thumbnail!,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black.withAlpha(140),
-                          Colors.black.withAlpha(0),
-                        ],
-                        stops: [0, 0.8],
-                      ),
+                  Hero(
+                    tag: heroTag,
+                    child: AspectRatio(
+                      aspectRatio: 3,
+                      child: (thumbnail is String)
+                          ? CachedNetworkImage(
+                              imageUrl: thumbnail!,
+                              fit: BoxFit.cover,
+                            )
+                          : Placeholder(),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                HtmlUnescape().convert(title),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(
-                                      shadows: [Shadow(offset: Offset(0, 2))],
-                                    ),
-                              ),
-                              if (subtitle != null)
-                                Text(
-                                  subtitle!,
-                                  style: Theme.of(context).textTheme.bodyMedium!
-                                      .copyWith(
-                                        shadows: [Shadow(offset: Offset(0, 2))],
-                                      ),
-                                )
-                              else
-                                Text(
-                                  S.of(context).defaultShortDescription,
-                                  style: Theme.of(context).textTheme.bodyMedium!
-                                      .copyWith(
-                                        shadows: [Shadow(offset: Offset(0, 2))],
-                                      ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        if (action != null) action!,
-                      ],
+                  if (action != null)
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: action!,
                     ),
-                  ),
                 ],
               ),
-            ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      HtmlUnescape().convert(title).toUpperCase(),
+                      style: Theme.of(context).textTheme.headlineSmall!,
+                    ),
+                    if (subtitle != null)
+                      Text(
+                        '$subtitle',
+                        style: Theme.of(context).textTheme.bodyMedium!,
+                      )
+                    else
+                      Text(S.of(context).defaultShortDescription),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

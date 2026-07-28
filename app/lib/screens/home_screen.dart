@@ -84,7 +84,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).appName)),
+      appBar: AppBar(
+        title: Text(S.of(context).appName.toUpperCase()),
+        scrolledUnderElevation: 0,
+      ),
       drawer: Drawer(
         child: ListView(
           children: [
@@ -109,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     child: Center(
                       child: Text(
-                        S.of(context).appName,
+                        S.of(context).appName.toUpperCase(),
                         style: Theme.of(context).textTheme.headlineMedium!
                             .copyWith(color: Colors.white),
                         textAlign: TextAlign.center,

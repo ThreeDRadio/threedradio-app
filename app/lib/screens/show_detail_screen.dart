@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:player/generated/l10n.dart';
 import 'package:player/screens/now_playing_screen.dart';
 import 'package:player/services/new_api/dto/show_dto.dart';
@@ -12,6 +13,7 @@ import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/store/favourites/favourites_actions.dart';
 import 'package:player/store/on_demand_programs/on_demand_selectors.dart';
 import 'package:player/widgets/days_left_badge.dart';
+import 'package:player/widgets/separator.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 class _FaveMV {
@@ -83,7 +85,9 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
+              centerTitle: false,
               expandedHeight: 220,
+              collapsedHeight: 220,
               pinned: true,
               actions: [
                 StoreConnector<AppState, _FaveMV>(
@@ -113,15 +117,27 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                 ),
               ],
               flexibleSpace: FlexibleSpaceBar(
+                centerTitle: false,
+                titlePadding: EdgeInsets.all(8),
                 title: AnimatedOpacity(
                   duration: widget.fadeInDuration,
                   opacity: transitionComplete ? 1 : 0,
-                  child: Text(
-                    widget.show.name,
-                    style: TextStyle(
-                      shadows: [
-                        Shadow(color: Colors.black, offset: Offset(0, 2)),
-                      ],
+                  child: Container(
+                    color: Colors.black,
+                    padding: EdgeInsets.only(
+                      left: 6,
+                      right: 6,
+                      top: 1,
+                      bottom: 6,
+                    ),
+                    child: Text(
+                      HtmlUnescape().convert(
+                        widget.show.name.toUpperCase(),
+                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: Color(0xfff2ebda),
+                          ),
                     ),
                   ),
                 ),
@@ -171,9 +187,8 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
             SliverPadding(
               padding: EdgeInsets.only(left: 8, bottom: 8),
               sliver: SliverToBoxAdapter(
-                child: Text(
-                  S.of(context).onDemandEpisodes,
-                  style: Theme.of(context).textTheme.headlineSmall,
+                child: Separator(
+                  child: Text(S.of(context).onDemandEpisodes.toUpperCase()),
                 ),
               ),
             ),
@@ -191,6 +206,9 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                     (context, index) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(2),
+                        ),
                         child: InkWell(
                           onTap: () => playEpisode(episodes[index]),
                           child: Padding(
@@ -210,7 +228,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                                         '${episodes[index].date}',
                                         style: Theme.of(
                                           context,
-                                        ).textTheme.titleLarge,
+                                        ).textTheme.bodyLarge,
                                       ),
                                       Text(
                                         (episodes[index].size / 1024 / 2014)

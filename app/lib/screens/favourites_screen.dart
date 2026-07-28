@@ -11,7 +11,7 @@ class FavouritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).favourites)),
+      appBar: AppBar(title: Text(S.of(context).favourites.toUpperCase())),
       body: SafeArea(
         child: StoreConnector<AppState, List<ShowDto>>(
           converter: (store) => getFavouritesShows(store.state),

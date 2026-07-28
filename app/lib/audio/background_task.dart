@@ -4,14 +4,8 @@ import 'package:player/audio/audio_start_params.dart';
 import 'package:player/environment/environment.dart';
 import 'package:sentry/sentry.dart';
 
-final liveMediaControlsPlaying = [
-  MediaControl.pause,
-  MediaControl.stop,
-];
-final liveMediaControlsPaused = [
-  MediaControl.play,
-  MediaControl.stop,
-];
+final liveMediaControlsPlaying = [MediaControl.pause, MediaControl.stop];
+final liveMediaControlsPaused = [MediaControl.play, MediaControl.stop];
 
 final onDemandMediaControlsPaused = [
   MediaControl.play,
@@ -27,7 +21,7 @@ final onDemandMediaControlsPlaying = [
 ];
 
 class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
-  AudioPlayer _player = AudioPlayer();
+  final _player = AudioPlayer();
   PlaybackMode? mode;
 
   List<MediaControl> get currentMediaControls {
@@ -49,9 +43,7 @@ class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
   ThreeDBackgroundTask() {
     _player.durationStream.listen((duration) {
       if (mediaItem.valueOrNull != null) {
-        mediaItem.add(
-          mediaItem.valueOrNull?.copyWith(duration: duration),
-        );
+        mediaItem.add(mediaItem.valueOrNull?.copyWith(duration: duration));
       }
     });
 
@@ -60,12 +52,14 @@ class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
     });
 
     _player.positionStream.where(((event) => _player.playing)).listen((event) {
-      playbackState.add(PlaybackState(
-        processingState: AudioProcessingState.ready,
-        controls: currentMediaControls,
-        playing: _player.playing,
-        updatePosition: event,
-      ));
+      playbackState.add(
+        PlaybackState(
+          processingState: AudioProcessingState.ready,
+          controls: currentMediaControls,
+          playing: _player.playing,
+          updatePosition: event,
+        ),
+      );
     });
     playbackState.add(
       PlaybackState(
@@ -84,11 +78,13 @@ class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
 
     mediaItem.add(item);
 
-    playbackState.add(PlaybackState(
-      playing: false,
-      controls: currentMediaControls,
-      processingState: AudioProcessingState.buffering,
-    ));
+    playbackState.add(
+      PlaybackState(
+        playing: false,
+        controls: currentMediaControls,
+        processingState: AudioProcessingState.buffering,
+      ),
+    );
 
     // Show the media notification, and let all clients no what
     // playback state and media item to display.
@@ -100,11 +96,13 @@ class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
       await _player.setAudioSource(LockCachingAudioSource(Uri.parse(item.id)));
     }
     _player.play();
-    playbackState.add(PlaybackState(
-      playing: true,
-      controls: currentMediaControls,
-      processingState: AudioProcessingState.ready,
-    ));
+    playbackState.add(
+      PlaybackState(
+        playing: true,
+        controls: currentMediaControls,
+        processingState: AudioProcessingState.ready,
+      ),
+    );
 
     super.playMediaItem(item);
   }
@@ -127,11 +125,13 @@ class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
   Future<void> stop() async {
     await _player.stop();
     //await _player.dispose();
-    playbackState.add(PlaybackState(
-      controls: [],
-      processingState: AudioProcessingState.ready,
-      playing: false,
-    ));
+    playbackState.add(
+      PlaybackState(
+        controls: [],
+        processingState: AudioProcessingState.ready,
+        playing: false,
+      ),
+    );
     await super.stop();
   }
 

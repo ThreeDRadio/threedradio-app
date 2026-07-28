@@ -72,7 +72,7 @@ void main() async {
     middleware: [
       EpicMiddleware(buildEpics(audioService)),
       persistor.createMiddleware(),
-      if (debug) remoteDev
+      if (debug) remoteDev,
     ],
   );
 
@@ -96,10 +96,7 @@ void main() async {
   if (sentry != null) {
     FlutterError.onError = (details, {bool forceReport = false}) {
       try {
-        sentry?.captureException(
-          details.exception,
-          stackTrace: details.stack,
-        );
+        sentry?.captureException(details.exception, stackTrace: details.stack);
       } catch (e) {
         print('Sending report to sentry.io failed: $e');
       } finally {
@@ -108,28 +105,19 @@ void main() async {
       }
     };
   }
-  runZonedGuarded(
-    () => runApp(MyApp(
-      store: store,
-      analytics: analytics,
-    )),
-    (error, stackTrace) async {
-      if (sentry != null) {
-        await sentry.captureException(
-          error,
-          stackTrace: stackTrace,
-        );
-      }
-      print(error);
-    },
-  );
+  runZonedGuarded(() => runApp(MyApp(store: store, analytics: analytics)), (
+    error,
+    stackTrace,
+  ) async {
+    if (sentry != null) {
+      await sentry.captureException(error, stackTrace: stackTrace);
+    }
+    print(error);
+  });
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({
-    required this.analytics,
-    required this.store,
-  });
+  MyApp({required this.analytics, required this.store});
 
   final Store<AppState> store;
   final FirebaseAnalytics analytics;
@@ -140,9 +128,7 @@ class MyApp extends StatelessWidget {
       store: store,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        navigatorObservers: [
-          FirebaseAnalyticsObserver(analytics: analytics),
-        ],
+        navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
         localizationsDelegates: [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -152,38 +138,56 @@ class MyApp extends StatelessWidget {
         supportedLocales: S.delegate.supportedLocales,
         title: 'Three D Radio',
         theme: ThemeData(
-          brightness: Brightness.dark,
-          colorScheme: ColorScheme.dark().copyWith(
+          brightness: Brightness.light,
+          colorScheme: ColorScheme.light().copyWith(
             primary: Color(0xff2F9B17),
+            surface: Color(0xfff2ebda),
           ),
           indicatorColor: Color(0xff2F9B17),
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: TextTheme(
-            bodyMedium: GoogleFonts.openSans(fontSize: 16),
-            labelLarge: GoogleFonts.arvo(fontWeight: FontWeight.bold),
-            displayMedium: GoogleFonts.arvo(fontSize: 40),
-            displaySmall: GoogleFonts.arvo(color: Colors.white, fontSize: 36),
-            headlineMedium: GoogleFonts.arvo(
-              fontSize: 32,
-            ),
-            headlineSmall: GoogleFonts.arvo(
-              color: Colors.white,
-            ),
-            titleLarge: GoogleFonts.arvo(
-              fontSize: 18,
-              color: Colors.white,
+          appBarTheme: AppBarThemeData(
+            backgroundColor: Color.fromARGB(255, 50, 46, 45),
+            iconTheme: IconThemeData(color: Color(0xfff2ebda)),
+            titleTextStyle: TextStyle(
+              color: Color(0xfff2ebda),
+              fontFamily: GoogleFonts.jockeyOne().fontFamily,
+              fontSize: 22,
             ),
           ),
-          primaryTextTheme: GoogleFonts.arvoTextTheme(
-            TextTheme(
-              titleLarge: TextStyle(color: Colors.white),
+          drawerTheme: DrawerThemeData(
+            backgroundColor: Color.fromARGB(255, 50, 46, 45),
+          ),
+          listTileTheme: ListTileThemeData(
+            iconColor: Color(0xfff2ebda),
+            textColor: Color(0xfff2ebda),
+          ),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          chipTheme: ChipThemeData(
+            labelStyle: GoogleFonts.barlowCondensed(fontSize: 14),
+          ),
+          textTheme: TextTheme(
+            bodyLarge: GoogleFonts.barlowCondensed(fontSize: 18),
+            bodyMedium: GoogleFonts.barlowCondensed(fontSize: 16),
+            bodySmall: GoogleFonts.barlowCondensed(fontSize: 14),
+            labelLarge: GoogleFonts.barlowCondensed(
+              fontWeight: FontWeight.bold,
             ),
+            displayMedium: GoogleFonts.vinaSans(fontSize: 40),
+            displaySmall: GoogleFonts.vinaSans(fontSize: 36),
+            headlineMedium: GoogleFonts.vinaSans(
+              fontSize: 32,
+              height: 1,
+            ),
+            headlineSmall: GoogleFonts.vinaSans(),
+            titleLarge: GoogleFonts.vinaSans(fontSize: 18),
+          ),
+          primaryTextTheme: GoogleFonts.vinaSansTextTheme(
+            TextTheme(titleLarge: TextStyle(color: Colors.white)),
           ),
           sliderTheme: SliderThemeData(
-            activeTrackColor: Color(0xff2f9b17),
-            thumbColor: Color(0xff2f9b17),
-            inactiveTrackColor: Color(0xff2f9b17).withAlpha(100),
-            overlayColor: Color(0xff2f9b17).withAlpha(40),
+            activeTrackColor: Colors.black,
+            thumbColor: Colors.black,
+            inactiveTrackColor: Colors.black,
+            overlayColor: Colors.black.withAlpha(40),
           ),
         ),
         routes: {

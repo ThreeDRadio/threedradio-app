@@ -13,6 +13,7 @@ import 'package:player/store/audio/audio_actions.dart';
 import 'package:player/store/history/history_item.dart';
 import 'package:player/store/history/history_selectors.dart';
 import 'package:player/store/on_demand_programs/on_demand_selectors.dart';
+import 'package:player/widgets/separator.dart';
 import 'package:player/widgets/show_listing.dart';
 import 'package:redux_entity/redux_entity.dart';
 
@@ -91,9 +92,8 @@ class _AllInOneTabState extends State<AllInOneTab> {
         slivers: [
           SliverPadding(padding: EdgeInsets.only(top: 8)),
           SliverToBoxAdapter(
-            child: Text(
-              S.of(context).listenLive,
-              style: Theme.of(context).textTheme.displaySmall,
+            child: Separator(
+              child: Text(S.of(context).listenLive.toUpperCase()),
             ),
           ),
           SliverToBoxAdapter(
@@ -153,9 +153,8 @@ class _AllInOneTabState extends State<AllInOneTab> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 32.0),
-                          child: Text(
-                            S.of(context).jumpBackIn,
-                            style: Theme.of(context).textTheme.displaySmall,
+                          child: Separator(
+                            child: Text(S.of(context).jumpBackIn.toUpperCase()),
                           ),
                         ),
                         ShowListing(
@@ -183,15 +182,10 @@ class _AllInOneTabState extends State<AllInOneTab> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(200),
-                                gradient: RadialGradient(
-                                  colors: [
-                                    Colors.black.withAlpha(100),
-                                    Colors.black.withAlpha(0),
-                                  ],
-                                  center: Alignment.center,
-                                ),
+                                color: Colors.black,
                               ),
                               child: IconButton(
+                                color: Colors.white,
                                 icon: Icon(Icons.close),
                                 onPressed: snapshot.removeItem,
                               ),
@@ -206,9 +200,8 @@ class _AllInOneTabState extends State<AllInOneTab> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(top: 32),
-              child: Text(
-                S.of(context).onDemand,
-                style: Theme.of(context).textTheme.displaySmall,
+              child: Separator(
+                child: Text(S.of(context).onDemand.toUpperCase()),
               ),
             ),
           ),
@@ -217,7 +210,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
             builder: (context, snapshot) => snapshot.isNotEmpty
                 ? SliverGrid(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      childAspectRatio: 3,
+                      childAspectRatio: 1.95,
                       maxCrossAxisExtent: 600,
                       crossAxisSpacing: 8,
                       mainAxisSpacing: 8,

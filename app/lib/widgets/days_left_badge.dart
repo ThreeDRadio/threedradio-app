@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:player/generated/l10n.dart';
 
 class DaysLeftBadge extends StatelessWidget {
-  const DaysLeftBadge({
-    required this.showDate,
-    Key? key,
-  }) : super(key: key);
+  const DaysLeftBadge({required this.showDate, Key? key}) : super(key: key);
 
   final DateTime showDate;
 
@@ -15,11 +12,11 @@ class DaysLeftBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Chip(
       label: Text(
-        S.of(context).daysLeft(
-              max(28 - DateTime.now().difference(showDate).inDays, 0),
-            ),
+        S
+            .of(context)
+            .daysLeft(max(28 - DateTime.now().difference(showDate).inDays, 0)),
       ),
-      labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      labelStyle: TextStyle(color: Colors.black),
       backgroundColor: Colors.amberAccent,
       visualDensity: VisualDensity.compact,
     );
