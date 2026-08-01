@@ -7,6 +7,7 @@ final lightTheme = ThemeData(
   brightness: Brightness.light,
   colorScheme: ColorScheme.light().copyWith(
     primary: ThreeDColors.green,
+    secondary: ThreeDColors.green,
     surface: ThreeDColors.sand,
   ),
   tabBarTheme: TabBarThemeData(
@@ -40,6 +41,11 @@ final lightTheme = ThemeData(
         (states) => states.contains(WidgetState.selected)
             ? ThreeDColors.black
             : ThreeDColors.sand,
+      ),
+      backgroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? ThreeDColors.green
+            : ThreeDColors.darkGrey,
       ),
       side: WidgetStatePropertyAll(BorderSide(color: ThreeDColors.sand)),
     ),

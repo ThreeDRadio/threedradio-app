@@ -182,17 +182,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ButtonSegment(
                         value: ThemeMode.system,
                         icon: Icon(Icons.brightness_auto),
-                        label: Text('Auto'),
+                        label: Text('AUTO'),
                       ),
                       ButtonSegment(
                         value: ThemeMode.light,
                         icon: Icon(Icons.sunny),
-                        label: Text('Light'),
+                        label: Text('LIGHT'),
                       ),
                       ButtonSegment(
                         value: ThemeMode.dark,
                         icon: Icon(Icons.nightlight_round),
-                        label: Text('Dark'),
+                        label: Text('DARK'),
                       ),
                     ],
                     selected: {snapshot.themeMode},

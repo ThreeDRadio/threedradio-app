@@ -41,4 +41,19 @@ final darkTheme = ThemeData(
     inactiveTrackColor: ThreeDColors.sand,
     overlayColor: ThreeDColors.sand.withAlpha(40),
   ),
+  segmentedButtonTheme: SegmentedButtonThemeData(
+    style: ButtonStyle(
+      foregroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? ThreeDColors.black
+            : ThreeDColors.sand,
+      ),
+      backgroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? ThreeDColors.green
+            : ThreeDColors.darkGrey,
+      ),
+      side: WidgetStatePropertyAll(BorderSide(color: ThreeDColors.sand)),
+    ),
+  ),
 );
