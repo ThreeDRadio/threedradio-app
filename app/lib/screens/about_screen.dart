@@ -54,12 +54,6 @@ class _AboutScreenState extends State<AboutScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: FaIcon(FontAwesomeIcons.twitter),
-                    onPressed: () => launchUrl(
-                      Uri.parse('https://www.twitter.com/threedradio'),
-                    ),
-                  ),
-                  IconButton(
                     icon: FaIcon(FontAwesomeIcons.instagram),
                     onPressed: () => launchUrl(
                       Uri.parse('https://www.instagram.com/threedradio'),
