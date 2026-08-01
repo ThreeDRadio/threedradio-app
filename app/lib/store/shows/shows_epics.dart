@@ -34,7 +34,6 @@ class ShowsEpics extends EpicClass<AppState> {
             yield SuccessRetrieveAll<ShowDto>(shows);
           } catch (err, st) {
             debugPrint(err.toString());
-            debugPrintStack(stackTrace: st);
             yield FailRetrieveAll<ShowDto>(err);
           }
         } else {
