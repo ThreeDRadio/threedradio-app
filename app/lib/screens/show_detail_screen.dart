@@ -160,12 +160,13 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              Colors.black.withAlpha(140),
+                              Colors.black.withAlpha(180),
                               Colors.black.withAlpha(0),
-                              Colors.black.withAlpha(0),
-                              Colors.black.withAlpha(140),
                             ],
-                            stops: [0, 0.4, 0.6, 1.0],
+                            stops: [
+                              0.2,
+                              0.5,
+                            ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                           ),
