@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:player/generated/l10n.dart';
 import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/store/app_state.dart';
@@ -106,19 +107,32 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
+                centerTitle: false,
                 expandedHeight: 220,
+                collapsedHeight: 220,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: false,
+                  titlePadding: EdgeInsets.all(8),
                   title: AnimatedOpacity(
                     duration: widget.fadeInDuration,
                     opacity: transitionComplete ? 1 : 0,
-                    child: Text(
-                      snapshot.item?.title.toUpperCase() ?? '',
-                      style: TextStyle(
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(color: Colors.black, offset: Offset(0, 2)),
-                        ],
+                    child: Container(
+                      color: Colors.black,
+                      padding: EdgeInsets.only(
+                        left: 6,
+                        right: 6,
+                        top: 1,
+                        bottom: 6,
+                      ),
+                      child: Text(
+                        HtmlUnescape().convert(
+                          snapshot.show?.name.toUpperCase() ?? '',
+                        ),
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              color: Color(0xfff2ebda),
+                            ),
                       ),
                     ),
                   ),
