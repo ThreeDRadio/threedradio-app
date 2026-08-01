@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/services/new_api/schedule_api.dart';
 import 'package:player/store/app_state.dart';
@@ -12,6 +13,7 @@ class ShowsEpics extends EpicClass<AppState> {
   final NewScheduleApi api;
   late Epic<AppState> _epic;
 
+  @override
   Stream<dynamic> call(Stream<dynamic> actions, EpicStore<AppState> store) {
     return _epic(actions, store);
   }
@@ -30,8 +32,9 @@ class ShowsEpics extends EpicClass<AppState> {
           try {
             final shows = await api.getAllPrograms();
             yield SuccessRetrieveAll<ShowDto>(shows);
-          } catch (err) {
-            print(err);
+          } catch (err, st) {
+            debugPrint(err.toString());
+            debugPrintStack(stackTrace: st);
             yield FailRetrieveAll<ShowDto>(err);
           }
         } else {

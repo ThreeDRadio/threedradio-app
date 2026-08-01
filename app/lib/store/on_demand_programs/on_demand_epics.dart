@@ -8,8 +8,11 @@ class OnDemandEpics extends EpicClass<AppState> {
 
   final OnDemandApiService api;
 
+  @override
   Stream<dynamic> call(
-      Stream<dynamic> actions, EpicStore<AppState> store) async* {
+    Stream<dynamic> actions,
+    EpicStore<AppState> store,
+  ) async* {
     await for (final action in actions) {
       if (action is RequestRetrieveAll<OnDemandProgram>) {
         final now = DateTime.now();
@@ -27,7 +30,8 @@ class OnDemandEpics extends EpicClass<AppState> {
           }
         } else {
           yield SuccessRetrieveAllFromCache<OnDemandProgram>(
-              store.state.onDemandPrograms.entities.values.toList());
+            store.state.onDemandPrograms.entities.values.toList(),
+          );
         }
       }
     }

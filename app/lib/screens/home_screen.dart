@@ -22,8 +22,10 @@ class _NowPlayingBarData {
 }
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
@@ -56,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return store.onChange.firstWhere((state) => !somethingLoading(state));
   }
 
-  openShowDetail(ShowDto show) {
+  void openShowDetail(ShowDto show) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ShowDetailsScreen(show: show),
@@ -65,19 +67,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  startLiveStream() async {
+  void startLiveStream() async {
     StoreProvider.of<AppState>(context).dispatch(RequestPlayLive());
   }
 
-  pause() async {
+  void pause() async {
     StoreProvider.of<AppState>(context).dispatch(RequestPause());
   }
 
-  resume() async {
+  void resume() async {
     StoreProvider.of<AppState>(context).dispatch(RequestResume());
   }
 
-  stop() async {
+  void stop() async {
     StoreProvider.of<AppState>(context).dispatch(RequestStop());
   }
 

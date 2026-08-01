@@ -8,6 +8,7 @@ class OnDemandEpisodesEpics extends EpicClass<AppState> {
 
   final OnDemandApiService api;
 
+  @override
   Stream<dynamic> call(
     Stream<dynamic> actions,
     EpicStore<AppState> store,

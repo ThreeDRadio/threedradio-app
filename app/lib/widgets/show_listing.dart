@@ -12,8 +12,8 @@ class ShowListing extends StatelessWidget {
     this.thumbnail,
     this.onTap,
     this.action,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   factory ShowListing.fromShow(
     ShowDto show, {

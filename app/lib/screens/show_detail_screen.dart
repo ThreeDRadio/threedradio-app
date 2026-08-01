@@ -29,7 +29,8 @@ class _FaveMV {
 }
 
 class ShowDetailsScreen extends StatefulWidget {
-  ShowDetailsScreen({
+  const ShowDetailsScreen({
+    super.key,
     required this.show,
     this.fadeInDelay = const Duration(milliseconds: 300),
     this.fadeInDuration = const Duration(milliseconds: 300),
@@ -40,11 +41,13 @@ class ShowDetailsScreen extends StatefulWidget {
   final Duration fadeInDuration;
 
   @override
-  _ShowDetailsScreenState createState() => _ShowDetailsScreenState();
+  State createState() => _ShowDetailsScreenState();
 }
 
 class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
   bool transitionComplete = false;
+
+  @override
   void initState() {
     Future.delayed(widget.fadeInDelay, () {
       if (mounted) {
@@ -64,7 +67,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
     super.didChangeDependencies();
   }
 
-  playEpisode(OnDemandEpisode e) {
+  void playEpisode(OnDemandEpisode e) {
     StoreProvider.of<AppState>(
       context,
     ).dispatch(RequestPlayEpisode(episode: e, show: widget.show));
@@ -225,16 +228,13 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${episodes[index].date}',
+                                        episodes[index].date,
                                         style: Theme.of(
                                           context,
                                         ).textTheme.bodyLarge,
                                       ),
                                       Text(
-                                        (episodes[index].size / 1024 / 2014)
-                                                .round()
-                                                .toString() +
-                                            'mb',
+                                        '${(episodes[index].size / 1024 / 2014).round()}mb',
                                         style: Theme.of(
                                           context,
                                         ).textTheme.bodySmall,

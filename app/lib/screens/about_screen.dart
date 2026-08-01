@@ -6,8 +6,10 @@ import 'package:player/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatefulWidget {
+  const AboutScreen({super.key});
+
   @override
-  _AboutScreenState createState() => _AboutScreenState();
+  State createState() => _AboutScreenState();
 }
 
 class _AboutScreenState extends State<AboutScreen> {
@@ -29,9 +31,9 @@ class _AboutScreenState extends State<AboutScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 32.0),
-              child: Container(
-                child: Image.asset('assets/images/three_d_logo.png'),
+              child: SizedBox(
                 height: 250,
+                child: Image.asset('assets/images/three_d_logo.png'),
               ),
             ),
             Text(S.of(context).aboutBody),
@@ -42,22 +44,26 @@ class _AboutScreenState extends State<AboutScreen> {
                 children: [
                   IconButton(
                     icon: FaIcon(FontAwesomeIcons.house),
-                    onPressed: () => launch('https://www.threedradio.com'),
+                    onPressed: () =>
+                        launchUrl(Uri.parse('https://www.threedradio.com')),
                   ),
                   IconButton(
                     icon: FaIcon(FontAwesomeIcons.facebookF),
-                    onPressed: () =>
-                        launch('https://www.facebook.com/threedradio'),
+                    onPressed: () => launchUrl(
+                      Uri.parse('https://www.facebook.com/threedradio'),
+                    ),
                   ),
                   IconButton(
                     icon: FaIcon(FontAwesomeIcons.twitter),
-                    onPressed: () =>
-                        launch('https://www.twitter.com/threedradio'),
+                    onPressed: () => launchUrl(
+                      Uri.parse('https://www.twitter.com/threedradio'),
+                    ),
                   ),
                   IconButton(
                     icon: FaIcon(FontAwesomeIcons.instagram),
-                    onPressed: () =>
-                        launch('https://www.instagram.com/threedradio'),
+                    onPressed: () => launchUrl(
+                      Uri.parse('https://www.instagram.com/threedradio'),
+                    ),
                   ),
                 ],
               ),

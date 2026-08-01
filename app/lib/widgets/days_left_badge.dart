@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:player/generated/l10n.dart';
 
 class DaysLeftBadge extends StatelessWidget {
-  const DaysLeftBadge({required this.showDate, Key? key}) : super(key: key);
+  const DaysLeftBadge({required this.showDate, super.key});
 
   final DateTime showDate;
 

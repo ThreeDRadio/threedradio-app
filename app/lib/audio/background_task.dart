@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_renaming_method_parameters
+
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:player/audio/audio_start_params.dart';
@@ -93,6 +95,7 @@ class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
     } else {
       // we use the caching audio source in on-demand mode
       // to improve network performance
+      // ignore: experimental_member_use
       await _player.setAudioSource(LockCachingAudioSource(Uri.parse(item.id)));
     }
     _player.play();
@@ -148,6 +151,7 @@ class ThreeDBackgroundTask extends BaseAudioHandler with SeekHandler {
     return super.pause();
   }
 
+  @override
   Future<void> play() async {
     await _player.play();
     playbackState.add(

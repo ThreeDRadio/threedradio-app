@@ -60,8 +60,8 @@ void main() async {
   try {
     initialState = await persistor.load();
   } catch (err, trace) {
-    print(err);
-    print(trace);
+    debugPrint(err.toString());
+    debugPrintStack(stackTrace: trace);
   }
 
   final remoteDev = RemoteDevToolsMiddleware('localhost:8000');
@@ -70,9 +70,9 @@ void main() async {
     appReducer,
     initialState: initialState ?? AppState(),
     middleware: [
-      EpicMiddleware(buildEpics(audioService)),
+      EpicMiddleware(buildEpics(audioService)).call,
       persistor.createMiddleware(),
-      if (debug) remoteDev,
+      if (debug) remoteDev.call,
     ],
   );
 
@@ -98,7 +98,7 @@ void main() async {
       try {
         sentry?.captureException(details.exception, stackTrace: details.stack);
       } catch (e) {
-        print('Sending report to sentry.io failed: $e');
+        debugPrint('Sending report to sentry.io failed: $e');
       } finally {
         // Also use Flutter's pretty error logging to the device's console.
         FlutterError.dumpErrorToConsole(details, forceReport: forceReport);
@@ -112,12 +112,12 @@ void main() async {
     if (sentry != null) {
       await sentry.captureException(error, stackTrace: stackTrace);
     }
-    print(error);
+    debugPrint(error.toString());
   });
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({required this.analytics, required this.store});
+  const MyApp({super.key, required this.analytics, required this.store});
 
   final Store<AppState> store;
   final FirebaseAnalytics analytics;
@@ -143,7 +143,9 @@ class MyApp extends StatelessWidget {
             primary: Color(0xff2F9B17),
             surface: Color(0xfff2ebda),
           ),
-          indicatorColor: Color(0xff2F9B17),
+          tabBarTheme: TabBarThemeData(
+            indicatorColor: Color(0xff2F9B17),
+          ),
           appBarTheme: AppBarThemeData(
             backgroundColor: Color.fromARGB(255, 50, 46, 45),
             iconTheme: IconThemeData(color: Color(0xfff2ebda)),

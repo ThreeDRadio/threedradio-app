@@ -25,10 +25,10 @@ final newApi = NewScheduleApi(
 
 Epic<AppState> buildEpics(ThreeDBackgroundTask audioService) {
   return combineEpics<AppState>([
-    AudioEpics(audioService),
-    HistoryEpics(),
-    OnDemandEpisodesEpics(api: onDemandApi),
-    OnDemandEpics(api: onDemandApi),
-    ShowsEpics(api: newApi),
+    AudioEpics(audioService).call,
+    HistoryEpics().call,
+    OnDemandEpisodesEpics(api: onDemandApi).call,
+    OnDemandEpics(api: onDemandApi).call,
+    ShowsEpics(api: newApi).call,
   ]);
 }

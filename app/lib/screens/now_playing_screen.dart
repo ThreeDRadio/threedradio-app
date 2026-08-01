@@ -34,7 +34,8 @@ class _ViewModel {
 }
 
 class NowPlayingScreen extends StatefulWidget {
-  NowPlayingScreen({
+  const NowPlayingScreen({
+    super.key,
     this.fadeInDelay = const Duration(milliseconds: 300),
     this.fadeInDuration = const Duration(milliseconds: 300),
   });
@@ -42,7 +43,7 @@ class NowPlayingScreen extends StatefulWidget {
   final Duration fadeInDelay;
   final Duration fadeInDuration;
   @override
-  _NowPlayingScreenState createState() => _NowPlayingScreenState();
+  State createState() => _NowPlayingScreenState();
 }
 
 class _NowPlayingScreenState extends State<NowPlayingScreen> {
@@ -50,6 +51,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   bool seekInProgress = false;
   late double seekingPosition;
 
+  @override
   void initState() {
     Future.delayed(widget.fadeInDelay, () {
       if (mounted) {
@@ -61,22 +63,22 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     super.initState();
   }
 
-  onSeekStart(double value) {
+  void onSeekStart(double value) {
     setState(() {
       seekInProgress = true;
       seekingPosition = value;
     });
   }
 
-  pause() async {
+  void pause() async {
     StoreProvider.of<AppState>(context).dispatch(RequestPause());
   }
 
-  resume() async {
+  void resume() async {
     StoreProvider.of<AppState>(context).dispatch(RequestResume());
   }
 
-  stop() async {
+  void stop() async {
     StoreProvider.of<AppState>(context).dispatch(RequestStop());
     Navigator.of(context).pop();
   }

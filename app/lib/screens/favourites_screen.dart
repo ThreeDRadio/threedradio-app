@@ -8,6 +8,8 @@ import 'package:player/store/favourites/favourites_selectors.dart';
 import 'package:player/widgets/show_listing.dart';
 
 class FavouritesScreen extends StatelessWidget {
+  const FavouritesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

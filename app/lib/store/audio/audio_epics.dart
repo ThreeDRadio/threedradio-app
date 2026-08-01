@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:player/audio/background_task.dart';
 import 'package:player/environment/environment.dart';
 import 'package:player/store/app_state.dart';
@@ -24,6 +25,8 @@ class AudioEpics extends EpicClass<AppState> {
 
   ThreeDBackgroundTask audioService;
   late Epic<AppState> _epic;
+
+  @override
   Stream call(Stream actions, EpicStore<AppState> store) {
     return _epic(actions, store);
   }
@@ -114,8 +117,9 @@ class AudioEpics extends EpicClass<AppState> {
           ),
         );
         return SuccessPlayLive();
-      } catch (error) {
-        print(error);
+      } catch (error, st) {
+        debugPrint(error.toString());
+        debugPrintStack(stackTrace: st);
         return FailPlayLive();
       }
     });

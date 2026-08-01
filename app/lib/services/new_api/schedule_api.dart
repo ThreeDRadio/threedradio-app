@@ -17,7 +17,7 @@ class NewScheduleApi {
     return showResponse;
   }
 
-  Future<List<ShowDto>> getAllPrograms({includeAcf = true}) async {
+  Future<List<ShowDto>> getAllPrograms({bool includeAcf = true}) async {
     final response = await dio.get<List<dynamic>>(
       '$baseUrl/programs',
       queryParameters: {'include_acf': true},

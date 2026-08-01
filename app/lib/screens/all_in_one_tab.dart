@@ -35,7 +35,8 @@ class _HistoryVM {
 }
 
 class AllInOneTab extends StatefulWidget {
-  AllInOneTab({
+  const AllInOneTab({
+    super.key,
     required this.playLive,
     required this.openShow,
     required this.onRefresh,
@@ -45,7 +46,7 @@ class AllInOneTab extends StatefulWidget {
   final RefreshCallback onRefresh;
 
   @override
-  _AllInOneTabState createState() => _AllInOneTabState();
+  State createState() => _AllInOneTabState();
 }
 
 class _AllInOneTabState extends State<AllInOneTab> {
@@ -66,7 +67,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
     super.dispose();
   }
 
-  resumeEpisode(_HistoryVM e) {
+  void resumeEpisode(_HistoryVM e) {
     StoreProvider.of<AppState>(context).dispatch(
       RequestPlayEpisode(
         episode: e.episode!,
@@ -86,7 +87,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: Theme.of(context).colorScheme.onBackground,
+      color: Theme.of(context).colorScheme.onSurface,
       onRefresh: widget.onRefresh,
       child: CustomScrollView(
         slivers: [
@@ -132,7 +133,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
                 final episode = store
                     .state
                     .onDemandEpisodes
-                    .entities[show!.onDemandShowId.replaceAll('-', '+')]
+                    .entities[show.onDemandShowId.replaceAll('-', '+')]
                     ?.where((element) => element.date == item.episodeDate)
                     .first;
                 return _HistoryVM(

@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NowPlayingBar extends StatelessWidget {
-  NowPlayingBar({
+  const NowPlayingBar({
+    super.key,
     this.state,
     this.item,
     required this.onPause,
