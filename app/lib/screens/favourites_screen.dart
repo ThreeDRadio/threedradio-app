@@ -47,7 +47,7 @@ class FavouritesScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      S.of(context).favouritesEmpty,
+                      S.of(context).favouritesEmpty.toUpperCase(),
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     Padding(
