@@ -32,6 +32,18 @@ final lightTheme = ThemeData(
   chipTheme: ChipThemeData(
     labelStyle: GoogleFonts.barlowCondensed(fontSize: 14),
   ),
+  dividerColor: ThreeDColors.sand,
+  dividerTheme: DividerThemeData(color: ThreeDColors.sand),
+  segmentedButtonTheme: SegmentedButtonThemeData(
+    style: ButtonStyle(
+      foregroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? ThreeDColors.black
+            : ThreeDColors.sand,
+      ),
+      side: WidgetStatePropertyAll(BorderSide(color: ThreeDColors.sand)),
+    ),
+  ),
   textTheme: threeDTextTheme,
   primaryTextTheme: GoogleFonts.vinaSansTextTheme(
     TextTheme(titleLarge: TextStyle(color: ThreeDColors.white)),

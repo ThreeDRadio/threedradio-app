@@ -127,26 +127,30 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: store,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
-        localizationsDelegates: [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        title: 'Three D Radio',
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        themeMode: ThemeMode.light,
-        routes: {
-          '/': (context) => HomeScreen(),
-          '/about': (context) => AboutScreen(),
-          '/favourites': (context) => FavouritesScreen(),
-        },
-        initialRoute: '/',
+      child: StoreConnector<AppState, ThemeMode>(
+        distinct: true,
+        converter: (store) => store.state.settings.themeMode,
+        builder: (context, themeMode) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          title: 'Three D Radio',
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: themeMode,
+          routes: {
+            '/': (context) => HomeScreen(),
+            '/about': (context) => AboutScreen(),
+            '/favourites': (context) => FavouritesScreen(),
+          },
+          initialRoute: '/',
+        ),
       ),
     );
   }

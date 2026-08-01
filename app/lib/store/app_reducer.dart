@@ -4,6 +4,7 @@ import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_reducer.dart';
 import 'package:player/store/favourites/favourites_actions.dart';
 import 'package:player/store/history/history_reducer.dart';
+import 'package:player/store/settings/settings_reducer.dart';
 import 'package:redux_entity/redux_entity.dart';
 
 AppState appReducer(AppState state, dynamic action) => AppState(
@@ -29,4 +30,5 @@ AppState appReducer(AppState state, dynamic action) => AppState(
   shows: RemoteEntityReducer<RemoteEntityState<ShowDto>, ShowDto>(
     selectId: (entity) => entity.id.toString(),
   )(state.shows, action),
+  settings: settingsReducer(state.settings, action),
 );

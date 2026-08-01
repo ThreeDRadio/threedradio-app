@@ -10,9 +10,15 @@ import 'package:player/services/on_demand_api.dart';
 import 'package:player/store/app_selectors.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/audio_actions.dart';
+import 'package:player/store/settings/settings_actions.dart';
 import 'package:player/widgets/now_playing_bar.dart';
 import 'package:redux_entity/redux_entity.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+typedef BrightnessPicker = ({
+  ThemeMode themeMode,
+  ValueChanged<ThemeMode> changeBrightness,
+});
 
 class _NowPlayingBarData {
   _NowPlayingBarData({this.item, this.state});
@@ -139,6 +145,62 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               leading: Icon(Icons.info),
               title: Text(S.of(context).about),
               onTap: () => Navigator.of(context).popAndPushNamed('/about'),
+            ),
+            Divider(),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Brightness',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).listTileTheme.textColor,
+                ),
+              ),
+            ),
+            StoreConnector<
+              AppState,
+              ({
+                ThemeMode themeMode,
+                ValueChanged<ThemeMode> changeBrightness,
+              })
+            >(
+              converter: (store) => (
+                changeBrightness: (value) =>
+                    store.dispatch(SetThemeMode(mode: value)),
+                themeMode: store.state.settings.themeMode,
+              ),
+              builder: (context, snapshot) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 8,
+                  ),
+                  child: SegmentedButton<ThemeMode>(
+                    multiSelectionEnabled: false,
+                    showSelectedIcon: false,
+                    emptySelectionAllowed: false,
+                    segments: [
+                      ButtonSegment(
+                        value: ThemeMode.system,
+                        icon: Icon(Icons.brightness_auto),
+                        label: Text('Auto'),
+                      ),
+                      ButtonSegment(
+                        value: ThemeMode.light,
+                        icon: Icon(Icons.sunny),
+                        label: Text('Light'),
+                      ),
+                      ButtonSegment(
+                        value: ThemeMode.dark,
+                        icon: Icon(Icons.nightlight_round),
+                        label: Text('Dark'),
+                      ),
+                    ],
+                    selected: {snapshot.themeMode},
+                    onSelectionChanged: (value) =>
+                        snapshot.changeBrightness(value.first),
+                  ),
+                );
+              },
             ),
           ],
         ),
