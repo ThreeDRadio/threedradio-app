@@ -32,7 +32,7 @@ class ShowsEpics extends EpicClass<AppState> {
           try {
             final shows = await api.getAllPrograms();
             yield SuccessRetrieveAll<ShowDto>(shows);
-          } catch (err, st) {
+          } catch (err) {
             debugPrint(err.toString());
             yield FailRetrieveAll<ShowDto>(err);
           }

@@ -17,6 +17,8 @@ import 'package:player/widgets/separator.dart';
 import 'package:player/widgets/show_listing.dart';
 import 'package:redux_entity/redux_entity.dart';
 
+const showCardAspectRatio = 1.85;
+
 class _HistoryVM {
   const _HistoryVM({
     this.item,
@@ -98,21 +100,24 @@ class _AllInOneTabState extends State<AllInOneTab> {
             ),
           ),
           SliverToBoxAdapter(
-            child: StoreConnector<AppState, ShowDto?>(
-              converter: (store) {
-                return getCurrentShow(store.state);
-              },
-              builder: (context, show) => show != null
-                  ? ShowListing.fromShow(
-                      show,
-                      onTap: widget.playLive,
-                      heroTag: 'live',
-                    )
-                  : ShowListing(
-                      title: S.of(context).defaultLiveShowName,
-                      onTap: widget.playLive,
-                      heroTag: 'live',
-                    ),
+            child: AspectRatio(
+              aspectRatio: showCardAspectRatio,
+              child: StoreConnector<AppState, ShowDto?>(
+                converter: (store) {
+                  return getCurrentShow(store.state);
+                },
+                builder: (context, show) => show != null
+                    ? ShowListing.fromShow(
+                        show,
+                        onTap: widget.playLive,
+                        heroTag: 'live',
+                      )
+                    : ShowListing(
+                        title: S.of(context).defaultLiveShowName,
+                        onTap: widget.playLive,
+                        heroTag: 'live',
+                      ),
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -158,37 +163,40 @@ class _AllInOneTabState extends State<AllInOneTab> {
                             child: Text(S.of(context).jumpBackIn.toUpperCase()),
                           ),
                         ),
-                        ShowListing(
-                          title:
-                              '${snapshot.show!.name} - ${snapshot.item!.episodeDate}',
-                          thumbnail:
-                              snapshot
+                        AspectRatio(
+                          aspectRatio: showCardAspectRatio,
+                          child: ShowListing(
+                            title:
+                                '${snapshot.show!.name} - ${snapshot.item!.episodeDate}',
+                            thumbnail:
+                                snapshot
+                                        .show!
+                                        .acf
+                                        ?.program_featured_image
+                                        ?.thumbnail
+                                    is String
+                                ? snapshot
                                       .show!
-                                      .acf
-                                      ?.program_featured_image
-                                      ?.thumbnail
-                                  is String
-                              ? snapshot
-                                    .show!
-                                    .acf!
-                                    .program_featured_image!
-                                    .thumbnail
-                              : null,
-                          subtitle:
-                              '${snapshot.item!.position.format()} / ${snapshot.item!.showLength.format()}',
-                          heroTag: snapshot.item!.id,
-                          onTap: () => resumeEpisode(snapshot),
-                          action: Material(
-                            type: MaterialType.transparency,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(200),
-                                color: Colors.black,
-                              ),
-                              child: IconButton(
-                                color: Colors.white,
-                                icon: Icon(Icons.close),
-                                onPressed: snapshot.removeItem,
+                                      .acf!
+                                      .program_featured_image!
+                                      .thumbnail
+                                : null,
+                            subtitle:
+                                '${snapshot.item!.position.format()} / ${snapshot.item!.showLength.format()}',
+                            heroTag: snapshot.item!.id,
+                            onTap: () => resumeEpisode(snapshot),
+                            action: Material(
+                              type: MaterialType.transparency,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(200),
+                                  color: Colors.black,
+                                ),
+                                child: IconButton(
+                                  color: Colors.white,
+                                  icon: Icon(Icons.close),
+                                  onPressed: snapshot.removeItem,
+                                ),
                               ),
                             ),
                           ),
@@ -211,7 +219,7 @@ class _AllInOneTabState extends State<AllInOneTab> {
             builder: (context, snapshot) => snapshot.isNotEmpty
                 ? SliverGrid(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      childAspectRatio: 1.95,
+                      childAspectRatio: 1.8,
                       maxCrossAxisExtent: 600,
                       crossAxisSpacing: 8,
                       mainAxisSpacing: 8,

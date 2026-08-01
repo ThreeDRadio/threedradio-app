@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -160,12 +162,12 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              Colors.black.withAlpha(180),
+                              Colors.black.withAlpha(150),
                               Colors.black.withAlpha(0),
                             ],
                             stops: [
                               0.2,
-                              0.5,
+                              0.6,
                             ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,

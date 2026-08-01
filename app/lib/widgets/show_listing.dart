@@ -51,15 +51,14 @@ class ShowListing extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Stack(
-              alignment: AlignmentGeometry.topRight,
-              children: [
-                Hero(
-                  tag: heroTag,
-                  child: AspectRatio(
-                    aspectRatio: 3,
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Hero(
+                    tag: heroTag,
                     child: (thumbnail is String)
                         ? CachedNetworkImage(
                             imageUrl: thumbnail!,
@@ -67,24 +66,33 @@ class ShowListing extends StatelessWidget {
                           )
                         : Placeholder(),
                   ),
-                ),
-                if (action != null)
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: action!,
-                  ),
-              ],
+                  if (action != null)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: action!,
+                      ),
+                    ),
+                ],
+              ),
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 6,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     HtmlUnescape().convert(title).toUpperCase(),
-                    style: Theme.of(context).textTheme.headlineSmall!,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.headlineSmall!.copyWith(height: 1),
                   ),
                   if (subtitle != null)
                     Text(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:player/generated/l10n.dart';
+import 'package:player/screens/all_in_one_tab.dart';
 import 'package:player/screens/show_detail_screen.dart';
 import 'package:player/services/new_api/dto/show_dto.dart';
 import 'package:player/store/app_state.dart';
@@ -19,19 +20,22 @@ class FavouritesScreen extends StatelessWidget {
           converter: (store) => getFavouritesShows(store.state),
           builder: (context, snapshot) => snapshot.isNotEmpty
               ? ListView.builder(
-                  padding: EdgeInsets.all(8),
-                  itemBuilder: (context, index) => ShowListing.fromShow(
-                    snapshot[index],
-                    heroTag: snapshot[index].slug,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ShowDetailsScreen(show: snapshot[index]),
-                          fullscreenDialog: true,
-                        ),
-                      );
-                    },
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                  itemBuilder: (context, index) => AspectRatio(
+                    aspectRatio: showCardAspectRatio,
+                    child: ShowListing.fromShow(
+                      snapshot[index],
+                      heroTag: snapshot[index].slug,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ShowDetailsScreen(show: snapshot[index]),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   itemCount: snapshot.length,
                 )
