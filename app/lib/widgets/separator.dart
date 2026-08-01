@@ -11,7 +11,12 @@ class Separator extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: Colors.black, width: 6)),
+            border: Border(
+              top: BorderSide(
+                color: Theme.of(context).colorScheme.onSurface,
+                width: 6,
+              ),
+            ),
           ),
           child: DefaultTextStyle(
             style: Theme.of(context).textTheme.displaySmall!,

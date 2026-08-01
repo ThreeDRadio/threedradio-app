@@ -5,7 +5,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:player/audio/background_task.dart';
 import 'package:player/generated/l10n.dart';
 import 'package:player/screens/about_screen.dart';
@@ -15,6 +14,8 @@ import 'package:player/store/app_epics.dart';
 import 'package:player/store/app_reducer.dart';
 import 'package:player/store/app_state.dart';
 import 'package:player/store/audio/app_actions.dart';
+import 'package:player/theming/dark_theme.dart';
+import 'package:player/theming/light_theme.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_epics/redux_epics.dart';
 import 'package:redux_persist/redux_persist.dart';
@@ -137,61 +138,9 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: S.delegate.supportedLocales,
         title: 'Three D Radio',
-        theme: ThemeData(
-          brightness: Brightness.light,
-          colorScheme: ColorScheme.light().copyWith(
-            primary: Color(0xff2F9B17),
-            surface: Color(0xfff2ebda),
-          ),
-          tabBarTheme: TabBarThemeData(
-            indicatorColor: Color(0xff2F9B17),
-          ),
-          appBarTheme: AppBarThemeData(
-            backgroundColor: Color.fromARGB(255, 50, 46, 45),
-            iconTheme: IconThemeData(color: Color(0xfff2ebda)),
-            titleTextStyle: TextStyle(
-              color: Color(0xfff2ebda),
-              fontFamily: GoogleFonts.jockeyOne().fontFamily,
-              fontSize: 22,
-            ),
-          ),
-          drawerTheme: DrawerThemeData(
-            backgroundColor: Color.fromARGB(255, 50, 46, 45),
-          ),
-          listTileTheme: ListTileThemeData(
-            iconColor: Color(0xfff2ebda),
-            textColor: Color(0xfff2ebda),
-          ),
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          chipTheme: ChipThemeData(
-            labelStyle: GoogleFonts.barlowCondensed(fontSize: 14),
-          ),
-          textTheme: TextTheme(
-            bodyLarge: GoogleFonts.barlowCondensed(fontSize: 18),
-            bodyMedium: GoogleFonts.barlowCondensed(fontSize: 16),
-            bodySmall: GoogleFonts.barlowCondensed(fontSize: 14),
-            labelLarge: GoogleFonts.barlowCondensed(
-              fontWeight: FontWeight.bold,
-            ),
-            displayMedium: GoogleFonts.vinaSans(fontSize: 40),
-            displaySmall: GoogleFonts.vinaSans(fontSize: 36),
-            headlineMedium: GoogleFonts.vinaSans(
-              fontSize: 32,
-              height: 1,
-            ),
-            headlineSmall: GoogleFonts.vinaSans(),
-            titleLarge: GoogleFonts.vinaSans(fontSize: 18),
-          ),
-          primaryTextTheme: GoogleFonts.vinaSansTextTheme(
-            TextTheme(titleLarge: TextStyle(color: Colors.white)),
-          ),
-          sliderTheme: SliderThemeData(
-            activeTrackColor: Colors.black,
-            thumbColor: Colors.black,
-            inactiveTrackColor: Colors.black,
-            overlayColor: Colors.black.withAlpha(40),
-          ),
-        ),
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: ThemeMode.light,
         routes: {
           '/': (context) => HomeScreen(),
           '/about': (context) => AboutScreen(),

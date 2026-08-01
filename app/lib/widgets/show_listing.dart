@@ -41,64 +41,62 @@ class ShowListing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Card(
-        color: Color(0xfff2ebda),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(2.0),
-          side: BorderSide(color: Colors.black),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                alignment: AlignmentGeometry.topRight,
-                children: [
-                  Hero(
-                    tag: heroTag,
-                    child: AspectRatio(
-                      aspectRatio: 3,
-                      child: (thumbnail is String)
-                          ? CachedNetworkImage(
-                              imageUrl: thumbnail!,
-                              fit: BoxFit.cover,
-                            )
-                          : Placeholder(),
-                    ),
+    return Card(
+      color: Theme.of(context).colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(2.0),
+        side: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              alignment: AlignmentGeometry.topRight,
+              children: [
+                Hero(
+                  tag: heroTag,
+                  child: AspectRatio(
+                    aspectRatio: 3,
+                    child: (thumbnail is String)
+                        ? CachedNetworkImage(
+                            imageUrl: thumbnail!,
+                            fit: BoxFit.cover,
+                          )
+                        : Placeholder(),
                   ),
-                  if (action != null)
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: action!,
-                    ),
+                ),
+                if (action != null)
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: action!,
+                  ),
+              ],
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    HtmlUnescape().convert(title).toUpperCase(),
+                    style: Theme.of(context).textTheme.headlineSmall!,
+                  ),
+                  if (subtitle != null)
+                    Text(
+                      '$subtitle',
+                      style: Theme.of(context).textTheme.bodyMedium!,
+                    )
+                  else
+                    Text(S.of(context).defaultShortDescription),
                 ],
               ),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      HtmlUnescape().convert(title).toUpperCase(),
-                      style: Theme.of(context).textTheme.headlineSmall!,
-                    ),
-                    if (subtitle != null)
-                      Text(
-                        '$subtitle',
-                        style: Theme.of(context).textTheme.bodyMedium!,
-                      )
-                    else
-                      Text(S.of(context).defaultShortDescription),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
