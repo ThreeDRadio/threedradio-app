@@ -19,6 +19,9 @@ This app is built with [Flutter](https://flutter.dev). Here are some technology 
 
 - **Install Flutter**. We are keeping up with the latest Beta. So make sure you run `flutter channel beta` and regularly run `flutter upgrade` to stay in sync.
 - If you're using VS Code with the Flutter plugin, dependencies will be installed automatically
+- Install intl_utils either by 
+-- VS Code users: install the [Flutter intl VS Code extension](https://marketplace.visualstudio.com/items?itemName=localizely.flutter-intl)
+-- Otherwise: run `dart run intl_utils:generate`
 - Run build runner to generate api types: `flutter packages pub run build_runner build --delete-conflicting-outputs`
 - `flutter run`
 
